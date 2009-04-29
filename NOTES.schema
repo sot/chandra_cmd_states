@@ -1,0 +1,206 @@
+==========================================================
+CURRENT
+==========================================================
+
+[22] .aca.1> sp_cols load_segment;
+ name                               type        length     
+ ---------------------------------- ----------- -----------
+ load_segment                       varchar              15
+ year                               int                   4
+ week                               varchar              10
+ tstart                             float                 8
+ tstop                              float                 8
+ datestart                          varchar              21
+ datestop                           varchar              21
+ load_scs                           int                   4
+ fixed_by_hand                      bit                   1
+
+
+[23] .aca.2> sp_cols timeline;
+ name                               type        length     
+ ---------------------------------- ----------- -----------
+ dir                                varchar              20
+ load_segment                       varchar              15
+ load_year                          int                   4
+ datestart                          varchar              21
+ datestop                           varchar              21
+ tstart                             float                 8
+ tstop                              float                 8
+ replan                             bit                   1
+ incomplete                         bit                   1
+ fixed_by_hand                      bit                   1
+
+==========================================================
+PROPOSED
+==========================================================
+
+load_segments
+ name                               type        length     
+ ---------------------------------- ----------- -----------
+ id (PK)                            int                   4    ADD as int(tstart)
+ load_segment                       varchar              15
+ year                               int                   4
+ week                               varchar              10    DROP  
+ datestart                          varchar              21
+ datestop                           varchar              21
+ tstart                             float                 8    DROP 
+ tstop                              float                 8    DROP 
+ load_scs                           int                   4
+ fixed_by_hand                      bit                   1
+
+timelines
+--------------
+ name                               type        length     
+ ---------------------------------- ----------- -----------
+ id (PK)                            int                   4    ADD as int(tstart)
+ load_segment_id (FK)               int                   4    ADD
+ dir                                varchar              20   
+ load_segment                       varchar              15    DROP
+ load_year                          int                   4    DROP
+ datestart                          varchar              21
+ datestop                           varchar              21
+ tstart                             float                 8    DROP 
+ tstop                              float                 8    DROP 
+ replan                             bit                   1
+ incomplete                         bit                   1    
+ fixed_by_hand                      bit                   1
+
+timeline_loads
+---------------
+view on load_segment and timeline
+
+CREATE VIEW timeline_loads AS
+ SELECT 
+  tl.id            as id,
+  ls.id            as load_segment_id,
+  ls.load_segment  as name,
+  ls.year          as year,
+  tl.datestart     as datestart,
+  tl.datestop      as datestop,
+  ls.load_scs      as scs,
+  tl.dir           as mp_dir,
+  tl.replan        as replan,
+  tl.incomplete    as predicted,
+  tl.fixed_by_hand as fixed_by_hand
+ FROM timeline as tl, load_segment as ls
+ WHERE tl.load_segment_id = ls.id
+
+Output from read_backstop():
+   date, vcdu, cmd, params (dict), paramstr, time, file
+
+cmds
+--------
+ name              type         length     
+ ----------------- ------------ -----------
+ id (PK)            int                  4 (auto)
+ timeline_id (FK)   int                   4   
+ date               char                 21
+ cmd               varchar               12
+ tlmsid            varchar               10
+ msid              varchar                8
+ vcdu              int                    4
+ step              int                    4
+ scs               int                    4
+ autonomous        bit                    1
+
+cmd_intpars
+------------------
+ name              type         length     
+ ----------------- ------------ -----------
+ cmd_id (FK)        int                  4
+ timeline_id (FK)   int                  4
+ name              varchar              15
+ value             int                   4
+
+cmd_fltpars
+------------------
+ name              type         length     
+ ----------------- ------------ -----------
+ cmd_id (FK)       int                  4
+ timeline_id (FK)   int                  4
+ name              varchar              15
+ value             float                 8
+
+Example:
+ select * from commands as c, command_intpars as cp
+     where c.cmd = 'SIMTRANS'
+       and cl.name = 'POS' 
+       and cl.commands_id = c.id
+
+cmd_states
+-----------
+ name                 type           length     
+ ------------------ ------------ -----------
+ datestart (PK)     varchar               21
+ datestop           varchar               21
+ obsid              int                    4
+ power_cmd          varchar               11
+ si_mode            varchar                8
+ pcad_mode          varchar                6
+ vid_board          bit                    1
+ clocking           bit                    1
+ fep_count          int                    4
+ ccd_count          int                    4
+ simpos             int                    4
+ simfa_pos          int                    4
+ pitch              float                  8
+ ra                 float                  8
+ dec                float                  8
+ roll               float                  8
+ q1                 float                  8
+ q2                 float                  8
+ q3                 float                  8
+ q4                 float                  8
+
+
+PROCESSING
+------------
+target_date = current date or user-specified
+
+def get_state0_cmds(date=None, update_db=False, date_margin=10):
+  """Get a definitive initial state0 before ``date`` and get all 
+     commands after the start of state0 up through datestop (inclusive).
+     Update the database as needed to add new commands as new load_segments
+     appear or delete commands for load stoppages (planned or autonomous).
+  """
+
+  # Get a definitive state before ``date``.  We know that timeline_loads up
+  # through this time ran and there cannot be a change in the timeline_load(s)
+  # including this state, and thus the state0 is accurate.  
+
+  # state0 = last cmd_state that ends before ``date`` and at least 10 days
+  # before current date.  Set to a hardwired value for 2002:001 (TBR)
+           
+  timeline_loads = fetchall from timeline_loads where tl.datestop > state0.tstart
+    (strictly ">" not >= because any commands with date=state0.tstart must have
+     already been including in state0).
+
+  cmds = []
+
+  for tl in timeline_loads:
+    read commands from commands where command.timeline_id = tl.id
+
+    # If not yet in DB then read from MP backstop file.  If running as the
+    # archive process then put these commands to the DB.
+    if len(commands) = 0:
+      read commands from backstop in tl.mp_dir
+      if update_db:
+        insert commands to db (with logging)
+
+    # Check for commands outsid the timeline date range.  Delete them
+    # internally and in the DB (if running as archive).
+    if there commands are outside tl date range (use inclusive filter):
+      delete commands internally outside tl date range
+      if update_db:
+        delete commands in db outside tl date range (with logging)
+
+    cmds.append(commands)
+
+    return state0, cmds
+
+currstates = state0 + states in db after state0
+newstates = get_states(state0, cmds)  # main work.  form states.  this can update state0.datestop.
+
+form diff(currstates, newstates).  At the first diff uses states from newstates
+delete outdated states and insert new states as needed.
+

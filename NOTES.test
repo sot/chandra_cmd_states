@@ -1,0 +1,37 @@
+Building test database:
+
+python make_new_tl_ls.py
+python ./test_update_tables.py
+python nonload_cmds_archive.py
+ipython
+drop=False
+execfile('test_update_tables.py')
+exit
+cp test.db3 db2008.db3
+
+
+Tests of cmd_states:
+
+- Assemble a year of states (2003 & 2008) from sybase timelines and compare to telemetry.  
+  - pitch
+  - obsid
+  - simpos
+  - pcad_mode
+
+- Nominal cron updates of cmd_states and cmds + cmd_pars
+
+- Nominal weekly load review
+  - Thermal constraint checking
+
+- Nominal TOO replan
+  - Thermal constraint checking of new backstop loads
+  - New backstop loads overlapping / interrupting onboard loads
+  - Proper updates to cmd_states and cmds after iFOT updates
+
+- Put in an SCS107 run
+  - Interrupt timelines
+  - Add scs107 cmds
+  - Science recovery loads (?)
+  - Proper updates to cmd_states and cmds after iFOT updates 5 days later
+
+
