@@ -1,13 +1,29 @@
 #!/usr/bin/env python
+"""
+Copy timelines and load_segments tables from sybase to local copy and create
+timeline_loads view.
+"""
 
 import os
 import Ska.DBI
 
-def ls_key(year, load_segment):
-    return '%d:%s' % (year, load_segment)
+def get_options():
+    from optparse import OptionParser
+    parser = OptionParser(usage="usage: %prog [options] [cmd_set_arg1 ...]")
+    parser.set_defaults()
+    parser.add_option("--dbi",
+                      default='sqlite',
+                      help="Database interface (sqlite|sybase)")
+    parser.add_option("--server",
+                      default='db_base.db3',
+                      help="DBI server (<filename>|sybase)")
+    opt, args = parser.parse_args()
+    return opt, args
+
+opt, args = get_options()
 
 syb = Ska.DBI.DBI(dbi='sybase', numpy=False, verbose=True)
-db = Ska.DBI.DBI(dbi='sqlite', server='test.db3', numpy=False)
+db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, numpy=False, verbose=False)
 
 for drop in ('VIEW timeline_loads', 'TABLE timelines', 'TABLE load_segments'):
     try:
@@ -19,35 +35,15 @@ for sqldef in ('load_segments', 'timelines', 'timeline_loads'):
     cmd = file(sqldef + '_def.sql').read()
     db.execute(cmd, commit=True)
 
-for table in ('timelines', 'load_segments'):
-    for col in ('datestart', 'datestop'):
-        cmd = """CREATE INDEX idx_%(table)s_%(col)s
-                 ON %(table)s ( %(col)s ) """ % dict(table=table, col=col)
-        db.execute(cmd)
-
-timelines = syb.fetchall('select * from timeline where load_year >= 2007')
-load_segments = syb.fetchall('select * from load_segment where year >= 2007')
-
-ls_index = {}
+timelines = syb.fetchall('select * from timelines')
+load_segments = syb.fetchall('select * from load_segments')
 
 for ls in load_segments:
-    ls['id'] = int(ls['tstart'])
-    key = ls_key(ls['year'], ls['load_segment'])
-    ls_index[key] = ls
-
-    print 'Inserting ls %s' % key
-    for key in ('week', 'tstart', 'tstop'):
-        del ls[key]
+    print 'Inserting ls %d:%s' % (ls['year'], ls['load_segment'])
     db.insert(ls, 'load_segments')
 
 for tl in timelines:
-    tl['id'] = int(tl['tstart'])
-    ls = ls_index[ ls_key(tl['load_year'], tl['load_segment']) ]
-    tl['load_segment_id'] = ls['id']
-
     print 'Insert tl %s %s %d' % (tl['datestart'], tl['datestop'], tl['id'])
-    for key in ('load_segment', 'load_year', 'tstart', 'tstop'):
-        del tl[key]
     db.insert(tl, 'timelines')
 
 db.commit()

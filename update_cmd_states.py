@@ -14,7 +14,7 @@ def get_options():
                       default='sqlite',
                       help="Database interface (sqlite|sybase)")
     parser.add_option("--server",
-                      default='test.db3',
+                      default='db_base.db3',
                       help="DBI server (<filename>|sybase)")
     parser.add_option("--datestart",
                       help="Starting date for update (default=Now-10 days)")

@@ -8,3 +8,7 @@ CREATE TABLE load_segments (
  fixed_by_hand   bit          not null,
  CONSTRAINT pk_load_segments_id PRIMARY KEY (id)
 )
+;
+CREATE INDEX idx_load_segments_datestart ON load_segments ( datestart )
+;
+CREATE INDEX idx_load_segments_datestop  ON load_segments ( datestop )

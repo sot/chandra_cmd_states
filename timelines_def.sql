@@ -10,4 +10,8 @@ CREATE TABLE timelines (
   CONSTRAINT pk_timelines_id PRIMARY KEY (id),
   CONSTRAINT fk_timelines_load_segments_id FOREIGN KEY (load_segment_id) REFERENCES load_segments (id)
 ) 
+;
+CREATE INDEX idx_timelines_datestart ON timelines ( datestart )
+;
+CREATE INDEX idx_timelines_datestop  ON timelines ( datestop )
 

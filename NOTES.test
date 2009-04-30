@@ -1,14 +1,11 @@
 Building test database:
 
-python make_new_tl_ls.py
-python ./test_update_tables.py
-python nonload_cmds_archive.py
-ipython
-drop=False
-execfile('test_update_tables.py')
-exit
-cp test.db3 db2008.db3
+# Create db_base.db3 with timelines and load_segments since 2002.
+make_new_tl_ls.py --server db_base.db3
 
+python make_cmd_tables.py --server db_base.db
+python nonload_cmds_archive.py
+python update_cmd_states.py
 
 Tests of cmd_states:
 
