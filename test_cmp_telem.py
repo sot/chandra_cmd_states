@@ -20,13 +20,14 @@ logging.basicConfig(level=10,
                     format='%(message)s',
                     stream=sys.stdout)
 
-year = 2008
+year = 2003
 
 if 'tlm' not in globals():
     print 'Reading telemetry'
-    tlm = Ska.Table.read_ascii_table('tlm%d.dat' % year)  # or ','
+    tlm = Ska.Table.read_ascii_table('t/tlm%d.dat' % year)  # or ','
 
-db = Ska.DBI.DBI(dbi='sqlite', server='db_base.db3')
+# db = Ska.DBI.DBI(dbi='sqlite', server='db_base.db3')
+db = Ska.DBI.DBI(dbi='sybase')
 
 datestart = '%d:365' % (year-1)
 datestop = '%d:001' % (year+1)
@@ -45,14 +46,14 @@ clf()
 plot_cxctime(tlm.date, diff, fmt='.-b')
 title('AOSARES1 - states.pitch (%d)' % year)
 ylabel('degrees')
-savefig('cmp_pitch_%d.png' % year)
+savefig('t/cmp_pitch_%d.png' % year)
 
 figure(2, figsize=(5.5,4))
 clf()
 hist(diff, bins=50, log=True)
 title('AOSARES1 - states.pitch (%d)' % year)
 xlabel('degrees')
-savefig('cmp_hist_pitch_%d.png' % year)
+savefig('t/cmp_hist_pitch_%d.png' % year)
 
 if 0:  # for debug
     figure(5, figsize=(5.5,4))
@@ -69,14 +70,14 @@ clf()
 plot_cxctime(tlm.date, diff, fmt='.-b')
 title('tlm.TSCPOS - states.simpos (%d)' % year)
 ylabel('steps')
-savefig('cmp_simz_%d.png' % year)
+savefig('t/cmp_simz_%d.png' % year)
 
 figure(4, figsize=(5.5,4))
 clf()
 hist(diff, bins=50, log=True)
 title('tlm.TSCPOS and states.simpos (%d)' % year)
 ylabel('steps')
-savefig('cmp_hist_simz_%d.png' % year)
+savefig('t/cmp_hist_simz_%d.png' % year)
 
 
 
@@ -86,12 +87,12 @@ clf()
 plot_cxctime(tlm.date, diff, fmt='.-b')
 title('tlm.cobsrqid - state_vals.obsid (%d)' % year)
 ylabel('steps')
-savefig('cmp_obsid_%d.png' % year)
+savefig('t/cmp_obsid_%d.png' % year)
 
 figure(6, figsize=(5.5,4))
 clf()
 hist(diff, bins=50, log=True)
 title('tlm.cobsrqid - state_vals.obsid (%d)' % year)
 ylabel('steps')
-savefig('cmp_hist_obsid_%d.png' % year)
+savefig('t/cmp_hist_obsid_%d.png' % year)
 

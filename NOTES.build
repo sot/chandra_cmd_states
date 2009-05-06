@@ -46,9 +46,6 @@ sqsh -i fix_timelines.sql
 # Fix residual problems with pitch and SIM-Z
 ./fix_pitch_simz.py --dbi=sybase --server=sybase
 
-
-
-
 #####################
 Original values before fix_timelines.sql:
 

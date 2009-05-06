@@ -29,10 +29,10 @@ STATE0 = {'ccd_count': 5,
           'q4': 0.813941,
           'ra': 352.000,
           'roll': 289.37,
-          'si_mode': '',
+          'si_mode': 'undef',
           'simfa_pos': -468,
           'simpos': -99616,
-          'trans_keys': '',
+          'trans_keys': 'undef',
           'tstart': 127020624.552,
           'tstop': 127020727.803,
           'vid_board': 0}
@@ -316,7 +316,7 @@ def update_states_db(states, db):
     logging.debug('udpate_states_db: inserting states[%d:%d] to cmd_states' %
                   (i_diff, len(states)+1))
     for state in states[i_diff:]:
-        db.insert(dict((x, state[x]) for x in state.dtype.names), 'cmd_states', commit=False)
+        db.insert(dict((x, state[x]) for x in state.dtype.names), 'cmd_states', commit=True)
     db.commit()
 
 def get_state0(date=None, db=None, date_margin=10, table='cmd_states'):

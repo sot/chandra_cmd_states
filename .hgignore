@@ -2,3 +2,4 @@ syntax: glob
 *.db3
 *.fits
 *.png
+t

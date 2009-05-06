@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 One-off script to fix residual mismatches in cmd_states pitch and SIM-Z.  These
 are largely due to SCS107 runs with a dense set of replans that are not exactly
@@ -36,9 +38,9 @@ opt, args = get_options()
 
 if 'tlm' not in globals():
     print 'Reading telemetry'
-    tlm = Ska.Table.read_ascii_table('tlm2002_2008.dat', delimiters=[','])
+    tlm = Ska.Table.read_ascii_table('t/tlm2002_2008.dat', delimiters=[','])
 
-db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, commit=False)
+db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server)
 
 datestart = '2002:010:00:00:00' 
 datestop = '2009:001:00:00:00'

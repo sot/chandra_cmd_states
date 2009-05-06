@@ -11,7 +11,7 @@ X Assemble a year of states (2003 & 2008) from sybase timelines and compare to t
 X Nominal cron updates of cmd_states and cmds + cmd_pars
    - source test_interrupt_update.csh
 
-- Ingest into sybase
+X Ingest into sybase
 
 - Nominal weekly load review
   - Thermal constraint checking
