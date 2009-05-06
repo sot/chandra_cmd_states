@@ -1,21 +1,17 @@
-Building test database:
+##################################################
+# Tests of cmd_states
+##################################################
 
-# Create db_base.db3 with timelines and load_segments since 2002.
-make_new_tl_ls.py --server db_base.db3
+X Assemble a year of states (2003 & 2008) from sybase timelines and compare to telemetry.
+  Use test_cmp_telem.py to check
+   - pitch
+   - simpos
+   - obsid
 
-python make_cmd_tables.py --server db_base.db
-python nonload_cmds_archive.py
-python update_cmd_states.py
+X Nominal cron updates of cmd_states and cmds + cmd_pars
+   - source test_interrupt_update.csh
 
-Tests of cmd_states:
-
-- Assemble a year of states (2003 & 2008) from sybase timelines and compare to telemetry.  
-  - pitch
-  - obsid
-  - simpos
-  - pcad_mode
-
-- Nominal cron updates of cmd_states and cmds + cmd_pars
+- Ingest into sybase
 
 - Nominal weekly load review
   - Thermal constraint checking

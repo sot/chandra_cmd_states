@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Copy timelines and load_segments tables from sybase to local copy and create
+Copy timelines and load_segments tables from sybase to local sqlite db and create
 timeline_loads view.
 """
 
@@ -11,9 +11,6 @@ def get_options():
     from optparse import OptionParser
     parser = OptionParser(usage="usage: %prog [options] [cmd_set_arg1 ...]")
     parser.set_defaults()
-    parser.add_option("--dbi",
-                      default='sqlite',
-                      help="Database interface (sqlite|sybase)")
     parser.add_option("--server",
                       default='db_base.db3',
                       help="DBI server (<filename>|sybase)")
@@ -23,7 +20,7 @@ def get_options():
 opt, args = get_options()
 
 syb = Ska.DBI.DBI(dbi='sybase', numpy=False, verbose=True)
-db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, numpy=False, verbose=False)
+db = Ska.DBI.DBI(dbi='sqlite', server=opt.server, numpy=False, verbose=False)
 
 for drop in ('VIEW timeline_loads', 'TABLE timelines', 'TABLE load_segments'):
     try:

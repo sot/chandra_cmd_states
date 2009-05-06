@@ -1,0 +1,73 @@
+##############################################################
+# Building cmd_states and load segments database
+##############################################################
+
+This build commands and command states valid from 2002:007
+
+##
+## For sqlite3
+##
+
+# Create sqlite3 db_base.db3 with timelines and load_segments since 2002.
+# This is for testing, not production.
+./make_new_tl_ls.py
+
+# Apply fixes for known issues
+sqlite3 db_base.db3 < fix_timelines.sql
+
+# Initialize the cmds, cmd_intpars, cmd_fltpars, and cmd_states tables
+./make_cmd_tables.py 
+
+# Add non-load commands (SCS107 NSM etc)
+./nonload_cmds_archive.py
+
+# From the timelines and non-load commands build the cmds and cmd_states tables
+./update_cmd_states.py --datestart 2001:001
+
+# Fix residual problems with pitch and SIM-Z
+./fix_pitch_simz.py
+
+##
+## For sybase
+##
+
+# Apply fixes for known issues
+sqsh -i fix_timelines.sql
+
+# Initialize the cmds, cmd_intpars, cmd_fltpars, and cmd_states tables
+./make_cmd_tables.py --dbi=sybase --server=sybase
+
+# Add non-load commands (SCS107 NSM etc)
+./nonload_cmds_archive.py --dbi=sybase --server=sybase
+
+# From the timelines and non-load commands build the cmds and cmd_states tables
+./update_cmd_states.py --datestart 2001:001 --dbi=sybase --server=sybase
+
+# Fix residual problems with pitch and SIM-Z
+./fix_pitch_simz.py --dbi=sybase --server=sybase
+
+
+
+
+#####################
+Original values before fix_timelines.sql:
+
+[34] .aca.1> select * from timelines where id=345905553;
+ id          load_segment_id dir                                      datestart                                  datestop                                   replan incomplete fixed_by_hand
+ ----------- --------------- ---------------------------------------- ------------------------------------------ ------------------------------------------ ------ ---------- -------------
+   345905553       345905551 /2008/DEC1508/oflsc/                     2008:352:12:51:28.313                      2008:352:18:29:55.134                           0          0             0
+
+[35] .aca.1> select * from load_segments where id=345905551;
+ id          load_segment                   year        datestart                                  datestop                                   load_scs    fixed_by_hand
+ ----------- ------------------------------ ----------- ------------------------------------------ ------------------------------------------ ----------- -------------
+   345905551 CL352:1208                            2008 2008:352:12:51:28.313                      2008:352:18:29:55.134                              129             0
+
+[41] .aca.1> select * from timelines where id=183963768;
+ id          load_segment_id dir                                      datestart                                  datestop                                   replan incomplete fixed_by_hand
+ ----------- --------------- ---------------------------------------- ------------------------------------------ ------------------------------------------ ------ ---------- -------------
+   183963768       183963766 /2003/OCT3003/oflsc/                     2003:304:05:01:43.857                      2003:304:20:30:01.285                           0          0             0
+
+[38] .aca.1> select * from load_segments where id=183963766;
+ id          load_segment                   year        datestart                                  datestop                                   load_scs    fixed_by_hand
+ ----------- ------------------------------ ----------- ------------------------------------------ ------------------------------------------ ----------- -------------
+   183963766 CL304:0504                            2003 2003:304:05:01:43.857                      2003:304:20:30:01.285                              129             0

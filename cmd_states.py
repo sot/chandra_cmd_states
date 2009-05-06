@@ -434,15 +434,15 @@ def get_cmds(datestart='1998:001:00:00:00.000',
     for tl in timeline_loads:
         tl_cmds = db.fetchall("SELECT * from cmds WHERE timeline_id = %d" % tl.id)
 
-        logging.debug('get_cmds: got %d commands from db for timeline_id=%d (%s)' %
-                      (len(tl_cmds), tl.id, tl.datestart))
+        logging.debug('get_cmds: got %3d cmds from db for timeline_id=%d (%s - %s)' %
+                      (len(tl_cmds), tl.id, tl.datestart, tl.datestop))
 
         # If not yet in DB then read from MP backstop file.  Put into DB if needed.
         if len(tl_cmds) == 0:
             bs_file = Ska.File.get_globfiles(os.path.join('/data/mpcrit1/mplogs' + tl.mp_dir,
                                                           '*.backstop'))[0]
             bs_cmds = Ska.ParseCM.read_backstop(bs_file)
-            # Retain only state-changing cmds within timeline date range
+            # Retain state-changing cmds within timeline for database
             bs_cmds = [x for x in bs_cmds if tl.datestart <= x['date'] <= tl.datestop
                        and (x['cmd'] in cmd_types or x['params'].get('TLMSID') in tlmsids)]
             logging.debug('get_cmds: got %d commands from %s' % (len(bs_cmds), bs_file))
@@ -535,6 +535,18 @@ def insert_cmds_db(cmds, timeline_id, db):
     for cmd in cmds:
         cmd_id += 1
 
+        # Make a copy of the cmd while skipping any None values
+        db_cmd = dict((key, val) for (key, val) in cmd.items() if val is not None)
+        db_cmd['id'] = cmd_id
+        if timeline_id is not None:
+            db_cmd['timeline_id'] = timeline_id
+
+        # The params and paramstr don't get stored to db
+        for key in set(['params', 'paramstr']).intersection(db_cmd):
+            del db_cmd[key]
+
+        db.insert(db_cmd, 'cmds', commit=False)
+
         # Insert int and float command parameters
         for name, value in cmd.get('params', {}).items():
             if name in ('MSID', 'TLMSID', 'SCS', 'STEP', 'VCDU'):
@@ -549,18 +561,6 @@ def insert_cmds_db(cmds, timeline_id, db):
             elif isinstance(value, float):
                 db.insert(par, 'cmd_fltpars', commit=False)
             
-        # Make a copy of the cmd while skipping any None values
-        db_cmd = dict((key, val) for (key, val) in cmd.items() if val is not None)
-        db_cmd['id'] = cmd_id
-        if timeline_id is not None:
-            db_cmd['timeline_id'] = timeline_id
-
-        # The params and paramstr don't get stored to db
-        for key in set(['params', 'paramstr']).intersection(db_cmd):
-            del db_cmd[key]
-
-        db.insert(db_cmd, 'cmds', commit=False)
-
     db.conn.commit()
 
 def interpolate_states(states, times):
@@ -669,3 +669,36 @@ def cmd_set(name, *args):
 
     cmd_sets = dict(manvr=manvr, scs107=scs107, nsm=nsm, obsid=obsid)
     return cmd_sets[name](*args)
+
+def interrupt_loads(datestop, db, current_only=False):
+    """Interrupt the all command loads (timelines and load_segments) with
+    db.datestop > ``datestop`` by updating the table datestop accordingly.
+    Use DBI handle ``db`` to access tables.  If ``current_only`` is set
+    then only update the load that actually contains ``datestop``.
+
+    :param datestop: load stop date
+    :param db: Ska.DBI.DBI object
+    :param current_only: only stop the load containing datestop
+    """
+    datestop = DateTime(datestop).date
+
+    select = "SELECT * FROM timelines WHERE datestop > '%s'" % datestop
+    select_datestart = " AND datestart <= '%s'" % datestop if current_only else ''
+
+    logging.info('interrupt_loads: ' + select + select_datestart)
+    timelines = db.fetchall(select + select_datestart)
+    if len(timelines) == 0:
+        logging.info('No timelines containing %s' % datestop)
+        return
+
+    logging.info('Updating %d timelines with datestop > %s' % (len(timelines), datestop))
+    for tl in timelines:
+        logging.info("%s %s %s" % (tl['datestart'], tl['datestop'], tl['dir']))
+
+    # Get confirmation to update timeslines table in database
+    logging.info('Revert with:')
+    for tl in timelines:
+        logging.info("UPDATE timelines SET datestop='%s' where id=%d ;" % (tl['datestop'], tl['id']))
+
+    update = "UPDATE timelines SET datestop='%s' WHERE datestop > '%s'" % (datestop, datestop)
+    db.execute(update + select_datestart)

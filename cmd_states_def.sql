@@ -1,8 +1,8 @@
 CREATE TABLE cmd_states (
      datestart     varchar(21) not null,
      datestop      varchar(21) not null,
-     tstart        real(8)     not null,
-     tstop         real(8)     not null,
+     tstart        float(16)     not null,
+     tstop         float(16)     not null,
      obsid         int         not null,
      power_cmd     varchar(11) not null,
      si_mode       varchar( 8) not null,

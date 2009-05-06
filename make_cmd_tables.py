@@ -21,7 +21,7 @@ def get_options():
 
 opt, args = get_options()
 
-db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, numpy=False, verbose=False)
+db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, numpy=False, verbose=True)
 
 tables = ('cmd_states', 'cmds', 'cmd_intpars', 'cmd_fltpars')
 for table in reversed(tables):
