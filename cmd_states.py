@@ -136,7 +136,7 @@ def get_states(state0, cmds, exclude=None):
     :param cmds: list of commands
     :param ignore: list or set of state keys to ignore
 
-    :returns: list of states starting with state0 (which might be modified)
+    :returns: numpy recarray of states starting with state0 (which might be modified)
     """
 
     logging.debug('get_states: starting from %s' % state0['datestart'])
@@ -309,11 +309,11 @@ def update_states_db(states, db):
 
     # Mismatch occured at i_diff.  Drop cmd_states after states[i_diff].datestart
     cmd = "DELETE FROM cmd_states WHERE datestart >= '%s'" % states[i_diff].datestart
-    logging.debug('udpate_states_db: ' + cmd)
+    logging.info('udpate_states_db: ' + cmd)
     db.execute(cmd)
 
     # Insert new states[i_diff:] into cmd_states 
-    logging.debug('udpate_states_db: inserting states[%d:%d] to cmd_states' %
+    logging.info('udpate_states_db: inserting states[%d:%d] to cmd_states' %
                   (i_diff, len(states)+1))
     for state in states[i_diff:]:
         db.insert(dict((x, state[x]) for x in state.dtype.names), 'cmd_states', commit=True)
@@ -445,8 +445,8 @@ def get_cmds(datestart='1998:001:00:00:00.000',
             # Retain state-changing cmds within timeline for database
             bs_cmds = [x for x in bs_cmds if tl.datestart <= x['date'] <= tl.datestop
                        and (x['cmd'] in cmd_types or x['params'].get('TLMSID') in tlmsids)]
-            logging.debug('get_cmds: got %d commands from %s' % (len(bs_cmds), bs_file))
-            if update_db:
+            logging.info('get_cmds: got %d commands from %s' % (len(bs_cmds), bs_file))
+            if update_db and bs_cmds:
                 insert_cmds_db(bs_cmds, tl.id, db)
         else:
             # Check for commands before the timeline start, which is a problem. 
@@ -530,7 +530,7 @@ def insert_cmds_db(cmds, timeline_id, db):
     :returns: None
     """
     cmd_id = db.fetchone('SELECT max(id) AS max_id FROM cmds')['max_id'] or 0
-    logging.debug('insert_cmds_db: inserting %d cmds to commands tables' % (len(cmds)))
+    logging.info('insert_cmds_db: inserting %d cmds to commands tables' % (len(cmds)))
 
     for cmd in cmds:
         cmd_id += 1
@@ -679,6 +679,7 @@ def interrupt_loads(datestop, db, current_only=False):
     :param datestop: load stop date
     :param db: Ska.DBI.DBI object
     :param current_only: only stop the load containing datestop
+    :returns: None
     """
     datestop = DateTime(datestop).date
 
@@ -702,3 +703,29 @@ def interrupt_loads(datestop, db, current_only=False):
 
     update = "UPDATE timelines SET datestop='%s' WHERE datestop > '%s'" % (datestop, datestop)
     db.execute(update + select_datestart)
+
+def reduce_states(states, cols):
+    """
+    Reduce the input ``states`` so that only transitions in the ``cols`` columns are noticed.
+    
+    :param states: numpy recarray of states
+    :param cols: notice transitions in this list of columns
+    :returns: numpy recarray of reduced states
+    """
+    cols = set(cols)
+
+    # Boolean func for when at least one state transition key is among the supplied cols
+    # Transition keys are are the values that changed between previous and current state
+    trans_in_cols = lambda state: bool(cols.intersection(state['trans_keys'].split(',')))
+
+    # Generate the transition markers
+    transitions = np.array([trans_in_cols(state) for state in states])
+    transitions[0] = True
+
+    newstates = states[transitions].copy()
+    newstates.datestop[:-1] = newstates.datestart[1:]
+    newstates.tstop[:-1] = newstates.tstart[1:]
+    newstates.datestop[-1] = states.datestop[-1]
+    newstates.tstop[-1] = states.tstop[-1]
+
+    return newstates
