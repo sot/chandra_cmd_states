@@ -16,9 +16,7 @@ fetch --start 2002:010 --stop 2009:001:00:00:00 --dt 600 --outfile tlm2002_2008.
 
 import Ska.Table
 import Ska.DBI
-import cmd_states
-import numpy as np
-from scipy.signal import medfilt
+import Chandra.cmd_states as cmd_states
 
 def get_options():
     from optparse import OptionParser
@@ -34,45 +32,52 @@ def get_options():
     (opt, args) = parser.parse_args()
     return (opt, args)
 
-opt, args = get_options()
+def main():
+    import numpy as np
+    from scipy.signal import medfilt
 
-if 'tlm' not in globals():
-    print 'Reading telemetry'
-    tlm = Ska.Table.read_ascii_table('t/tlm2002_2008.dat', delimiters=[','])
+    opt, args = get_options()
 
-db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server)
+    if 'tlm' not in globals():
+        print 'Reading telemetry'
+        tlm = Ska.Table.read_ascii_table('t/tlm2002_2008.dat', delimiters=[','])
 
-datestart = '2002:010:00:00:00' 
-datestop = '2009:001:00:00:00'
+    db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server)
 
-if 'states' not in globals():
-    print 'Getting states'
-    states = db.fetchall("""SELECT * from cmd_states
-                            WHERE datestart > '%s'
-                            AND datestop < '%s'""" % (datestart, datestop))
-    ok = (tlm.date > states[0].tstart) & (tlm.date < states[-1].tstop)
-    tlm = tlm[ok]
-    state_vals = cmd_states.interpolate_states(states, tlm.date)
+    datestart = '2002:010:00:00:00' 
+    datestop = '2009:001:00:00:00'
 
-simdiff = medfilt(tlm.tscpos - state_vals.simpos, 5)
-bad = abs(simdiff) > 5000.
-bad_state_idxs = np.unique(np.searchsorted(states.tstop, tlm[bad].date))
-for bad_state in states[bad_state_idxs]:
-    ok = (tlm.date >= bad_state.tstart) & (tlm.date <= bad_state.tstop)
-    simpos = np.median(tlm[ok].tscpos)
-    cmd = "UPDATE cmd_states SET simpos=%d WHERE datestart='%s'" % (simpos, bad_state.datestart)
-    print cmd
-    db.execute(cmd)
+    if 'states' not in globals():
+        print 'Getting states'
+        states = db.fetchall("""SELECT * from cmd_states
+                                WHERE datestart > '%s'
+                                AND datestop < '%s'""" % (datestart, datestop))
+        ok = (tlm.date > states[0].tstart) & (tlm.date < states[-1].tstop)
+        tlm = tlm[ok]
+        state_vals = cmd_states.interpolate_states(states, tlm.date)
 
-pitchdiff = medfilt(tlm.aosares1 - state_vals.pitch, 9)
-bad = abs(pitchdiff) > 5.
-bad_state_idxs = np.unique(np.searchsorted(states.tstop, tlm[bad].date))
-for bad_state in states[bad_state_idxs]:
-    ok = (tlm.date >= bad_state.tstart) & (tlm.date <= bad_state.tstop)
-    pitch = np.median(tlm[ok].aosares1)
-    cmd = "UPDATE cmd_states SET pitch=%f WHERE datestart='%s'" % (pitch, bad_state.datestart)
-    print cmd
-    db.execute(cmd)
+    simdiff = medfilt(tlm.tscpos - state_vals.simpos, 5)
+    bad = abs(simdiff) > 5000.
+    bad_state_idxs = np.unique(np.searchsorted(states.tstop, tlm[bad].date))
+    for bad_state in states[bad_state_idxs]:
+        ok = (tlm.date >= bad_state.tstart) & (tlm.date <= bad_state.tstop)
+        simpos = np.median(tlm[ok].tscpos)
+        cmd = "UPDATE cmd_states SET simpos=%d WHERE datestart='%s'" % (simpos, bad_state.datestart)
+        print cmd
+        db.execute(cmd)
 
-db.commit()
+    pitchdiff = medfilt(tlm.aosares1 - state_vals.pitch, 9)
+    bad = abs(pitchdiff) > 5.
+    bad_state_idxs = np.unique(np.searchsorted(states.tstop, tlm[bad].date))
+    for bad_state in states[bad_state_idxs]:
+        ok = (tlm.date >= bad_state.tstart) & (tlm.date <= bad_state.tstop)
+        pitch = np.median(tlm[ok].aosares1)
+        cmd = "UPDATE cmd_states SET pitch=%f WHERE datestart='%s'" % (pitch, bad_state.datestart)
+        print cmd
+        db.execute(cmd)
 
+    db.commit()
+
+if __name__ == '__main__':
+    main()
+    

@@ -26,7 +26,7 @@ import sys
 import logging
 
 import Ska.DBI
-import cmd_states
+import Chandra.cmd_states as cmd_states
 
 def get_options():
     from optparse import OptionParser

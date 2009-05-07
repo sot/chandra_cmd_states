@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import Ska.DBI
-import cmd_states
-from cmd_states import generate_cmds, cmd_set, interrupt_loads
+import Chandra.cmd_states as cmd_states
+from Chandra.cmd_states import generate_cmds, cmd_set, interrupt_loads
 
 def get_options():
     from optparse import OptionParser

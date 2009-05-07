@@ -35,7 +35,7 @@ import sys
 import logging
 import time
 
-import cmd_states
+import Chandra.cmd_states as cmd_states
 import Ska.DBI
 from Chandra.Time import DateTime
 import Ska.ParseCM

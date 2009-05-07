@@ -1,3 +1,8 @@
+"""
+This module provides the core functions for creating, manipulating and updating
+the Chandra commanded states database.
+"""
+
 import re
 import logging
 import os
@@ -610,10 +615,10 @@ def generate_cmds(time, cmd_set):
 
 def cmd_set(name, *args):
     """
-    Return a predefined cmd_set ``name`` generated with *args.
+    Return a predefined cmd_set ``name`` generated with \*args.
 
     :param name: cmd set name (manvr|scs107|nsm)
-    :param *args: optional args
+    :param \*args: optional args
     :returns: cmd set
     """
     def obsid(*args):

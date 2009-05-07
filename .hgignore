@@ -3,3 +3,4 @@ syntax: glob
 *.fits
 *.png
 t
+docs/_build
