@@ -508,7 +508,7 @@ def insert_cmds_db(cmds, timeline_id, db):
     id (PK)            int        4 
     timeline_id        int        4   
     date               char      21
-    time              float       8,
+    time              float       8
     cmd               varchar    12
     tlmsid            varchar    10
     msid              varchar     8

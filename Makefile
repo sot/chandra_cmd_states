@@ -1,6 +1,6 @@
 # Set the task name
 TASK = cmd_states
-VERSI0N = 0.1
+VERSI0N = 0.01
 
 # Uncomment the correct choice indicating either SKA or TST flight environment
 FLIGHT_ENV = SKA
@@ -12,7 +12,7 @@ DOC = docs/_build/html/
 
 include /proj/sot/ska/include/Makefile.FLIGHT
 
-.PHONY: test dist install
+.PHONY: test dist install docs
 
 test: check_install $(BIN) $(TEST_DEP) install
 	$(INSTALL_BIN)/task.pl
@@ -37,5 +37,5 @@ install:
 
 	rsync --times --cvs-exclude $(DATA) $(INSTALL_DATA)/
 	rsync --times --cvs-exclude $(SHARE) $(INSTALL_SHARE)/
-	rsync --times --cvs-exclude $(DOC) $(INSTALL_DOC)/
+	rsync --archive --times --cvs-exclude $(DOC) $(INSTALL_DOC)/
 
