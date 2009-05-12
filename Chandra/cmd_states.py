@@ -324,7 +324,7 @@ def update_states_db(states, db):
         db.insert(dict((x, state[x]) for x in state.dtype.names), 'cmd_states', commit=True)
     db.commit()
 
-def get_state0(date=None, db=None, date_margin=10, table='cmd_states'):
+def get_state0(date=None, db=None, date_margin=10, datepar='datestop'):
     """From the cmd_states table get the last state that ends before ``date``.
 
      It is assumed that the cmd_states database table is populated and accurate
@@ -335,7 +335,7 @@ def get_state0(date=None, db=None, date_margin=10, table='cmd_states'):
     :param db: Ska.DBI.DBI object.  Created automatically if not supplied.
     :param date: date cutoff for state0 (Chandra.Time 'date' string)
     :param date_margin: days before current time for definitive values
-    :param table: table of cmd_states (default='cmd_states')
+    :param datepar: table parameter for select (datestop|datestart)
 
     :returns: ``state0``
     :rtype: dict
@@ -352,10 +352,10 @@ def get_state0(date=None, db=None, date_margin=10, table='cmd_states'):
     else:
         date = DateTime(date).date
         
-    state0 = db.fetchone("""SELECT * FROM %s
-                            WHERE datestop < '%s'
+    state0 = db.fetchone("""SELECT * FROM cmd_states
+                            WHERE %s < '%s'
                             AND pcad_mode = 'NPNT'
-                            ORDER BY datestop DESC""" % (table, date))
+                            ORDER BY %s DESC""" % (date, datepar, datepar))
 
     if state0:
         logging.debug('get_state0: found definitive state at %s' % state0['datestart'])
