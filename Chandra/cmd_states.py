@@ -355,7 +355,7 @@ def get_state0(date=None, db=None, date_margin=10, datepar='datestop'):
     state0 = db.fetchone("""SELECT * FROM cmd_states
                             WHERE %s < '%s'
                             AND pcad_mode = 'NPNT'
-                            ORDER BY %s DESC""" % (date, datepar, datepar))
+                            ORDER BY %s DESC""" % (datepar, date, datepar))
 
     if state0:
         logging.debug('get_state0: found definitive state at %s' % state0['datestart'])
@@ -470,7 +470,8 @@ def get_cmds(datestart='1998:001:00:00:00.000',
 
         cmds.extend(bs_cmds)
 
-    # Filter commands on date and sort by date
+    # Filter commands on date and sort by date.
+    #   IS THE "datestart <=" CORRECT?  docstring above says "<".  ?????
     return sorted((x for x in cmds if datestart <= x['date'] <= datestop), key=lambda y: y['date'])
 
 def insert_cmds_db(cmds, timeline_id, db):
