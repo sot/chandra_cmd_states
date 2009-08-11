@@ -312,8 +312,8 @@ def update_states_db(states, db):
     else:
         i_diff = 0
 
-    # Mismatch occured at i_diff.  Drop cmd_states after states[i_diff].datestart
-    cmd = "DELETE FROM cmd_states WHERE datestart >= '%s'" % states[i_diff].datestart
+    # Mismatch occured at i_diff.  Drop cmd_states after db_state[i_diff].datestart
+    cmd = "DELETE FROM cmd_states WHERE datestart >= '%s'" % db_state[i_diff].datestart
     logging.info('udpate_states_db: ' + cmd)
     db.execute(cmd)
 
@@ -325,7 +325,7 @@ def update_states_db(states, db):
     db.commit()
 
 def get_state0(date=None, db=None, date_margin=10, datepar='datestop'):
-    """From the cmd_states table get the last state that ends before ``date``.
+    """From the cmd_states table get the last state with ``datepar`` before ``date``.
 
      It is assumed that the cmd_states database table is populated and accurate
      (definitive) at times more than ``date_margin`` days before the present
@@ -341,8 +341,7 @@ def get_state0(date=None, db=None, date_margin=10, datepar='datestop'):
     :rtype: dict
     """
     if db is None:
-        # (Probably want to use read-only as default here)
-        db = Ska.DBI.DBI(dbi='sybase')
+        db = Ska.DBI.DBI(dbi='sybase', server='sybase', user='aca_read', database='aca')
 
     # Date for which cmd_states are certainly reliable
     definitive_date = DateTime(time.time() - date_margin * 86400.,
