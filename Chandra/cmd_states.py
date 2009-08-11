@@ -313,7 +313,7 @@ def update_states_db(states, db):
         i_diff = 0
 
     # Mismatch occured at i_diff.  Drop cmd_states after db_state[i_diff].datestart
-    cmd = "DELETE FROM cmd_states WHERE datestart >= '%s'" % db_state[i_diff].datestart
+    cmd = "DELETE FROM cmd_states WHERE datestart >= '%s'" % db_states[i_diff].datestart
     logging.info('udpate_states_db: ' + cmd)
     db.execute(cmd)
 
