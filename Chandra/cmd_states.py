@@ -39,7 +39,7 @@ STATE0 = {'ccd_count': 5,
           'simpos': -99616,
           'trans_keys': 'undef',
           'tstart': 127020624.552,
-          'tstop': 127020727.803,
+          'tstop': 3187296066.184,
           'vid_board': 0}
 
 def decode_power(mnem):
@@ -290,12 +290,6 @@ def update_states_db(states, db):
                                (states[0].datestart, states[-1].datestop))
 
     if len(db_states) > 0:
-        # If lengths don't match then force a mismatch for the final db_state.  This
-        # catches the typical case when every db_state is in states but states was
-        # extended by the addition of new timeline load segments.
-        if len(states) != len(db_states):
-            db_states[-1].datestart = '1970:001:00:00:00.000'
-
         # Get states columns that are not float type. descr gives list of (colname, type_descr)
         match_cols = [x[0] for x in states.dtype.descr if 'f' not in x[1]]
 
@@ -306,20 +300,28 @@ def update_states_db(states, db):
                 Ska.Sun.sph_dist(db_state.ra, db_state.dec, state.ra, state.dec) > 0.0003):
                 break
         else:
-            # made it with no mismatches so no action required
-            logging.debug('update_states_db: No database update required')
-            return
-    else:
-        i_diff = 0
+            if len(states) == len(db_states):
+                # made it with no mismatches and number of states match so no action required
+                logging.debug('update_states_db: No database update required')
+                return
 
-    # Mismatch occured at i_diff.  Drop cmd_states after db_state[i_diff].datestart
-    cmd = "DELETE FROM cmd_states WHERE datestart >= '%s'" % db_states[i_diff].datestart
-    logging.info('udpate_states_db: ' + cmd)
-    db.execute(cmd)
+            # Else there is a mismatch in number of states.  This catches the
+            # typical case when every db_state is in states but states was
+            # extended by the addition of new timeline load segments.  In this
+            # case just drop through with i_diff left at the last available index
+            # in db_states and states.
+
+        # Mismatch occured at i_diff.  Drop cmd_states after db_state[i_diff].datestart
+        cmd = "DELETE FROM cmd_states WHERE datestart >= '%s'" % db_states[i_diff].datestart
+        logging.info('udpate_states_db: ' + cmd)
+        db.execute(cmd)
+    else:
+        # No cmd_states in database so just insert all new states
+        i_diff = 0
 
     # Insert new states[i_diff:] into cmd_states 
     logging.info('udpate_states_db: inserting states[%d:%d] to cmd_states' %
-                  (i_diff, len(states)+1))
+                  (i_diff, len(states)))
     for state in states[i_diff:]:
         db.insert(dict((x, state[x]) for x in state.dtype.names), 'cmd_states', commit=True)
     db.commit()
