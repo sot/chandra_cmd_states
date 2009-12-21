@@ -14,6 +14,8 @@ Usage: update_cmd_states.py [options]::
     --loglevel=LOGLEVEL   Log level (10=debug, 20=info, 30=warnings)
 """
 import sys
+import os
+import time
 import logging
 
 import Chandra.cmd_states as cmd_states
@@ -47,8 +49,13 @@ def main():
                         format='%(message)s',
                         stream=sys.stdout)
 
+    logging.info('Running {0} at {1}'.format(os.path.basename(sys.argv[0]), time.ctime()))
     logging.debug('Connecting to db: dbi=%s server=%s' % (opt.dbi, opt.server))
-    db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, verbose=False)
+    try:
+        db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, verbose=False)
+    except Exception, msg:
+        logging.error('ERROR: failed to connect to {0}:{1} server: {2}'.format(opt.dbi, opt.server, msg))
+        sys.exit(0)
 
     # Get initial state containing the specified datestart
     logging.debug('Getting initial state0')
