@@ -43,6 +43,21 @@ cmds += generate_cmds('2008:295:03:25:00', cmd_set('manvr', 0.866838,0.243633,0.
 # NSM in 2004
 cmds += generate_cmds('2004:315:16:41:00', cmd_set('nsm'))
 
+
+# Add StopScience and VidBoard power down at approximate time of
+# CAP_1134_AUG2609A_Load_Termination_and_ACIS_Safing
+cap_cmds = (dict(dur=1.025),
+            dict(cmd='ACISPKT',
+                 tlmsid='AA00000000',
+                 ),
+            dict(cmd='ACISPKT',
+                 tlmsid='WSVIDALLDN',
+                 ),
+            )  
+cmds += generate_cmds('2009:240:10:40:00.000', cap_cmds )
+
+
+
 # SCS107s
 dates = """
 2001:360:06:30:00
@@ -111,5 +126,6 @@ for date in dates.split('\n'):
         print date
         cmds += generate_cmds(date, cmd_set('scs107'))
         cmd_states.interrupt_loads(date, db, current_only=True)
+
 
 cmd_states.insert_cmds_db(cmds, None, db)
