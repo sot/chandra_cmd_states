@@ -57,6 +57,27 @@ cap_cmds = (dict(dur=1.025),
 cmds += generate_cmds('2009:240:10:40:00.000', cap_cmds )
 
 
+# ACIS Reboot; Contrived Power commands to match telemetry
+cmds += generate_cmds('2010:025:09:11:00.000', ( dict(cmd='ACISPKT', tlmsid='WSPOW00306'),
+                                                 dict(cmd='ACISPKT', tlmsid='AA00000000')
+                                                 ))
+cmds += generate_cmds('2010:025:09:11:01.025', ( dict(cmd='ACISPKT', tlmsid='WSVIDALLDN'), 
+                                                 ))
+
+cmds += generate_cmds('2010:025:14:00:00.000', ( dict(cmd='ACISPKT', tlmsid='WSPOW0EC3E'),
+                                                 dict(cmd='ACISPKT', tlmsid='AA00000000')
+                                                 ))
+cmds += generate_cmds('2010:025:14:00:01.025', ( dict(cmd='ACISPKT', tlmsid='XTZ0000005'), 
+                                                 ))
+
+cmds += generate_cmds('2010:026:00:30:00.000', ( dict(cmd='ACISPKT', tlmsid='WSPOW01f1f'),
+                                                 ))
+
+cmds += generate_cmds('2010:026:01:36:41.000', ( dict(cmd='ACISPKT', tlmsid='WSPOW00707'), 
+                                                 ))
+
+
+
 
 # SCS107s
 dates = """
