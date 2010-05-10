@@ -76,6 +76,10 @@ cmds += generate_cmds('2010:026:00:30:00.000', ( dict(cmd='ACISPKT', tlmsid='WSP
 cmds += generate_cmds('2010:026:01:36:41.000', ( dict(cmd='ACISPKT', tlmsid='WSPOW00707'), 
                                                  ))
 
+# Day 97 CAP made a strange state at 80W that looks like a fep=3,vid_board=on,clocking=off
+cmds += generate_cmds('2010:097:11:45:00.000', ( dict(cmd='ACISPKT', tlmsid='WSPOW00707'),
+                                                 dict(cmd='ACISPKT', tlmsid='AA00000000')
+                                                 ))
 
 
 
