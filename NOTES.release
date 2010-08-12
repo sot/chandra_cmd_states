@@ -1,0 +1,32 @@
+0.02
+====
+- Add HETG and LETG state information (valid after 2008:007)
+- Add a front-end get_cmd_states.py to access the database more easily.
+
+Update to Chandra commanded states database
+-------------------------------------------
+Version 0.02 of the Chandra commanded states database is now available.  The 
+two key changes are:
+
+- Added HETG and LETG state information (valid after 2008:007)
+- Added a front-end tool to access the database more easily
+
+This database provides the commanded state of Chandra from 2002 through to the
+end of all approved command loads that are ingested to the OFLS database.  The
+database thus contains both the definitive state and a predictive state at any
+time.
+
+A commanded state is an interval of time over which certain parameters of
+interest (obsid, SIM-Z position, commanded attitude, ACIS power configuration,
+grating state, etc) are invariant.  This database is useful for two reasons: 
+
+1. It goes out into the future to the extent of approved load products.
+2. It is extremely fast and the commanded states for the entire mission can be 
+   retrieved in 15 seconds.
+3. It takes care of tracking which commands actually ran on the spacecraft.
+4. It provides a path from each command back to the mission planning products
+   responsible for that command.
+
+Note: only a select set of commands that affect the commanded state are
+tracked.
+

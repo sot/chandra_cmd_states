@@ -13,6 +13,8 @@ CREATE TABLE cmd_states (
      ccd_count     int         not null,
      simpos        int         not null,
      simfa_pos     int         not null,
+     hetg          varchar(4)  null,
+     letg          varchar(4)  null,
      pitch         float       not null,
      ra            float       not null,
      dec           float       not null,

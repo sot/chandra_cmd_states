@@ -1,0 +1,93 @@
+* Backup
+cd /proj/sot/ska/data/sybase_backup
+dump_cmd_tables.sh
+
+* Stop update cmd states
+cd $ska/data/cmd_states/
+touch task_sched_heart_attack
+
+* Run baseline psmc_check
+$ska/bin/psmc_check --outdir=origtable --oflsdir=/data/mpcrit1/mplogs/2010/AUG1610/oflsa --run_start_time=2010:224:16:00:00
+
+* Add hetg and letg cols
+alter table cmd_states
+  add hetg varchar(4)
+  default "RETR"
+  not null ;
+
+alter table cmd_states
+  add letg varchar(4)
+  default "RETR"
+  not null ;
+
+* Check psmc
+$ska/bin/psmc_check --outdir=newtable --oflsdir=/data/mpcrit1/mplogs/2010/AUG1610/oflsa --run_start_time=2010:224:16:00:00
+diff {orig,new}table/temperatures.dat
+diff {orig,new}table/index.rst
+
+==> OK
+
+* Get a timeline ID for starting:
+
+[23] .aca.1> select id, dir, datestart from timelines where datestart like "2008:0%";
+ id          dir                                      datestart                                 
+ ----------- ---------------------------------------- ------------------------------------------
+   315559046 /2007/DEC2407/oflsb/                     2008:001:07:16:21.093                     
+   315694865 /2007/DEC2407/oflsb/                     2008:002:21:00:00.000                     
+   315804841 /2007/DEC2407/oflsb/                     2008:004:03:32:56.244                     
+   315930366 /2007/DEC2407/oflsb/                     2008:005:14:25:01.285                     
+   316044490 /2008/JAN0708/oflsa/                     2008:006:22:07:05.338                     
+   316190209 /2008/JAN0708/oflsa/                     2008:008:14:35:44.078                     
+   316350065 /2008/JAN0708/oflsa/                     2008:010:11:00:00.000                     
+
+
+==> Use 316044490 and 2008:006:22:07:05.338
+
+
+[24] .aca.1> select * from cmds where timeline_id=316044490;
+ id          timeline_id date                                       time                 cmd                      tlmsid               msid             vcdu        step        scs        
+ ----------- ----------- ------------------------------------------ -------------------- ------------------------ -------------------- ---------------- ----------- ----------- -----------
+      112608   316044490 2008:006:22:10:05.338                          316044670.522000 COMMAND_SW               AONMMODE             AONMMODE            14701227           8         128
+      112609   316044490 2008:006:22:10:05.338                          316044670.522000 SIMTRANS                 NULL                 NULL                14701227           9         128
+      112610   316044490 2008:006:22:10:05.595                          316044670.779000 COMMAND_SW               AONM2NPE             AONM2NPE            14701228          14         128
+      112611   316044490 2008:006:22:10:09.695                          316044674.879000 MP_TARGQUAT              AOUPTARQ             NULL                14701244          16         128
+      112612   316044490 2008:006:22:10:15.589                          316044680.773000 COMMAND_SW               AOMANUVR             AOMANUVR            14701267          76         128
+      112613   316044490 2008:006:22:13:05.338                          316044850.522000 MP_OBSID                 COAOSQID             NULL                14701929          85         128
+      112614   316044490 2008:006:22:14:05.709                          316044910.893000 SIMFOCUS                 NULL                 NULL                14702165         143         128
+ 
+* Delete existing cmds and cmd_states
+
+delete from cmd_fltpars where timeline_id >= 316044490;
+delete from cmd_intpars where timeline_id >= 316044490;
+delete from cmds where timeline_id >= 316044490;
+delete from cmd_states where datestop >= "2008:006:22:07:05.338";
+
+delete from cmd_fltpars where timeline_id >= 396510326;
+delete from cmd_intpars where timeline_id >= 396510326;
+delete from cmds where timeline_id >= 396510326;
+delete from cmd_states where datestop >= "2010:207:05:44:19.965";
+
+* Repopulate
+
+- Get in skadev environment and cmd_states dev directory
+
+./update_cmd_states.py --datestart 2008:002:00:00:00 --loglevel 10 --server=sybase --dbi=sybase | & tee update.log
+
+* Verify against telemetry
+
+$ska/bin/psmc_check --outdir psmc_2010_val --run_start_time=2010:220 --days=220
+
+==> OK
+
+* Check psmc again
+
+$ska/bin/psmc_check --outdir=postposttable --oflsdir=/data/mpcrit1/mplogs/2010/AUG1610/oflsa --run_start_time=2010:224:16:00:00
+diff {orig,postpost}table/temperatures.dat
+
+==> OK
+
+* Install new versions to Ska
+
+
+
+* Restart update_cmd_states

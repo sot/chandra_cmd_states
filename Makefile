@@ -1,14 +1,15 @@
 # Set the task name
 TASK = cmd_states
-VERSI0N = 0.01
+VERSI0N = 0.02
 
 # Uncomment the correct choice indicating either SKA or TST flight environment
 FLIGHT_ENV = SKA
 
 SHARE = add_nonload_cmds.py  fix_pitch_simz.py   make_cmd_tables.py  nonload_cmds_archive.py  \
-	update_cmd_states.py  interrupt_loads.py  make_new_tl_ls.py
+	update_cmd_states.py  interrupt_loads.py  make_new_tl_ls.py get_cmd_states.py
 DATA = *_def.sql task_schedule.cfg
 DOC = docs/_build/html/
+BIN = get_cmd_states
 
 include /proj/sot/ska/include/Makefile.FLIGHT
 
@@ -34,7 +35,9 @@ install:
 	mkdir -p $(INSTALL_DATA)
 	mkdir -p $(INSTALL_SHARE)
 	mkdir -p $(INSTALL_DOC)
+	mkdir -p $(INSTALL_BIN)
 
+	rsync --times --cvs-exclude $(BIN) $(INSTALL_BIN)/
 	rsync --times --cvs-exclude $(DATA) $(INSTALL_DATA)/
 	rsync --times --cvs-exclude $(SHARE) $(INSTALL_SHARE)/
 	rsync --archive --times --cvs-exclude $(DOC) $(INSTALL_DOC)/

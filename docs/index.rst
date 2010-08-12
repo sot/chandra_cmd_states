@@ -14,11 +14,25 @@ state and a predictive state at any time.
 
 A commanded state is an interval of time over which certain parameters of
 interest (obsid, SIM-Z position, commanded attitude, ACIS power configuration,
-etc) are invariant.  This database is useful for two reasons: 1) it goes out
-into the future to the extent of approved load products; 2) it is extremely fast
-and the commanded states for the entire mission can be retrieved in 15 seconds.
+etc) are invariant.  This database is useful for two reasons: 
 
-Most database access and manipulation is done via the Chandra.cmd_states_ module.
+1. It goes out into the future to the extent of approved load products
+2. It is extremely fast and the commanded states for the entire mission can be 
+   retrieved in 15 seconds.
+3. It takes care of the difficult task of tracking which command loads and
+   mission planning products actually ran on the spacecraft.
+4. It provides a path from each command back to the mission planning products
+   responsible for that command.
+
+Note: only a select set of commands that affect the commanded state are
+tracked.
+
+Database access
+---------------
+A convenient front end to access the commanded states database is available
+via the `get_cmd_states <get_cmd_states.html>`_ tool.
+
+Low-level database access and manipulation is done via the Chandra.cmd_states_ module.
 
 .. _Chandra.cmd_states: ../pydocs/Chandra.cmd_states.html
 
@@ -41,6 +55,8 @@ Name           Type        Size
  ccd_count     int           4
  simpos        int           4
  simfa_pos     int           4
+ hetg          varchar       4
+ letg          varchar       4
  pitch         float         8
  ra            float         8
  dec           float         8
@@ -96,6 +112,7 @@ Tools
    :maxdepth: 2
 
    add_nonload_cmds
+   get_cmd_states
    fix_pitch_simz
    interrupt_loads
    make_cmd_tables
