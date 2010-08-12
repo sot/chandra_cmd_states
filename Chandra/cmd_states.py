@@ -24,6 +24,8 @@ STATE0 = {'ccd_count': 5,
           'datestop': '2099:001:00:00:00.000',
           'dec': -11.500,
           'fep_count': 0,
+          'hetg': 'RETR', 
+          'letg': 'RETR', 
           'obsid': 61358,
           'pcad_mode': 'NPNT',
           'pitch': 61.37,
@@ -123,6 +125,8 @@ def get_states(state0, cmds, exclude=None):
      ccd_count     int           4
      simpos        int           4
      simfa_pos     int           4
+     letg          varchar       4
+     hetg          varchar       4
      pitch         float         8
      ra            float         8
      dec           float         8
@@ -218,6 +222,22 @@ def get_states(state0, cmds, exclude=None):
         # Transition to NPM
         elif cmd_type == 'COMMAND_SW' and tlmsid == 'AONPMODE':
             add_trans(pcad_mode='NPNT')
+
+        # Transition to HETG inserted
+        elif cmd_type == 'COMMAND_SW' and tlmsid == '4OHETGIN':
+            add_trans(hetg='INSR')
+
+        # Transition to HETG retracted
+        elif cmd_type == 'COMMAND_SW' and tlmsid == '4OHETGRE':
+            add_trans(hetg='RETR')
+
+        # Transition to LETG inserted
+        elif cmd_type == 'COMMAND_SW' and tlmsid == '4OLETGIN':
+            add_trans(letg='INSR')
+
+        # Transition to LETG retracted
+        elif cmd_type == 'COMMAND_SW' and tlmsid == '4OLETGRE':
+            add_trans(letg='RETR')
 
         # Start a maneuver to targ_att or else to normal sun pointed attitude
         # via normal sun mode
@@ -323,6 +343,7 @@ def update_states_db(states, db):
     logging.info('udpate_states_db: inserting states[%d:%d] to cmd_states' %
                   (i_diff, len(states)))
     for state in states[i_diff:]:
+        # Need commit=True for sybase -- very large inserts will fail
         db.insert(dict((x, state[x]) for x in state.dtype.names), 'cmd_states', commit=True)
     db.commit()
 
@@ -435,7 +456,8 @@ def get_cmds(datestart='1998:001:00:00:00.000',
  
     # Values of cmd or tlmsid for commands that are retained
     cmd_types = set(('MP_OBSID', 'SIMTRANS', 'SIMFOCUS', 'ACISPKT', 'MP_TARGQUAT'))
-    tlmsids = set(('AONM2NPE', 'AONM2NPD', 'AONMMODE', 'AONPMODE', 'AOMANUVR', 'AONSMSAF'))
+    tlmsids = set(('AONM2NPE', 'AONM2NPD', 'AONMMODE', 'AONPMODE', 'AOMANUVR', 'AONSMSAF',
+                   '4OHETGRE', '4OLETGRE', '4OHETGIN', '4OLETGIN'))
 
     for tl in timeline_loads:
         tl_cmds = db.fetchall("SELECT * from cmds WHERE timeline_id = %d" % tl.id)
