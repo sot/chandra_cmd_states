@@ -14,7 +14,7 @@ state and a predictive state at any time.
 
 A commanded state is an interval of time over which certain parameters of
 interest (obsid, SIM-Z position, commanded attitude, ACIS power configuration,
-etc) are invariant.  This database is useful for two reasons: 
+etc) are invariant.  This database is useful for several reasons: 
 
 1. It goes out into the future to the extent of approved load products
 2. It is extremely fast and the commanded states for the entire mission can be 

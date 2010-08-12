@@ -88,6 +88,6 @@ diff {orig,postpost}table/temperatures.dat
 
 * Install new versions to Ska
 
-
+==> OK
 
 * Restart update_cmd_states
