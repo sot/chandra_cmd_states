@@ -35,7 +35,7 @@ def get_options():
                       help="Starting date for update (default=Now-10 days)")
     parser.add_option("--loglevel",
                       type='int',
-                      default=20,
+                      default=10,
                       help='Log level (10=debug, 20=info, 30=warnings)')
     
     (opt, args) = parser.parse_args()
