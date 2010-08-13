@@ -291,6 +291,36 @@ def get_states(state0, cmds, exclude=None):
 
     return np.rec.fromrecords(staterecs, names=statecols)
 
+def log_mismatch(mismatches, db_states, states, i_diff):
+    """Log the states and state differences leading to a diff between the
+    database cmd_states and the proposed states from commanding / products
+    """
+    mismatches = sorted(mismatches)
+    logging.debug('update_states_db: mismatch between existing DB cmd_states'
+                  ' and new cmd_states for {0}'.format(mismatches))
+    logging.debug('  DB datestart: {0}   New datestart: {1}'.format(
+        db_states[i_diff]['datestart'], states[i_diff]['datestart']))
+    for mismatch in mismatches:
+        if mismatch == 'attitude':
+            logging.debug('  DB  ra: {0:9.5f} dec: {1:9.5f}'.format(db_states[i_diff]['ra'],
+                                                                    db_states[i_diff]['dec']))
+            logging.debug('  New ra: {0:9.5f} dec: {1:9.5f}'.format(states[i_diff]['ra'],
+                                                                    states[i_diff]['dec']))
+        else:
+            logging.debug('  DB  {0}: {1}'.format(mismatch, db_states[i_diff][mismatch]))
+            logging.debug('  New {0}: {1}'.format(mismatch, states[i_diff][mismatch]))
+    i0 = max(i_diff - 4, 0)
+    i1 = min(i_diff + 4, len(db_states))
+    logging.debug('** Existing DB states')
+    logging.debug(Ska.Numpy.pformat(db_states[i0:i1]))
+    i1 = min(i_diff + 4, len(states))
+
+    colnames = db_states.dtype.names
+    states = np.rec.fromarrays([states[x][i0:i1] for x in colnames], names=colnames)
+
+    logging.debug('** New states')
+    logging.debug(Ska.Numpy.pformat(states))
+
 def update_states_db(states, db):
     """Make the ``db`` database cmd_states table consistent with the supplied
     ``states``.  Match ``states`` to corresponding values in cmd_states
@@ -315,9 +345,13 @@ def update_states_db(states, db):
 
         # Find mismatches: direct compare or where pitch or attitude differs by > 1 arcsec
         for i_diff, db_state, state in izip(count(), db_states, states):
-            if (any(db_state[x] != state[x] for x in match_cols) or
-                abs(db_state.pitch - state.pitch) > 0.0003 or
-                Ska.Sun.sph_dist(db_state.ra, db_state.dec, state.ra, state.dec) > 0.0003):
+            mismatches = set(x for x in match_cols if db_state[x] != state[x])
+            if abs(db_state.pitch - state.pitch) > 0.0003:
+                mismatches.add('pitch')
+            if Ska.Sun.sph_dist(db_state.ra, db_state.dec, state.ra, state.dec) > 0.0003:
+                mismatches.add('attitude')
+            if mismatches:
+                log_mismatch(mismatches, db_states, states, i_diff)
                 break
         else:
             if len(states) == len(db_states):
