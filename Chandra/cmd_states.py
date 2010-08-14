@@ -15,6 +15,7 @@ from Chandra.Time import DateTime
 import Chandra.Maneuver
 from Quaternion import Quat
 import Ska.ParseCM
+import Ska.Numpy
 
 # Canonical state0 giving spacecraft state at beginning of timelines 2002:007:13
 # fetch --start 2002:007:13:00:00 --stop 2002:007:13:02:00 aoattqt1 aoattqt2 aoattqt3 aoattqt4 cobsrqid aopcadmd tscpos
