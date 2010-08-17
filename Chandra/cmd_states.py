@@ -16,6 +16,7 @@ import Chandra.Maneuver
 from Quaternion import Quat
 import Ska.ParseCM
 import Ska.Numpy
+import pprint
 
 # Canonical state0 giving spacecraft state at beginning of timelines 2002:007:13
 # fetch --start 2002:007:13:00:00 --stop 2002:007:13:02:00 aoattqt1 aoattqt2 aoattqt3 aoattqt4 cobsrqid aopcadmd tscpos
@@ -250,6 +251,9 @@ def get_states(state0, cmds, exclude=None):
 
             # add pitch/attitude commands
             atts = Chandra.Maneuver.attitudes(curr_att, targ_att, tstart=cmd['time'])
+            logging.debug('Maneuver at {0} {1}\nfrom {2}\nto {3}'.format(
+                DateTime(cmd['time']).date, cmd['time'], curr_att, targ_att))
+            logging.debug(Ska.Numpy.pformat(atts))
             pitches = np.hstack([(atts[:-1].pitch + atts[1:].pitch)/2, atts[-1].pitch])
             for att, pitch in zip(atts, pitches):
                 q_att = Quat([att[x] for x in ('q1', 'q2', 'q3', 'q4')])
@@ -257,6 +261,10 @@ def get_states(state0, cmds, exclude=None):
                           pitch=pitch,
                           q1=att.q1, q2=att.q2, q3=att.q3, q4=att.q4,
                           ra=q_att.ra, dec=q_att.dec, roll=q_att.roll)
+                logging.debug(pprint.pformat(dict(date=DateTime(att.time).date,
+                          pitch=pitch,
+                          q1=att.q1, q2=att.q2, q3=att.q3, q4=att.q4,
+                          ra=q_att.ra, dec=q_att.dec, roll=q_att.roll)))
 
             # If auto-transition to NPM after manvr is enabled (this is
             # normally the case) then back to NPNT at end of maneuver
