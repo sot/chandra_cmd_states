@@ -30,6 +30,10 @@ def get_options():
     parser.add_option("--vals",
                       help="Comma-separated list of state values.  "
                       "Possible values are:\n" + STATE_VALS,)
+    parser.add_option("--allow-identical",
+                      default=False,
+                      action='store_true',
+                      help="Allow identical states from cmd_states table (default=False)")
     parser.add_option("--outfile",
                       help="Output file (default=stdout)")
     parser.add_option("--dbi",
@@ -71,7 +75,8 @@ def main():
                                (start.date, stop.date))
 
     if opt.vals:
-        db_states = Chandra.cmd_states.reduce_states(db_states, state_vals)
+        db_states = Chandra.cmd_states.reduce_states(db_states, state_vals,
+                                                     allow_identical=opt.allow_identical)
         drop_fields = set(allowed_state_vals) - set(state_vals)
         db_states = recfunctions.rec_drop_fields(db_states, drop_fields)
 
