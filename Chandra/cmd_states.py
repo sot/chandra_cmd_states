@@ -776,12 +776,13 @@ def interrupt_loads(datestop, db, current_only=False):
     update = "UPDATE timelines SET datestop='%s' WHERE datestop > '%s'" % (datestop, datestop)
     db.execute(update + select_datestart)
 
-def reduce_states(states, cols):
+def reduce_states(states, cols, allow_identical=True):
     """
     Reduce the input ``states`` so that only transitions in the ``cols`` columns are noticed.
     
     :param states: numpy recarray of states
     :param cols: notice transitions in this list of columns
+    :param allow_identical: allow null transitions between apparently identical states
     :returns: numpy recarray of reduced states
     """
     cols = set(cols)
@@ -793,6 +794,17 @@ def reduce_states(states, cols):
     # Generate the transition markers
     transitions = np.array([trans_in_cols(state) for state in states])
     transitions[0] = True
+
+    if not allow_identical:
+        i_transitions = np.flatnonzero(transitions)
+        no_trans = []
+        for i in i_transitions[1:]:  # Skip the first one which is index=0
+            state0 = states[i-1]
+            state1 = states[i]
+            trans_keys = state1['trans_keys'].split(',')
+            if all(state0[key] == state1[key] for key in trans_keys):
+                no_trans.append(i)
+        transitions[no_trans] = False
 
     newstates = states[transitions].copy()
     newstates.datestop[:-1] = newstates.datestart[1:]
