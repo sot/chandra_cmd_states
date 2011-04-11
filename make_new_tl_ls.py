@@ -20,7 +20,7 @@ def get_options():
 def main():
     opt, args = get_options()
 
-    syb = Ska.DBI.DBI(dbi='sybase', numpy=False, verbose=True)
+    syb = Ska.DBI.DBI(dbi='sybase', user='aca_read', database='aca', numpy=False, verbose=True)
     db = Ska.DBI.DBI(dbi='sqlite', server=opt.server, numpy=False, verbose=False)
 
     for drop in ('VIEW timeline_loads', 'TABLE timelines', 'TABLE load_segments'):

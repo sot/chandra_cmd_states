@@ -31,6 +31,10 @@ def get_options():
     parser.add_option("--server",
                       default='db_base.db3',
                       help="DBI server (<filename>|sybase)")
+    parser.add_option("--user",
+                      help="sybase user, will use Ska.DBI default by default")
+    parser.add_option("--database",
+                      help="sybase database, will use Ska.DBI default by default")
     parser.add_option("--datestart",
                       help="Starting date for update (default=Now-10 days)")
     parser.add_option("--loglevel",
@@ -52,7 +56,8 @@ def main():
     logging.info('Running {0} at {1}'.format(os.path.basename(sys.argv[0]), time.ctime()))
     logging.debug('Connecting to db: dbi=%s server=%s' % (opt.dbi, opt.server))
     try:
-        db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, verbose=False)
+        db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, user=opt.user,
+                         database=opt.database, verbose=False)
     except Exception, msg:
         logging.error('ERROR: failed to connect to {0}:{1} server: {2}'.format(opt.dbi, opt.server, msg))
         sys.exit(0)
