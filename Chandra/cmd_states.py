@@ -516,6 +516,8 @@ def get_cmds(datestart='1998:001:00:00:00.000',
             # Retain state-changing cmds within timeline for database
             bs_cmds = [x for x in bs_cmds if tl.datestart <= x['date'] <= tl.datestop
                        and (x['cmd'] in cmd_types or x['params'].get('TLMSID') in tlmsids)]
+            # Only store commands for this timelines's scs
+            bs_cmds = [x for x in bs_cmds if x['scs'] == tl['scs']]
             logging.info('get_cmds: got %d commands from %s' % (len(bs_cmds), bs_file))
             if update_db and bs_cmds:
                 insert_cmds_db(bs_cmds, tl.id, db)
