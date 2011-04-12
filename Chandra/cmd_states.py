@@ -462,7 +462,7 @@ def _tl_to_bs_cmds(tl_cmds, tl_id, db):
 
 def get_cmds(datestart='1998:001:00:00:00.000',
              datestop='2099:001:00:00:00.000',
-             db=None, update_db=None, timeline_loads=None):
+             db=None, update_db=None, timeline_loads=None, mp_dir='/data/mpcrit1/mplogs'):
     """Get all commands with ``datestart`` < date <= ``datestop`` using DBI
     object ``db``.  This includes both commands already in the database and new
     commands.  If ``update_db`` is True then update the database cmds table
@@ -510,7 +510,7 @@ def get_cmds(datestart='1998:001:00:00:00.000',
 
         # If not yet in DB then read from MP backstop file.  Put into DB if needed.
         if len(tl_cmds) == 0:
-            bs_file = Ska.File.get_globfiles(os.path.join('/data/mpcrit1/mplogs' + tl.mp_dir,
+            bs_file = Ska.File.get_globfiles(os.path.join(mp_dir + tl.mp_dir,
                                                           '*.backstop'))[0]
             bs_cmds = Ska.ParseCM.read_backstop(bs_file)
             # Retain state-changing cmds within timeline for database
