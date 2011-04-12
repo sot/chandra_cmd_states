@@ -744,39 +744,42 @@ def cmd_set(name, *args):
     cmd_sets = dict(manvr=manvr, scs107=scs107, nsm=nsm, obsid=obsid)
     return cmd_sets[name](*args)
 
-def interrupt_loads(datestop, db, current_only=False):
-    """Interrupt the all command loads (timelines and load_segments) with
+def interrupt_loads(datestop, db, observing_only=False, current_only=False):
+    """Interrupt the timelines  with
     db.datestop > ``datestop`` by updating the table datestop accordingly.
     Use DBI handle ``db`` to access tables.  If ``current_only`` is set
     then only update the load that actually contains ``datestop``.
 
     :param datestop: load stop date
     :param db: Ska.DBI.DBI object
+    :param observing_only: only interrupt 'observing' slots (131,132,133) 
     :param current_only: only stop the load containing datestop
     :returns: None
     """
     datestop = DateTime(datestop).date
 
-    select = "SELECT * FROM timelines WHERE datestop > '%s'" % datestop
+    select = "SELECT * FROM timeline_loads WHERE datestop > '%s'" % datestop
     select_datestart = " AND datestart <= '%s'" % datestop if current_only else ''
+    select_observing = " AND (scs = 131 or scs = 132 or scs = 133)" if observing_only else ''
 
-    logging.info('interrupt_loads: ' + select + select_datestart)
-    timelines = db.fetchall(select + select_datestart)
+    logging.info('interrupt_loads: ' + select + select_datestart + select_observing)
+    timelines = db.fetchall(select + select_datestart + select_observing)
     if len(timelines) == 0:
         logging.info('No timelines containing %s' % datestop)
         return
 
     logging.info('Updating %d timelines with datestop > %s' % (len(timelines), datestop))
     for tl in timelines:
-        logging.info("%s %s %s" % (tl['datestart'], tl['datestop'], tl['dir']))
+        logging.info("%s %s %s" % (tl['datestart'], tl['datestop'], tl['mp_dir']))
 
     # Get confirmation to update timeslines table in database
     logging.info('Revert with:')
     for tl in timelines:
         logging.info("UPDATE timelines SET datestop='%s' where id=%d ;" % (tl['datestop'], tl['id']))
 
-    update = "UPDATE timelines SET datestop='%s' WHERE datestop > '%s'" % (datestop, datestop)
-    db.execute(update + select_datestart)
+    for tl in timelines:
+        update = "UPDATE timelines SET datestop='%s' where id=%d" % (datestop, tl['id'])
+        db.execute(update)
 
 def reduce_states(states, cols, allow_identical=True):
     """
