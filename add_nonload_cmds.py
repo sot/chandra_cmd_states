@@ -15,7 +15,8 @@ Usage: add_nonload_cmds.py [options] [cmd_set_arg1 ...]::
    --cmd-set=CMD_SET     Command set name (obsid|manvr|scs107|nsm)
    --loglevel=LOGLEVEL   Log level (10=debug, 20=info, 30=warnings)
    --archive-file=FILE   Archive file for storing nonload cmd sets
-   --interrupt           Interrupt all timelines and load_segments after ``date``
+   --interrupt           Interrupt timelines and load_segments after ``date``
+   --interrupt_observing Interrupt only 'observing' timelines after ``date``
   
 Examples::
 
@@ -51,6 +52,9 @@ def get_options():
     parser.add_option("--interrupt",
                       action='store_true',
                       help='Interrupt all timelines and load_segments after date')
+    parser.add_option("--interrupt_observing",
+                      action='store_true',
+                      help='Interrupt observing timelines after date')
     parser.add_option("--loglevel",
                       type='int',
                       default=10,
@@ -132,7 +136,12 @@ def main():
     if opt.interrupt:
         if not opt.dry_run:
             cmd_states.interrupt_loads(date, db)
-        print >>f, "cmd_states.interrupt_loads('%s', db, current_only=True)" % date
+        print >>f, "cmd_states.interrupt_loads('%s', db)" % date
+
+    if opt.interrupt_observing:
+        if not opt.dry_run:
+            cmd_states.interrupt_loads(date, db, observing_only=True)
+        print >>f, "cmd_states.interrupt_loads('%s', db, observing_only=True)" % date
 
 
 if __name__ == '__main__':
