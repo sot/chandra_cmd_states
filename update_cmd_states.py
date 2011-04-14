@@ -9,6 +9,8 @@ Usage: update_cmd_states.py [options]::
     -h, --help            show this help message and exit
     --dbi=DBI             Database interface (sqlite|sybase)
     --server=SERVER       DBI server (<filename>|sybase)
+    --user=USER           database user (default=Ska.DBI default)
+    --database=DATABASE   database name (default=Ska.DBI default)
     --datestart=DATESTART
                           Starting date for update (default=Now-10 days)
     --mp_dir=DIR          MP directory. (default=/data/mpcrit1/mplogs)
@@ -33,9 +35,9 @@ def get_options():
                       default='db_base.db3',
                       help="DBI server (<filename>|sybase)")
     parser.add_option("--user",
-                      help="sybase user, will use Ska.DBI default by default")
+                      help="sybase user (default=Ska.DBI default)")
     parser.add_option("--database",
-                      help="sybase database, will use Ska.DBI default by default")
+                      help="sybase database (default=Ska.DBI default)")
     parser.add_option("--mp_dir",
                       default='/data/mpcrit1/mplogs',
                       help="MP load directory")
