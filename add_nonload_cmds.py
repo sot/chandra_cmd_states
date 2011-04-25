@@ -71,6 +71,8 @@ def get_options():
     parser.add_option("--server",
                       default='test.db3',
                       help="DBI server (<filename>|sybase)")
+    parser.add_option("--user")
+    parser.add_option("--database")
     parser.add_option("--archive-file",
                       default=os.path.join(os.environ['SKA'], 'share', 'states',
                                            'nonload_cmds_archive.py'),
@@ -98,7 +100,8 @@ def main():
                         stream=sys.stdout)
 
     logging.info('Connecting to db: dbi=%s server=%s' % (opt.dbi, opt.server))
-    db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, verbose=False)
+    db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server,
+                     user=opt.user, database=opt.database, verbose=False)
 
     # Print information about recent non-load commands
     nl_cmds = db.fetchall("SELECT * FROM cmds WHERE timeline_id IS NULL ORDER BY date DESC")
@@ -136,12 +139,12 @@ def main():
     if opt.interrupt:
         if not opt.dry_run:
             cmd_states.interrupt_loads(date, db)
-        print >>f, "cmd_states.interrupt_loads('%s', db)" % date
+        print >>f, "cmd_states.interrupt_loads('%s', db, current_only=True)" % date
 
     if opt.interrupt_observing:
         if not opt.dry_run:
             cmd_states.interrupt_loads(date, db, observing_only=True)
-        print >>f, "cmd_states.interrupt_loads('%s', db, observing_only=True)" % date
+        print >>f, "cmd_states.interrupt_loads('%s', db, observing_only=True, current_only=True)" % date
 
 
 if __name__ == '__main__':
