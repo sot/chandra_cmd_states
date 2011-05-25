@@ -52,7 +52,7 @@ def get_options():
     parser.add_option("--interrupt",
                       action='store_true',
                       help='Interrupt all timelines and load_segments after date')
-    parser.add_option("--interrupt_observing",
+    parser.add_option("--observing-only",
                       action='store_true',
                       help='Interrupt observing timelines after date')
     parser.add_option("--loglevel",
@@ -138,13 +138,9 @@ def main():
 
     if opt.interrupt:
         if not opt.dry_run:
-            cmd_states.interrupt_loads(date, db)
-        print >>f, "cmd_states.interrupt_loads('%s', db, current_only=True)" % date
-
-    if opt.interrupt_observing:
-        if not opt.dry_run:
-            cmd_states.interrupt_loads(date, db, observing_only=True)
-        print >>f, "cmd_states.interrupt_loads('%s', db, observing_only=True, current_only=True)" % date
+            cmd_states.interrupt_loads(date, db, observing_only=opt.observing_only)
+        print >>f, ("cmd_states.interrupt_loads('%s', db, observing_only=%s, current_only=True)" %
+                    (date, opt.observing_only))
 
 
 if __name__ == '__main__':
