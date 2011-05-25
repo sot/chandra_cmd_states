@@ -13,8 +13,6 @@ CREATE TABLE cmd_states (
      ccd_count     int         not null,
      simpos        int         not null,
      simfa_pos     int         not null,
-     hetg          varchar(4)  null,
-     letg          varchar(4)  null,
      pitch         float       not null,
      ra            float       not null,
      dec           float       not null,
@@ -24,6 +22,8 @@ CREATE TABLE cmd_states (
      q3            float       not null,
      q4            float       not null,
      trans_keys    varchar(60) not null,
+     hetg          varchar(4)  null,
+     letg          varchar(4)  null,
   CONSTRAINT pk_cmd_states_datestart PRIMARY KEY (datestart)
 )
 ;
