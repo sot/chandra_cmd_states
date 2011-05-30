@@ -87,17 +87,6 @@ cmds += generate_cmds('2010:097:11:45:00.000', ( dict(cmd='ACISPKT', tlmsid='WSP
                                                  ))
 
 
-# 2010:150 NSM commands 
-# date=2010:150:04:00:00.000 cmd_set=nsm args=
-cmds = generate_cmds('2010:150:04:00:00.000', cmd_set('nsm'))
-cmd_states.insert_cmds_db(cmds, None, db)
-cmd_states.interrupt_loads('2010:150:04:00:00.000', db, observing_only=None, current_only=True)
-
-# date=2010:150:04:00:00.000 cmd_set=scs107 args=
-cmds = generate_cmds('2010:150:04:00:00.000', cmd_set('scs107'))
-cmd_states.insert_cmds_db(cmds, None, db)
-cmd_states.interrupt_loads('2010:150:04:00:00.000', db, observing_only=None, current_only=True)
-
 
 
 # SCS107s
@@ -171,4 +160,16 @@ for date in dates.split('\n'):
 
 
 cmd_states.insert_cmds_db(cmds, None, db)
+
+# 2010:150 NSM commands 
+# date=2010:150:04:00:00.000 cmd_set=nsm args=
+cmds = generate_cmds('2010:150:04:00:00.000', cmd_set('nsm'))
+cmd_states.insert_cmds_db(cmds, None, db)
+cmd_states.interrupt_loads('2010:150:04:00:00.000', db, observing_only=None, current_only=True)
+
+# date=2010:150:04:00:00.000 cmd_set=scs107 args=
+cmds = generate_cmds('2010:150:04:00:00.000', cmd_set('scs107'))
+cmd_states.insert_cmds_db(cmds, None, db)
+cmd_states.interrupt_loads('2010:150:04:00:00.000', db, observing_only=None, current_only=True)
+
 
