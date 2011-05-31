@@ -44,7 +44,9 @@ STATE0 = {'ccd_count': 5,
           'trans_keys': 'undef',
           'tstart': 127020624.552,
           'tstop': 3187296066.184,
-          'vid_board': 0}
+          'vid_board': 0,
+          'dither': None}
+
 
 def decode_power(mnem):
     """ 
@@ -127,8 +129,6 @@ def get_states(state0, cmds, exclude=None):
      ccd_count     int           4
      simpos        int           4
      simfa_pos     int           4
-     letg          varchar       4
-     hetg          varchar       4
      pitch         float         8
      ra            float         8
      dec           float         8
@@ -138,6 +138,9 @@ def get_states(state0, cmds, exclude=None):
      q3            float         8
      q4            float         8
      trans_keys    varchar      60
+     letg          varchar       4
+     hetg          varchar       4
+     dither        varchar       4
     ============   =========   ====
     
     The input commands must be a list of dicts including keys ``date, vcdu,
@@ -240,6 +243,13 @@ def get_states(state0, cmds, exclude=None):
         # Transition to LETG retracted
         elif cmd_type == 'COMMAND_SW' and tlmsid == '4OLETGRE':
             add_trans(letg='RETR')
+
+        elif cmd_type =='COMMAND_SW' and tlmsid == 'AOENDITH':
+            add_trans(dither='ENAB')
+
+        elif cmd_type =='COMMAND_SW' and tlmsid == 'AODSDITH':
+            add_trans(dither='DISA')
+
 
         # Start a maneuver to targ_att or else to normal sun pointed attitude
         # via normal sun mode
@@ -500,7 +510,7 @@ def get_cmds(datestart='1998:001:00:00:00.000',
     # Values of cmd or tlmsid for commands that are retained
     cmd_types = set(('MP_OBSID', 'SIMTRANS', 'SIMFOCUS', 'ACISPKT', 'MP_TARGQUAT'))
     tlmsids = set(('AONM2NPE', 'AONM2NPD', 'AONMMODE', 'AONPMODE', 'AOMANUVR', 'AONSMSAF',
-                   '4OHETGRE', '4OLETGRE', '4OHETGIN', '4OLETGIN'))
+                   '4OHETGRE', '4OLETGRE', '4OHETGIN', '4OLETGIN', 'AOENDITH', 'AODSDITH'))
 
     for tl in timeline_loads:
         tl_cmds = db.fetchall("SELECT * from cmds WHERE timeline_id = %d" % tl.id)
@@ -760,7 +770,7 @@ def interrupt_loads(datestop, db, observing_only=False, current_only=False):
 
     select = "SELECT * FROM timeline_loads WHERE datestop > '%s'" % datestop
     select_datestart = " AND datestart <= '%s'" % datestop if current_only else ''
-    select_observing = " AND (scs = 131 or scs = 132 or scs = 133)" if observing_only else ''
+    select_observing = " AND scs > 130" if observing_only else ''
 
     logging.info('interrupt_loads: ' + select + select_datestart + select_observing)
     timelines = db.fetchall(select + select_datestart + select_observing)
