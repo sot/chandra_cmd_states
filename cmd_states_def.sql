@@ -24,6 +24,7 @@ CREATE TABLE cmd_states (
      trans_keys    varchar(60) not null,
      hetg          varchar(4)  null,
      letg          varchar(4)  null,
+     dither        varchar(4)  null,
   CONSTRAINT pk_cmd_states_datestart PRIMARY KEY (datestart)
 )
 ;
