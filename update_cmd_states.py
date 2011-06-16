@@ -60,7 +60,7 @@ def main():
                         stream=sys.stdout)
 
     logging.info('Running {0} at {1}'.format(os.path.basename(sys.argv[0]), time.ctime()))
-    logging.debug('Connecting to db: dbi=%s server=%s' % (opt.dbi, opt.server))
+    logging.debug('Connecting to db: dbi=%s server=%s user=%s database=%s' % (opt.dbi, opt.server, opt.user, opt.database))
     try:
         db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, user=opt.user,
                          database=opt.database, verbose=False)
