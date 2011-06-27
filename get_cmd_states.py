@@ -17,6 +17,7 @@ obsid power_cmd si_mode vid_board clocking fep_count ccd_count
 simpos simfa_pos hetg letg
 pcad_mode pitch ra dec roll q1 q2 q3 q4
 trans_keys
+dither
 """
 
 def get_options():
@@ -40,8 +41,13 @@ def get_options():
                       default='sybase',
                       help="Database interface (default=sybase)")
     parser.add_option("--server",
-                      default='sybase',
+                      default='',
                       help="DBI server (default=sybase)")
+    parser.add_option("--user",
+                      help="sybase database user (default=Ska.DBI default)")
+    parser.add_option("--database",
+                      help="sybase database (default=Ska.DBI default)")
+
 
     (opt, args) = parser.parse_args()
     return (opt, args)
@@ -61,7 +67,7 @@ def main():
             sys.exit(0)
 
     try:
-        db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, user='aca_read', verbose=False)
+        db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, user=opt.user, database=opt.database, verbose=False)
     except Exception, msg:
         print 'ERROR: failed to connect to {0}:{1} server: {2}'.format(opt.dbi, opt.server, msg)
         sys.exit(0)
