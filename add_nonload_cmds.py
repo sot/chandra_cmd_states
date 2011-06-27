@@ -74,8 +74,7 @@ def get_options():
     parser.add_option("--user")
     parser.add_option("--database")
     parser.add_option("--archive-file",
-                      default=os.path.join(os.environ['SKA'], 'share', 'cmd_states',
-                                           'nonload_cmds_archive.py'),
+                      default="nonload_cmds_archive.py",
                       help='Archive file for storing nonload cmd sets')
     (opt, args) = parser.parse_args()
     return (opt, args)
