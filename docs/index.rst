@@ -55,8 +55,6 @@ Name           Type        Size
  ccd_count     int           4
  simpos        int           4
  simfa_pos     int           4
- hetg          varchar       4
- letg          varchar       4
  pitch         float         8
  ra            float         8
  dec           float         8
@@ -66,6 +64,9 @@ Name           Type        Size
  q3            float         8
  q4            float         8
  trans_keys    varchar      60
+ hetg          varchar       4
+ letg          varchar       4
+ dither        varchar       4
 ============   =========   ====
 
 cmds

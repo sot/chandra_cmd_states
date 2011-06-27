@@ -17,11 +17,12 @@ Usage
     --vals=VALS        Comma-separated list of state values.  Possible values
                        are: obsid power_cmd si_mode vid_board clocking fep_count
                        ccd_count simpos simfa_pos hetg letg pcad_mode pitch ra
-                       dec roll q1 q2 q3 q4 trans_keys
+                       dec roll q1 q2 q3 q4 trans_keys dither
     --outfile=OUTFILE  Output file (default=stdout)
     --dbi=DBI          Database interface (default=sybase) 
     --server=SERVER    DBI server (default=sybase)
-
+    --user=USER        Ska.DBI default database user
+    --database=DB      Ska.DBI default database
 Examples
 --------
 ::
@@ -70,4 +71,5 @@ Name           Type
  q2            float      
  q3            float      
  q4            float      
+ dither        varchar
 ============   =========  
