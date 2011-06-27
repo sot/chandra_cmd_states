@@ -16,7 +16,7 @@ Usage: add_nonload_cmds.py [options] [cmd_set_arg1 ...]::
    --loglevel=LOGLEVEL   Log level (10=debug, 20=info, 30=warnings)
    --archive-file=FILE   Archive file for storing nonload cmd sets
    --interrupt           Interrupt timelines and load_segments after ``date``
-   --interrupt_observing Interrupt only 'observing' timelines after ``date``
+   --observing-only      Interrupt only 'observing' timelines when performing interrupt
   
 Examples::
 
