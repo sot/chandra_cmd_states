@@ -15,7 +15,9 @@ Usage: interrupt_loads.py [options]::
     --server=SERVER      DBI server (<filename>|sybase)
     --datestop=DATESTOP  Interrupt date
     --current-only       Only interrupt load segment current at datestop
+    --observing-only     Only interrupt 'observing' segments
     --loglevel=LOGLEVEL  Log level (10=debug, 20=info, 30=warnings)
+
   
 Example::
 
@@ -43,6 +45,9 @@ def get_options():
     parser.add_option("--current-only",
                       action="store_true",
                       help="Only interrupt load segment running at datestop")
+    parser.add_option("--observing-only",
+                      action="store_true",
+                      help="Only interrupt 'observing' timelines")
     parser.add_option("--loglevel",
                       type='int',
                       default=20,
@@ -62,7 +67,9 @@ def main():
     logging.info('Connecting to db: dbi=%s server=%s' % (opt.dbi, opt.server))
     db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server)
 
-    cmd_states.interrupt_loads(opt.datestop, db, opt.current_only)
+    cmd_states.interrupt_loads(opt.datestop, db,
+                               observing_only=opt.observing_only,
+                               current_only=opt.current_only)
 
 if __name__ == '__main__':
     main()
