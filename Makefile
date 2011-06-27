@@ -1,6 +1,6 @@
 # Set the task name
 TASK = cmd_states
-VERSI0N = 0.02
+VERSI0N = 0.03
 
 # Uncomment the correct choice indicating either SKA or TST flight environment
 FLIGHT_ENV = SKA
