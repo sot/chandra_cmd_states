@@ -44,7 +44,8 @@ def get_options():
                       default='',
                       help="DBI server (default=sybase)")
     parser.add_option("--user",
-                      help="sybase database user (default=Ska.DBI default)")
+                      default='aca_read',
+                      help="sybase database user (default='aca_read')")
     parser.add_option("--database",
                       help="sybase database (default=Ska.DBI default)")
 
