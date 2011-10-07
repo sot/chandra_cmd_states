@@ -1,6 +1,0 @@
-syntax: glob
-*.db3
-*.fits
-*.png
-t
-docs/_build
