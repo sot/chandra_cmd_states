@@ -1,0 +1,3 @@
+Check this in get_cmds().  the <= doesn't match < in docstring.
+    # Filter commands on date and sort by date
+    return sorted((x for x in cmds if datestart <= x['date'] <= datestop), key=lambda y: y['date'])
