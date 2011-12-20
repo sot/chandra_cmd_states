@@ -25,9 +25,9 @@ def get_options():
     parser = OptionParser()
     parser.set_defaults()
     parser.add_option("--start",
-                      help="Start date for update (default=stop-10 days)")
+                      help="Start date (default=Now-10 days)")
     parser.add_option("--stop",
-                      help="Stop date for update (default=Now)")
+                      help="Stop date (default=None)")
     parser.add_option("--vals",
                       help="Comma-separated list of state values.  "
                       "Possible values are:\n" + STATE_VALS,)
@@ -73,13 +73,12 @@ def main():
         print 'ERROR: failed to connect to {0}:{1} server: {2}'.format(opt.dbi, opt.server, msg)
         sys.exit(0)
 
-    stop = DateTime(opt.stop)
-    start = DateTime(opt.start) if opt.start else DateTime(stop.secs - 10 * 86400)
-
-    db_states = db.fetchall("""SELECT * from cmd_states
-                               WHERE datestop > '%s'
-                               AND datestart < '%s'""" % 
-                               (start.date, stop.date))
+    start = DateTime(opt.start) if opt.start else DateTime() - 10
+    db_states_q = """SELECT * from cmd_states
+                     WHERE datestop > '%s'""" % (start.date)
+    if opt.stop:
+        db_states_q += " AND datestart < '%s'" % DateTime(opt.stop).date
+    db_states = db.fetchall(db_states_q)
 
     if opt.vals:
         db_states = Chandra.cmd_states.reduce_states(db_states, state_vals,
