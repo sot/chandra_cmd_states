@@ -73,7 +73,7 @@ def main():
         print 'ERROR: failed to connect to {0}:{1} server: {2}'.format(opt.dbi, opt.server, msg)
         sys.exit(0)
 
-    start = DateTime(opt.start) if opt.start else DateTime(DateTime() - 10)
+    start = DateTime(opt.start) if opt.start else DateTime() - 10
     db_states_q = """SELECT * from cmd_states
                      WHERE datestop > '%s'""" % (start.date)
     if opt.stop:
