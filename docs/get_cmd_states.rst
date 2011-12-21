@@ -12,8 +12,8 @@ Usage
 
   Options:
     -h, --help         Show this help message and exit
-    --start=START      Start date for update (default=stop-10 days)
-    --stop=STOP        Stop date for update (default=Now)
+    --start=START      Start date (default=Now-10 days)
+    --stop=STOP        Stop date (default=None)
     --vals=VALS        Comma-separated list of state values.  Possible values
                        are: obsid power_cmd si_mode vid_board clocking fep_count
                        ccd_count simpos simfa_pos hetg letg pcad_mode pitch ra
@@ -33,10 +33,10 @@ Examples
   # Print help
   % get_cmd_states --help
 
-  # Get attitude info for the last 10 days
+  # Get attitude info for the last 10 days and into the available future
   % get_cmd_states --vals pcad_mode,ra,dec,roll
 
-  # Get grating config from 2010:001 to present and output to file gratings.dat
+  # Get grating config from 2010:001 and output to file gratings.dat
   % get_cmd_states --vals hetg,letg --start 2010:001 --outfile gratings.dat 
 
   # Get Obsid and ACIS config for 2010:001 to 2010:010
