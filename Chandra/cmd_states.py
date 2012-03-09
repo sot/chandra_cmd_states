@@ -658,6 +658,7 @@ def interpolate_states(states, times):
     indexes = np.searchsorted(states.tstop, times)
     return states[indexes]
 
+
 def generate_cmds(time, cmd_set):
     """
     Generate a set of commands based on the supplied ``cmd_set`` starting
@@ -731,6 +732,15 @@ def cmd_set(name, *args):
                      tlmsid='AOMANUVR',
                      msid='AOMANUVR'),
                 )
+
+    def acis(*args):
+        cmds = []
+        for tlmsid in args:
+            cmds.append(dict(cmd='ACISPKT',
+                             tlmsid=tlmsid,
+                             ))
+        return cmds
+
     def scs107():
         return (dict(dur=1.025),
                 dict(cmd='SIMTRANS',
@@ -751,7 +761,9 @@ def cmd_set(name, *args):
                      tlmsid='AONSMSAF'),
                 )
 
-    cmd_sets = dict(manvr=manvr, scs107=scs107, nsm=nsm, obsid=obsid)
+    
+
+    cmd_sets = dict(manvr=manvr, scs107=scs107, nsm=nsm, obsid=obsid, acis=acis)
     return cmd_sets[name](*args)
 
 def interrupt_loads(datestop, db, observing_only=False, current_only=False):
