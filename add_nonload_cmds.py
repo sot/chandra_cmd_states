@@ -29,7 +29,10 @@ Examples::
   # Add an autonomous NSM transition (which also runs SCS107)
   add_nonload_cmds.py --date '2009:001:12:13:14' --interrupt --cmd-set nsm  --dry-run
   add_nonload_cmds.py --date '2009:001:12:13:14' --interrupt --cmd-set scs107
-  
+
+  # Add ACIS CTI commanding
+  add_nonload_cmds.py --date '2012:072:20:53:42.00' --cmd-set aciscti 
+
 """
 import os
 import sys
