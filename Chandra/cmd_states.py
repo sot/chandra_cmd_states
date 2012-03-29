@@ -733,11 +733,7 @@ def cmd_set(name, *args):
                 )
 
     def acis(*args):
-        cmds = []
-        for tlmsid in args:
-            cmds.append(dict(cmd='ACISPKT',
-                             tlmsid=tlmsid,
-                             ))
+        cmds = [dict(cmd='ACISPKT', tlmsid=tlmsid) for tlmsid in args]
         return cmds
 
     def aciscti():
@@ -752,7 +748,6 @@ def cmd_set(name, *args):
                      dur=1.025),
                 dict(cmd='ACISPKT',
                      tlmsid='XTZ0000005'))
-                     
 
     def scs107():
         return (dict(dur=1.025),
