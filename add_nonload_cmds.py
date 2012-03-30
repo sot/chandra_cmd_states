@@ -31,7 +31,7 @@ Examples::
   add_nonload_cmds.py --date '2009:001:12:13:14' --interrupt --cmd-set scs107
 
   # Add ACIS CTI commanding
-  add_nonload_cmds.py --date '2012:072:20:53:42.00' --cmd-set aciscti 
+  add_nonload_cmds.py --date '2012:072:20:52:00.000' --cmd-set aciscti
 
 """
 import os
