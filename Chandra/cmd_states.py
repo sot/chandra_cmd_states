@@ -745,7 +745,7 @@ def cmd_set(name, *args):
                      dur=1.025),
                 dict(cmd='ACISPKT',
                      tlmsid='WT00216024',
-                     dur=1.025),
+                     dur=67),
                 dict(cmd='ACISPKT',
                      tlmsid='XTZ0000005'))
 
