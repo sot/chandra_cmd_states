@@ -731,6 +731,24 @@ def cmd_set(name, *args):
                      tlmsid='AOMANUVR',
                      msid='AOMANUVR'),
                 )
+
+    def acis(*args):
+        cmds = [dict(cmd='ACISPKT', tlmsid=tlmsid) for tlmsid in args]
+        return cmds
+
+    def aciscti():
+        return (dict(cmd='ACISPKT',
+                     tlmsid='WSVIDALLDN',
+                     dur=1.025),
+                dict(cmd='ACISPKT',
+                     tlmsid='WSPOW0CF3F',
+                     dur=1.025),
+                dict(cmd='ACISPKT',
+                     tlmsid='WT00216024',
+                     dur=67),
+                dict(cmd='ACISPKT',
+                     tlmsid='XTZ0000005'))
+
     def scs107():
         return (dict(dur=1.025),
                 dict(cmd='SIMTRANS',
@@ -751,7 +769,8 @@ def cmd_set(name, *args):
                      tlmsid='AONSMSAF'),
                 )
 
-    cmd_sets = dict(manvr=manvr, scs107=scs107, nsm=nsm, obsid=obsid)
+    cmd_sets = dict(manvr=manvr, scs107=scs107, nsm=nsm, obsid=obsid,
+                    acis=acis, aciscti=aciscti)
     return cmd_sets[name](*args)
 
 def interrupt_loads(datestop, db, observing_only=False, current_only=False):
