@@ -282,12 +282,7 @@ cmds = generate_cmds('2012:150:03:33:29.000', cmd_set('scs107'))
 cmd_states.insert_cmds_db(cmds, None, db)
 
 # Mocked up maneuver cmds to match telem after 2012:150 safe mode recovery
-cmds = generate_cmds('2012:151:11:53:44.790', cmd_set('manvr',0.0117805675,-0.0454063863,0.0089429328,0.9988591075))
-cmds += generate_cmds('2012:151:15:57:05.816', cmd_set('manvr',0.0137014808,-0.0575892627,0.0088828774,0.9982068539))
-cmds += generate_cmds('2012:151:16:40:49.816', cmd_set('manvr',0.0156099051,-0.0697708577,0.0088150660,0.9974019527))
-cmds += generate_cmds('2012:151:17:30:01.816', cmd_set('manvr',0.0177566204,-0.0834514424,0.0085323099,0.9963170886))
-cmds += generate_cmds('2012:151:18:52:01.816', cmd_set('manvr',0.0212918557,-0.1062716022,0.0082598068,0.9940748215))
-cmds += generate_cmds('2012:151:20:30:17.816', cmd_set('manvr',0.0229364838,-0.1168473735,0.0082453731,0.9928507805))
-cmds += generate_cmds('2012:152:01:42:09.816', cmd_set('manvr',0.4391227365,-0.7020152211,0.3264989555,0.4557897747))
+# The first maneuver corresponds to the quaternion update and not to an actual maneuver
+cmds = generate_cmds('2012:152:01:42:09.816', cmd_set('manvr',0.4391227365,-0.7020152211,0.3264989555,0.4557897747))
 cmds += generate_cmds('2012:152:02:39:29.816', cmd_set('manvr',0.5550038218,-0.8291832805,0.0464709997,0.0476069339))
 cmd_states.insert_cmds_db(cmds, None, db)
