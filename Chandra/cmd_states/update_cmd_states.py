@@ -9,6 +9,33 @@ import Ska.DBI
 
 from . import cmd_states
 
+CMD_STATES_DTYPE = [('datestart', '|S21'),
+                    ('datestop', '|S21'),
+                    ('tstart', '<f8'),
+                    ('tstop', '<f8'),
+                    ('obsid', '<i8'),
+                    ('power_cmd', '|S11'),
+                    ('si_mode', '|S8'),
+                    ('pcad_mode', '|S6'),
+                    ('vid_board', '<i8'),
+                    ('clocking', '<i8'),
+                    ('fep_count', '<i8'),
+                    ('ccd_count', '<i8'),
+                    ('simpos', '<i8'),
+                    ('simfa_pos', '<i8'),
+                    ('pitch', '<f8'),
+                    ('ra', '<f8'),
+                    ('dec', '<f8'),
+                    ('roll', '<f8'),
+                    ('q1', '<f8'),
+                    ('q2', '<f8'),
+                    ('q3', '<f8'),
+                    ('q4', '<f8'),
+                    ('trans_keys', '|S60'),
+                    ('hetg', '|S4'),
+                    ('letg', '|S4'),
+                    ('dither', '|S4')]
+
 
 def log_mismatch(mismatches, db_states, states, i_diff):
     """Log the states and state differences leading to a diff between the
@@ -128,8 +155,8 @@ def delete_cmd_states(datestart, db, h5):
         idxs = np.sort(idxs)
         order_ok = True
         if len(idxs) == 0:
-            raise ValueError('Expected to delete HDF5 cmd_states after {} '
-                             'but none matched'.format(datestart))
+            logging.error('ERROR: Expected to delete HDF5 cmd_states after {} '
+                          'but none matched'.format(datestart))
         if idxs[-1] != h5d.nrows - 1:
             order_ok = False
         if len(idxs) > 1:
@@ -139,13 +166,21 @@ def delete_cmd_states(datestart, db, h5):
         if not order_ok:
             # If there is an inconsistency stop right now and also don't
             # touch the database table.
-            raise ValueError('ERROR: HDF5 cmd_states table is not ordered '
-                             'by datestart after {}'.format(datestart))
+            h5.close()
+            logging.error('ERROR: HDF5 cmd_states table is not ordered '
+                          'by datestart after {}'.format(datestart))
 
-        logging.info('udpate_states_db: '
-                     'removed HDF5 cmd_states rows from {} to {}'
-                     .format(idxs[0], h5d.nrows - 1))
-        h5d.removeRows(idxs[0], h5d.nrows)
+        if idxs[0] > 0:
+            logging.info('udpate_states_db: '
+                         'removed HDF5 cmd_states rows from {} to {}'
+                         .format(idxs[0], h5d.nrows - 1))
+            h5d.removeRows(idxs[0], h5d.nrows)
+        else:
+            # Remove all rows from file.  HDF5 cannot support this so just
+            # set obsid to an illegal value and remove later.
+            h5d.cols.obsid[:] = -999
+            logging.warning('WARNING: Setting values to -999 to remove later')
+        h5d.flush()
 
     # Delete rows from database table
     cmd = ("DELETE FROM cmd_states WHERE datestart >= '{}'"
@@ -168,8 +203,8 @@ def insert_cmd_states(states, i_diff, db, h5):
         # Create new struct array from states which is in the column
         # order required to append to h5d.
         sdiff = states[i_diff:]
-        rows = np.empty(len(sdiff), dtype=h5d.dtype)
-        for name in sdiff.dtype.names:
+        rows = np.empty(len(sdiff), dtype=CMD_STATES_DTYPE)
+        for name in rows.dtype.names:
             rows[name][:] = sdiff[name]
         h5d.append(rows)
         h5d.flush()
@@ -194,13 +229,16 @@ def make_hdf5_cmd_states(db, h5):
     """
     # This takes a little while...
     logging.info('Reading cmd_states table from sybase, stand by ..')
-    rows = db.fetchall('select * from cmd_states')
-    if len(rows) == 0:
+    db_rows = db.fetchall('select * from cmd_states')
+    if len(db_rows) == 0:
         # Need some initial data in SQL version so just return
         logging.info('No values in SQL db so doing nothing')
         return
 
     logging.info('Creating HDF5 cmd_states table ..')
+    rows = np.empty(len(db_rows), dtype=CMD_STATES_DTYPE)
+    for name in rows.dtype.names:
+        rows[name][:] = db_rows[name]
     h5.createTable(h5.root, 'data', rows,
                    "Cmd_states", expectedrows=5e5)
     h5.flush()
@@ -282,7 +320,6 @@ def update_cmd_states():
         filters = tables.Filters(complevel=5, complib='zlib')
         h5 = tables.openFile(opt.h5file, mode='a', filters=filters)
     else:
-        print 'No h5 file'
         h5 = None
 
     # Get initial state containing the specified datestart
@@ -315,7 +352,7 @@ def update_cmd_states():
     logging.debug('Updating database cmd_states table')
     update_states_db(states, db, h5)
 
-    if h5 and not _check_consistency(db, h5):
+    if h5 and not check_consistency(db, h5):
         logging.error('ERROR: database and HDF5 commands '
                       'states are inconsistent')
 
@@ -325,11 +362,19 @@ def update_cmd_states():
         h5.close()
 
 
-def _check_consistency(db, h5):
+def check_consistency(db, h5):
     """Check that the cmd_states table in ``db`` has the same length and
     final datestart.
     """
     h5d = h5.root.data
+
+    if h5d[0]['obsid'] == -999:
+        idxs = h5d.getWhereList("obsid == -999")
+        logging.warning('WARNING: Removing previously unremoved rows {}:{}'
+                        .format(0, np.max(idxs) + 1))
+        h5d.removeRows(0, np.max(idxs) + 1)
+        h5d.flush()
+
     db_len = db.fetchone('select count(*) as cnt from cmd_states')['cnt']
     h5d_len = h5d.nrows
     db_last = db.fetchone('select datestart from cmd_states '
