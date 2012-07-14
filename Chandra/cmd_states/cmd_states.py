@@ -807,9 +807,9 @@ def reduce_states(states, cols, allow_identical=True):
         transitions[no_trans] = False
 
     newstates = states[transitions].copy()
-    newstates.datestop[:-1] = newstates.datestart[1:]
-    newstates.tstop[:-1] = newstates.tstart[1:]
-    newstates.datestop[-1] = states.datestop[-1]
-    newstates.tstop[-1] = states.tstop[-1]
+    newstates['datestop'][:-1] = newstates['datestart'][1:]
+    newstates['tstop'][:-1] = newstates['tstart'][1:]
+    newstates['datestop'][-1] = states['datestop'][-1]
+    newstates['tstop'][-1] = states['tstop'][-1]
 
     return newstates
