@@ -17,6 +17,9 @@ dither
 
 
 def get_cmd_states_cmd_line():
+    """Command line interface to get_states.
+    """
+
     descr = ('Get the Chandra commanded states over a range '
              'of time as a space-delimited ASCII table.')
     parser = argparse.ArgumentParser(description=descr)
@@ -61,10 +64,34 @@ def get_cmd_states_cmd_line():
 
 
 def get_states(start=None, stop=None, vals=None, allow_identical=False,
-                   dbi=None, server=None, user=None, database=None):
-    """Get the Chandra commanded states over a range of time as a
-    space-delimited ASCII table.  Used strictly as a command line function.
+                   dbi='sybase', server=None, user='aca_read', database='aca'):
+    """Get Chandra commanded states over a range of time as a structured array.
+
+    Examples::
+
+      # Get states from sybase
+      >>> states = get_states('2011:100', '2011:101', vals=['obsid', 'simpos'])
+      >>> states[['datestart', 'datestop', 'obsid', 'simpos']]
+      array([('2011:100:11:53:12.378', '2011:101:00:23:01.434', 13255, 75624),
+             ('2011:101:00:23:01.434', '2011:101:00:26:01.434', 13255, 91272),
+             ('2011:101:00:26:01.434', '2011:102:13:39:07.421', 12878, 91272)],
+            dtype=[('datestart', '|S21'), ('datestop', '|S21'), ('obsid', '<i8'), ('simpos', '<i8')])
+
+      # Get same states from HDF5 (25 times faster)
+      >>> states2 = get_states('2011:100', '2011:101', vals=['obsid', 'simpos'], dbi='hdf5')
+      >>> states2 == states
+      array([ True,  True,  True], dtype=bool)
+
+    :param start: start date (default=Now-10 days)
+    :param stop: stop date (default=None)
+    :param vals: list of state columns for output
+    :param allow_identical: Allow identical states from cmd_states table
+    :param dbi: database interface (default=sybase)
+    :param server: DBI server or HDF5 file (default=None)
+    :param user: sybase database user (default='aca_read')
+    :param database: sybase database (default=Ska.DBI default)
     """
+
     import Ska.Numpy
 
     allowed_state_vals = STATE_VALS.split()
@@ -88,7 +115,8 @@ def get_states(start=None, stop=None, vals=None, allow_identical=False,
         import numpy as np
 
         if server is None:
-            server = os.path.join(os.environ['SKA'], 'share', 'cmd_states.h5')
+            server = os.path.join(os.environ['SKA'], 'data', 'cmd_states',
+                                  'cmd_states.h5')
 
         if not os.path.exists(server):
             raise IOError('HDF5 cmd_states file {} not found'
@@ -98,14 +126,15 @@ def get_states(start=None, stop=None, vals=None, allow_identical=False,
 
         query = "(datestop > '{}')".format(start.date)
         if stop:
-            query += " & (datestart < '{})'".format(stop.date)
+            query += " & (datestart < '{}')".format(stop.date)
         idxs = h5d.getWhereList(query)
         idx0, idx1 = np.min(idxs), np.max(idxs)
         if idx1 - idx0 != len(idxs) - 1:
             raise ValueError('HDF5 table seems to have elements out of order')
         states = h5d[idx0:idx1 + 1]
         h5.close()
-    else:
+
+    elif dbi in ('sybase', 'sqlite'):
         import Ska.DBI
         try:
             db = Ska.DBI.DBI(dbi=dbi, server=server, user=user,
@@ -120,10 +149,14 @@ def get_states(start=None, stop=None, vals=None, allow_identical=False,
             query += " AND datestart < '{}'".format(stop.date)
         states = db.fetchall(query)
 
+    else:
+        raise ValueError("dbi argument '{}' must be one of 'hdf5', 'sybase', "
+                         "'sqlite'".format(dbi))
+
     states = reduce_states(states, state_vals,
                            allow_identical=allow_identical)
-    states = Ska.Numpy.structured_array(states,
-                                        colnames=['datestart', 'datestop',
-                                                  'tstart', 'tstop'] + state_vals)
+    states = Ska.Numpy.structured_array(
+        states, colnames=['datestart', 'datestop',
+                          'tstart', 'tstop'] + state_vals)
 
     return states
