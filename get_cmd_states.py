@@ -23,5 +23,5 @@ Options:
   --database=DATABASE  sybase database (default=Ska.DBI default)
 """
 
-from Chandra.cmd_states.get_cmd_states import get_cmd_states_cmd_line
-get_cmd_states_cmd_line()
+from Chandra.cmd_states.get_cmd_states import get_states_cli
+get_states_cli()

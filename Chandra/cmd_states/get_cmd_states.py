@@ -16,7 +16,7 @@ dither
 """
 
 
-def get_cmd_states_cmd_line():
+def get_states_cli(cli_args=None):
     """Command line interface to get_states.
     """
 
@@ -41,7 +41,6 @@ def get_cmd_states_cmd_line():
                         default='sybase',
                         help="Database interface (default=sybase)")
     parser.add_argument("--server",
-                        default='',
                         help="DBI server (default=sybase)")
     parser.add_argument("--user",
                         default='aca_read',
@@ -49,7 +48,7 @@ def get_cmd_states_cmd_line():
     parser.add_argument("--database",
                         help="sybase database (default=Ska.DBI default)")
 
-    args = parser.parse_args()
+    args = parser.parse_args(cli_args)
     kwargs = vars(args)
     outfile = kwargs['outfile']
     del kwargs['outfile']
@@ -63,6 +62,51 @@ def get_cmd_states_cmd_line():
     out.write(Ska.Numpy.pformat(states))
 
 
+def get_h5_states(start, stop, server):
+    import tables
+    import numpy as np
+
+    if server is None:
+        server = os.path.join(os.environ['SKA'], 'data', 'cmd_states',
+                              'cmd_states.h5')
+
+    if not os.path.exists(server):
+        raise IOError('HDF5 cmd_states file {} not found'
+                      .format(server))
+    h5 = tables.openFile(server, mode='r')
+    h5d = h5.root.data
+
+    query = "(datestop > '{}')".format(start.date)
+    if stop:
+        query += " & (datestart < '{}')".format(stop.date)
+    idxs = h5d.getWhereList(query)
+    idx0, idx1 = np.min(idxs), np.max(idxs)
+    if idx1 - idx0 != len(idxs) - 1:
+        raise ValueError('HDF5 table seems to have elements out of order')
+    states = h5d[idx0:idx1 + 1]
+    h5.close()
+
+    return states
+
+
+def get_sql_states(start, stop, dbi, server, user, database):
+    import Ska.DBI
+    try:
+        db = Ska.DBI.DBI(dbi=dbi, server=server, user=user,
+                         database=database, verbose=False)
+    except Exception, msg:
+        raise IOError('ERROR: failed to connect to {0}:{1} server: {2}'
+                      .format(dbi, server, msg))
+
+    query = ("SELECT * from cmd_states WHERE datestop > '{}'"
+             .format(start.date))
+    if stop:
+        query += " AND datestart < '{}'".format(stop.date)
+    states = db.fetchall(query)
+
+    return states
+
+
 def get_states(start=None, stop=None, vals=None, allow_identical=False,
                    dbi='sybase', server=None, user='aca_read', database='aca'):
     """Get Chandra commanded states over a range of time as a structured array.
@@ -70,6 +114,7 @@ def get_states(start=None, stop=None, vals=None, allow_identical=False,
     Examples::
 
       # Get states from sybase
+      >>> from Chandra.cmd_states import get_states
       >>> states = get_states('2011:100', '2011:101', vals=['obsid', 'simpos'])
       >>> states[['datestart', 'datestop', 'obsid', 'simpos']]
       array([('2011:100:11:53:12.378', '2011:101:00:23:01.434', 13255, 75624),
@@ -92,8 +137,6 @@ def get_states(start=None, stop=None, vals=None, allow_identical=False,
     :param database: sybase database (default=Ska.DBI default)
     """
 
-    import Ska.Numpy
-
     allowed_state_vals = STATE_VALS.split()
 
     if vals is None:
@@ -102,53 +145,17 @@ def get_states(start=None, stop=None, vals=None, allow_identical=False,
         state_vals = vals
         bad_state_vals = set(state_vals).difference(allowed_state_vals)
         if bad_state_vals:
-            raise ValueError('ERROR: requested --values {0} are not allowed '
-                             '(see get_cmd_states.py --help)'
+            raise ValueError('ERROR: requested --values {} are not allowed '
                              .format(','.join(sorted(bad_state_vals))))
 
-    start = DateTime(start) if start else DateTime() - 10
+    start = (DateTime(start) if start else DateTime() - 10)
     if stop:
         stop = DateTime(stop)
 
     if dbi == 'hdf5':
-        import tables
-        import numpy as np
-
-        if server is None:
-            server = os.path.join(os.environ['SKA'], 'data', 'cmd_states',
-                                  'cmd_states.h5')
-
-        if not os.path.exists(server):
-            raise IOError('HDF5 cmd_states file {} not found'
-                          .format(server))
-        h5 = tables.openFile(server, mode='r')
-        h5d = h5.root.data
-
-        query = "(datestop > '{}')".format(start.date)
-        if stop:
-            query += " & (datestart < '{}')".format(stop.date)
-        idxs = h5d.getWhereList(query)
-        idx0, idx1 = np.min(idxs), np.max(idxs)
-        if idx1 - idx0 != len(idxs) - 1:
-            raise ValueError('HDF5 table seems to have elements out of order')
-        states = h5d[idx0:idx1 + 1]
-        h5.close()
-
+        states = get_h5_states(start, stop, server)
     elif dbi in ('sybase', 'sqlite'):
-        import Ska.DBI
-        try:
-            db = Ska.DBI.DBI(dbi=dbi, server=server, user=user,
-                             database=database, verbose=False)
-        except Exception, msg:
-            raise IOError('ERROR: failed to connect to {0}:{1} server: {2}'
-                          .format(dbi, server, msg))
-
-        query = ("SELECT * from cmd_states WHERE datestop > '{}'"
-                 .format(start.date))
-        if stop:
-            query += " AND datestart < '{}'".format(stop.date)
-        states = db.fetchall(query)
-
+        states = get_sql_states(start, stop, dbi, server, user, database)
     else:
         raise ValueError("dbi argument '{}' must be one of 'hdf5', 'sybase', "
                          "'sqlite'".format(dbi))
