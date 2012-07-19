@@ -7,13 +7,31 @@ import Ska.Numpy
 
 from .cmd_states import reduce_states
 
-STATE_VALS = """\
-obsid power_cmd si_mode vid_board clocking fep_count ccd_count
-simpos simfa_pos hetg letg
-pcad_mode pitch ra dec roll q1 q2 q3 q4
-trans_keys
-dither
-"""
+STATE_VALS = """
+     obsid
+     power_cmd
+     si_mode
+     pcad_mode
+     vid_board
+     clocking
+     fep_count
+     ccd_count
+     simpos
+     simfa_pos
+     pitch
+     ra
+     dec
+     roll
+     q1
+     q2
+     q3
+     q4
+     trans_keys
+     hetg
+     letg
+     dither
+""".split()
+
 
 
 def get_states_cli(cli_args=None):
@@ -29,7 +47,7 @@ def get_states_cli(cli_args=None):
                         help="Stop date (default=None)")
     parser.add_argument("--vals",
                         help="Comma-separated list of state values.  "
-                             "Possible values are:\n" + STATE_VALS,)
+                             "Possible values are:\n" + " ".join(STATE_VALS))
     parser.add_argument("--allow-identical",
                         default=False,
                         action='store_true',
@@ -54,7 +72,12 @@ def get_states_cli(cli_args=None):
     del kwargs['outfile']
 
     if kwargs['vals'] is not None:
-        kwargs['vals'] = kwargs['vals'].split(',')
+        input_vals = kwargs['vals'].split(',')
+        ordered_vals = []
+        for state_val in STATE_VALS:
+            if state_val in input_vals:
+                ordered_vals.append(state_val)
+        kwargs['vals'] = ordered_vals
 
     states = get_states(**kwargs)
 
@@ -137,7 +160,7 @@ def get_states(start=None, stop=None, vals=None, allow_identical=False,
     :param database: sybase database (default=Ska.DBI default)
     """
 
-    allowed_state_vals = STATE_VALS.split()
+    allowed_state_vals = STATE_VALS
 
     if vals is None:
         state_vals = allowed_state_vals
