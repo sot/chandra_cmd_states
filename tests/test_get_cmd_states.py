@@ -44,11 +44,15 @@ def test_get_states_cli():
 def test_get_states():
     """Test Python function interface to getting commanded states.
     """
+    val_names = "obsid,simpos,pcad_mode,clocking,power_cmd".split(',')
     for dbi in ('sybase', 'hdf5'):
         states = get_states(start='2010:100', stop='2010:101', dbi=dbi,
-                            vals="obsid,simpos,pcad_mode,clocking,power_cmd".split(','))
+                            vals=val_names)
         for name in states.dtype.names:
             if states[name].dtype.kind == 'f':
                 assert np.allclose(states[name], VALS[name])
             else:
                 assert np.all(states[name] == VALS[name])
+
+        names = ["datestart", "datestop", "tstart", "tstop"]
+        assert names + val_names == list(states.dtype.names)
