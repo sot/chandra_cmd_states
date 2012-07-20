@@ -47,7 +47,7 @@ STATE0 = {'ccd_count': 5,
           'tstart': 127020624.552,
           'tstop': 3187296066.184,
           'vid_board': 0,
-          'dither': 'NULL'}
+          'dither': 'None'}
 
 
 def decode_power(mnem):
