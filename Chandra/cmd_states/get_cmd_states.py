@@ -33,59 +33,9 @@ STATE_VALS = """
 """.split()
 
 
-
-def get_states_cli(cli_args=None):
-    """Command line interface to get_states.
-    """
-
-    descr = ('Get the Chandra commanded states over a range '
-             'of time as a space-delimited ASCII table.')
-    parser = argparse.ArgumentParser(description=descr)
-    parser.add_argument("--start",
-                        help="Start date (default=Now-10 days)")
-    parser.add_argument("--stop",
-                        help="Stop date (default=None)")
-    parser.add_argument("--vals",
-                        help="Comma-separated list of state values.  "
-                             "Possible values are:\n" + " ".join(STATE_VALS))
-    parser.add_argument("--allow-identical",
-                        default=False,
-                        action='store_true',
-                        help="Allow identical states from cmd_states table "
-                        "(default=False)")
-    parser.add_argument("--outfile",
-                        help="Output file (default=stdout)")
-    parser.add_argument("--dbi",
-                        default='sybase',
-                        help="Database interface (default=sybase)")
-    parser.add_argument("--server",
-                        help="DBI server (default=sybase)")
-    parser.add_argument("--user",
-                        default='aca_read',
-                        help="sybase database user (default='aca_read')")
-    parser.add_argument("--database",
-                        help="sybase database (default=Ska.DBI default)")
-
-    args = parser.parse_args(cli_args)
-    kwargs = vars(args)
-    outfile = kwargs['outfile']
-    del kwargs['outfile']
-
-    if kwargs['vals'] is not None:
-        input_vals = kwargs['vals'].split(',')
-        ordered_vals = []
-        for state_val in STATE_VALS:
-            if state_val in input_vals:
-                ordered_vals.append(state_val)
-        kwargs['vals'] = ordered_vals
-
-    states = get_states(**kwargs)
-
-    out = open(outfile, 'w') if outfile else sys.stdout
-    out.write(Ska.Numpy.pformat(states))
-
-
 def get_h5_states(start, stop, server):
+    """Get states from HDF5 ``server`` file between ``start`` and ``stop``.
+    """
     import tables
     import numpy as np
 
@@ -113,6 +63,8 @@ def get_h5_states(start, stop, server):
 
 
 def get_sql_states(start, stop, dbi, server, user, database):
+    """Get states from SQL server between ``start`` and ``stop``.
+    """
     import Ska.DBI
     try:
         db = Ska.DBI.DBI(dbi=dbi, server=server, user=user,
@@ -190,3 +142,58 @@ def get_states(start=None, stop=None, vals=None, allow_identical=False,
                           'tstart', 'tstop'] + state_vals)
 
     return states
+
+
+def main(main_args=None):
+    """Command line interface to get_states.
+    """
+
+    descr = ('Get the Chandra commanded states over a range '
+             'of time as a space-delimited ASCII table.')
+    parser = argparse.ArgumentParser(description=descr)
+    parser.add_argument("--start",
+                        help="Start date (default=Now-10 days)")
+    parser.add_argument("--stop",
+                        help="Stop date (default=None)")
+    parser.add_argument("--vals",
+                        help="Comma-separated list of state values.  "
+                             "Possible values are:\n" + " ".join(STATE_VALS))
+    parser.add_argument("--allow-identical",
+                        default=False,
+                        action='store_true',
+                        help="Allow identical states from cmd_states table "
+                        "(default=False)")
+    parser.add_argument("--outfile",
+                        help="Output file (default=stdout)")
+    parser.add_argument("--dbi",
+                        default='sybase',
+                        help="Database interface (default=sybase)")
+    parser.add_argument("--server",
+                        help="DBI server (default=sybase)")
+    parser.add_argument("--user",
+                        default='aca_read',
+                        help="sybase database user (default='aca_read')")
+    parser.add_argument("--database",
+                        help="sybase database (default=Ska.DBI default)")
+
+    args = parser.parse_args(main_args)
+    kwargs = vars(args)
+    outfile = kwargs['outfile']
+    del kwargs['outfile']
+
+    if kwargs['vals'] is not None:
+        input_vals = kwargs['vals'].split(',')
+        ordered_vals = []
+        for state_val in STATE_VALS:
+            if state_val in input_vals:
+                ordered_vals.append(state_val)
+        kwargs['vals'] = ordered_vals
+
+    states = get_states(**kwargs)
+
+    out = open(outfile, 'w') if outfile else sys.stdout
+    out.write(Ska.Numpy.pformat(states))
+
+
+if __name__ == '__main__':
+    main()
