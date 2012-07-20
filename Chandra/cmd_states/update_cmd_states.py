@@ -2,6 +2,8 @@ import sys
 import os
 import logging
 import time
+from itertools import count, izip
+
 
 import numpy as np
 import tables
@@ -84,8 +86,6 @@ def update_states_db(states, db, h5):
 
     :rtype: None
     """
-    from itertools import count, izip
-
     # If the HDF5 version does not exist then try to make it now.
     if h5 and not hasattr(h5.root, 'data'):
         make_hdf5_cmd_states(db, h5)
@@ -135,6 +135,11 @@ def update_states_db(states, db, h5):
         i_diff = 0
 
     insert_cmd_states(states, i_diff, db, h5)
+
+    # Make sure that the last 3000 states in the SQL and HDF5 cmd states tables
+    # are consistent.  This is done only when an update is made.  In addition
+    # every time update_cmd_states is run the last 100 states are checked.
+    check_consistency(db, h5, 3000)
 
 
 def delete_cmd_states(datestart, db, h5):
@@ -245,7 +250,61 @@ def make_hdf5_cmd_states(db, h5):
     logging.info('HDF5 cmd_states table successfully created')
 
 
-def get_update_cmd_states_options():
+def check_consistency(db, h5, n_check=3000):
+    """Check that the cmd_states table in ``db`` has the same length and
+    final datestart.
+    """
+    h5d = h5.root.data
+
+    # Possibly remove an initial row as a cleanup from previous processing.
+    # This should only happen in testing.
+    if h5d[0]['obsid'] == -999:
+        idxs = h5d.getWhereList("obsid == -999")
+        logging.warning('WARNING: Removing previously unremoved rows {}:{}'
+                        .format(0, np.max(idxs) + 1))
+        h5d.removeRows(0, np.max(idxs) + 1)
+        h5d.flush()
+
+    # Check that lengths match
+    db_len = db.fetchone('select count(*) as cnt from cmd_states')['cnt']
+    h5d_len = h5d.nrows
+    if db_len != h5d_len:
+        logging.error('ERROR: database and HDF5 commands '
+                      'states have different length {} vs {}'
+                      .format(db_len, h5d_len))
+
+    # check that the last n_check rows are the same
+    db_rows = db.fetch('select * from cmd_states order by datestart desc')
+    h5_rows = h5d[-n_check:][::-1]
+    all_ok = True
+    for db_row, h5_row in izip(db_rows, h5_rows):
+        row_ok = True
+        for name in h5_row.dtype.names:
+            ok = (np.allclose(db_row[name], h5_row[name])
+                  if h5_row[name].dtype.kind == 'f' else
+                  db_row[name] == h5_row[name])
+            row_ok = row_ok and ok
+            if not ok:
+                print 'Bad column', name
+
+        if not row_ok:
+            # Since the rows are in reverse time order this will get set to
+            # the *first* mismatched row
+            print db_row
+            print h5_row
+            datestart_mismatch = db_row['datestart']
+            all_ok = False
+
+    if not all_ok:
+        logging.error('ERROR: database and HDF5 command states tables show'
+                      'mismatch starting at {}'.format(datestart_mismatch))
+
+    return
+
+
+def get_options():
+    """Get options for command line interface to update_cmd_states.
+    """
     from optparse import OptionParser
     parser = OptionParser()
     parser.set_defaults()
@@ -276,10 +335,10 @@ def get_update_cmd_states_options():
     return (opt, args)
 
 
-def update_cmd_states():
+def main():
     """
-    Update the cmd_states table to reflect current load segments / timelines
-    in database.  This function is run only via the command line.
+    Command line interface to update the cmd_states table to reflect current
+    load segments / timelines in database.
 
     Usage: update_cmd_states.py [options]::
 
@@ -295,7 +354,7 @@ def update_cmd_states():
         --mp_dir=DIR          MP directory. (default=/data/mpcrit1/mplogs)
         --loglevel=LOGLEVEL   Log level (10=debug, 20=info, 30=warnings)
     """
-    opt, args = get_update_cmd_states_options()
+    opt, args = get_options()
 
     # Configure logging to emit msgs to stdout
     logging.basicConfig(level=opt.loglevel,
@@ -352,9 +411,9 @@ def update_cmd_states():
     logging.debug('Updating database cmd_states table')
     update_states_db(states, db, h5)
 
-    if h5 and not check_consistency(db, h5):
-        logging.error('ERROR: database and HDF5 commands '
-                      'states are inconsistent')
+    # Check that last 100 states match between HDF5 and SQL
+    if h5:
+        check_consistency(db, h5, 100):
 
     # Close down for good measure.
     db.conn.close()
@@ -362,24 +421,5 @@ def update_cmd_states():
         h5.close()
 
 
-def check_consistency(db, h5):
-    """Check that the cmd_states table in ``db`` has the same length and
-    final datestart.
-    """
-    h5d = h5.root.data
-
-    if h5d[0]['obsid'] == -999:
-        idxs = h5d.getWhereList("obsid == -999")
-        logging.warning('WARNING: Removing previously unremoved rows {}:{}'
-                        .format(0, np.max(idxs) + 1))
-        h5d.removeRows(0, np.max(idxs) + 1)
-        h5d.flush()
-
-    db_len = db.fetchone('select count(*) as cnt from cmd_states')['cnt']
-    h5d_len = h5d.nrows
-    db_last = db.fetchone('select datestart from cmd_states '
-                          'order by datestart desc')
-    h5d_last = h5d[-1]
-    ok = (db_len == h5d_len and
-          db_last['datestart'] == h5d_last['datestart'])
-    return ok
+if __name__ == '__main__':
+    main()
