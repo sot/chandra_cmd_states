@@ -284,22 +284,16 @@ def check_consistency(db, h5, n_check=3000):
                   if h5_row[name].dtype.kind == 'f' else
                   db_row[name] == h5_row[name])
             row_ok = row_ok and ok
-            if not ok:
-                print 'Bad column', name
 
         if not row_ok:
             # Since the rows are in reverse time order this will get set to
             # the *first* mismatched row
-            print db_row
-            print h5_row
             datestart_mismatch = db_row['datestart']
             all_ok = False
 
     if not all_ok:
         logging.error('ERROR: database and HDF5 command states tables show'
                       'mismatch starting at {}'.format(datestart_mismatch))
-
-    return
 
 
 def get_options():
@@ -413,7 +407,7 @@ def main():
 
     # Check that last 100 states match between HDF5 and SQL
     if h5:
-        check_consistency(db, h5, 100):
+        check_consistency(db, h5, 100)
 
     # Close down for good measure.
     db.conn.close()

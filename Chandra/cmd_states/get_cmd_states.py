@@ -1,3 +1,7 @@
+"""
+Get the Chandra commanded states over a range of time.
+"""
+
 import sys
 import argparse
 import os
@@ -83,12 +87,12 @@ def get_sql_states(start, stop, dbi, server, user, database):
 
 
 def get_states(start=None, stop=None, vals=None, allow_identical=False,
-                   dbi='sybase', server=None, user='aca_read', database='aca'):
+                   dbi='hdf5', server=None, user='aca_read', database='aca'):
     """Get Chandra commanded states over a range of time as a structured array.
 
     Examples::
 
-      # Get states from sybase
+      # Get commanded states using the default HDF5 table
       >>> from Chandra.cmd_states import get_states
       >>> states = get_states('2011:100', '2011:101', vals=['obsid', 'simpos'])
       >>> states[['datestart', 'datestop', 'obsid', 'simpos']]
@@ -97,8 +101,8 @@ def get_states(start=None, stop=None, vals=None, allow_identical=False,
              ('2011:101:00:26:01.434', '2011:102:13:39:07.421', 12878, 91272)],
             dtype=[('datestart', '|S21'), ('datestop', '|S21'), ('obsid', '<i8'), ('simpos', '<i8')])
 
-      # Get same states from HDF5 (25 times faster)
-      >>> states2 = get_states('2011:100', '2011:101', vals=['obsid', 'simpos'], dbi='hdf5')
+      # Get same states from Sybase (25 times slower)
+      >>> states2 = get_states('2011:100', '2011:101', vals=['obsid', 'simpos'], dbi='sybase')
       >>> states2 == states
       array([ True,  True,  True], dtype=bool)
 
@@ -106,7 +110,7 @@ def get_states(start=None, stop=None, vals=None, allow_identical=False,
     :param stop: stop date (default=None)
     :param vals: list of state columns for output
     :param allow_identical: Allow identical states from cmd_states table
-    :param dbi: database interface (default=sybase)
+    :param dbi: database interface (default=hdf5)
     :param server: DBI server or HDF5 file (default=None)
     :param user: sybase database user (default='aca_read')
     :param database: sybase database (default=Ska.DBI default)
@@ -166,10 +170,10 @@ def main(main_args=None):
     parser.add_argument("--outfile",
                         help="Output file (default=stdout)")
     parser.add_argument("--dbi",
-                        default='sybase',
-                        help="Database interface (default=sybase)")
+                        default='hdf5',
+                        help="Cmd states data source (sybase|hdf5|sqlite) (default=hdf5)")
     parser.add_argument("--server",
-                        help="DBI server (default=sybase)")
+                        help="DBI server (sybase) or data file (hdf5 or sqlite)")
     parser.add_argument("--user",
                         default='aca_read',
                         help="sybase database user (default='aca_read')")
