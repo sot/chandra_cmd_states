@@ -42,16 +42,15 @@ def main():
         cmd = file(sqldef + '_def.sql').read()
         db.execute(cmd, commit=True)
 
-    if opt.start or opt.stop:
-        sels = []
-        if opt.start:
-            sels.append('datestart >= "{}"'.format(DateTime(opt.start).date))
-        if opt.stop:
-            sels.append('datestop <= "{}"'.format(DateTime(opt.stop).date))
-        if sels:
-            select = ' WHERE ' + ' AND '.join(sels)
-        else:
-            select = ''
+    sels = []
+    if opt.start:
+        sels.append('datestart >= "{}"'.format(DateTime(opt.start).date))
+    if opt.stop:
+        sels.append('datestop <= "{}"'.format(DateTime(opt.stop).date))
+    if sels:
+        select = ' WHERE ' + ' AND '.join(sels)
+    else:
+        select = ''
 
     timelines = syb.fetchall('select * from timelines' + select)
     load_segments = syb.fetchall('select * from load_segments' + select)

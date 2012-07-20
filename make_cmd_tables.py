@@ -25,6 +25,10 @@ def get_options():
     parser.add_option("--server",
                       default='db_base.db3',
                       help="DBI server (<filename>|sybase)")
+    parser.add_option("--user",
+                      help="sybase user (default=Ska.DBI default)")
+    parser.add_option("--database",
+                      help="sybase database (default=Ska.DBI default)")
     parser.add_option("--h5file",
                       default='cmd_states.h5',
                       help="filename for HDF5 version of cmd_states")
@@ -35,7 +39,9 @@ def get_options():
 def main():
     opt, args = get_options()
 
-    db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server, numpy=False, verbose=True)
+    db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server,
+                     user=opt.user, database=opt.database,
+                     numpy=False, verbose=True)
 
     tables = ('cmd_states', 'cmds', 'cmd_intpars', 'cmd_fltpars')
     for table in reversed(tables):
