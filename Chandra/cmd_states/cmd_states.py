@@ -602,7 +602,7 @@ def interpolate_states(states, times):
 
     :returns: ``states`` view at ``times``
     """
-    indexes = np.searchsorted(states.tstop, times)
+    indexes = np.searchsorted(states['tstop'], times)
     return states[indexes]
 
 
