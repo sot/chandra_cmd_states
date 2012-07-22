@@ -459,7 +459,10 @@ def main():
         n_check = 3000 if states_changed else 100
         check_consistency(db, h5, n_check)
 
-        if states_changed:
+        # If states were updated AND the HDF5 is the "flight" version then
+        # upload to the lucky ftp server.
+        h5file_flight = '/proj/sot/ska/data/cmd_states/cmd_states.h5'
+        if states_changed and os.path.abspath(opt.h5file) == h5file_flight:
             put_h5_to_lucky(opt.h5file)
 
     # Close down for good measure.
