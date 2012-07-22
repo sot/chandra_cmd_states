@@ -3,6 +3,7 @@ import os
 import logging
 import time
 from itertools import count, izip
+import Ska.ftp
 
 
 import numpy as np
@@ -118,7 +119,7 @@ def update_states_db(states, db, h5):
                 # made it with no mismatches and number of states match so no
                 # action required
                 logging.debug('update_states_db: No database update required')
-                return
+                return False  # No states changed
 
             # Else there is a mismatch in number of states.  This catches the
             # typical case when every db_state is in states but states was
@@ -136,10 +137,7 @@ def update_states_db(states, db, h5):
 
     insert_cmd_states(states, i_diff, db, h5)
 
-    # Make sure that the last 3000 states in the SQL and HDF5 cmd states tables
-    # are consistent.  This is done only when an update is made.  In addition
-    # every time update_cmd_states is run the last 100 states are checked.
-    check_consistency(db, h5, 3000)
+    return True  # States were changed
 
 
 def delete_cmd_states(datestart, db, h5):
@@ -296,6 +294,47 @@ def check_consistency(db, h5, n_check=3000):
                       'mismatch starting at {}'.format(datestart_mismatch))
 
 
+def put_h5_to_lucky(h5file):
+    """Put the HDF5 cmd_states ``h5file`` on to lucky.  First put it at the top
+    level, then when complete move it into a subdir eng_archive.  This lets the
+    OCC side just watch for fully-uploaded files in that directory.
+    """
+    h5dir, h5base = os.path.split(os.path.abspath(h5file))
+    logging.info('ftp to lucky')
+    ftp = Ska.ftp.FTP('lucky')
+    ftp.cd('/taldcroft')
+    files = ftp.nlst()
+    if 'cmd_states' not in files:
+        logging.info('mkdir cmd_states')
+        ftp.mkd('cmd_states')
+    logging.info('put {0}'.format(h5file))
+    with Ska.File.chdir(h5dir):
+        ftp.put(h5base)
+        logging.info('rename {0} cmd_states/{0}'.format(h5base))
+        ftp.rename(h5base, 'cmd_states/' + h5base)
+
+    ftp.close()
+
+
+def get_h5_from_lucky(h5file):
+    """Get HDF5 cmd_states file from lucky and copy to ``h5file``.
+    """
+    # Open lucky ftp connection and look for h5file in '/taldcroft/cmd_states/'
+    h5dir, h5base = os.path.split(os.path.abspath(h5file))
+    logging.info('ftp to lucky')
+    ftp = Ska.ftp.FTP('lucky')
+    ftp.set_pasv(False)  # req'd on GRETA network
+    ftp.cd('/taldcroft/cmd_states')
+    if h5base in ftp.ls():
+        with Ska.File.chdir(h5dir):
+            logging.info('Getting h5 file {0} from lucky'.format(h5base))
+            ftp.get(h5base)
+            logging.info('Deleting ftp {0}'.format(h5base))
+            ftp.delete(h5base)
+
+    ftp.close()
+
+
 def get_options():
     """Get options for command line interface to update_cmd_states.
     """
@@ -347,6 +386,7 @@ def main():
                               Starting date for update (default=Now-10 days)
         --mp_dir=DIR          MP directory. (default=/data/mpcrit1/mplogs)
         --loglevel=LOGLEVEL   Log level (10=debug, 20=info, 30=warnings)
+        --occ                 Running on OCC network (default=False)
     """
     opt, args = get_options()
 
@@ -357,6 +397,15 @@ def main():
 
     logging.info('Running {0} at {1}'
                  .format(os.path.basename(sys.argv[0]), time.ctime()))
+
+    # If running on the OCC (GRETA) network then just try to get a new HDF5
+    # file from lucky in /taldcroft/cmd_states and copy to opt.h5file.  The
+    # file will appear on lucky only when the HEAD network version gets updated
+    # with changed content.
+    if opt.occ and opt.h5file:
+        get_h5_from_lucky(opt.h5file)
+        sys.exit(0)
+
     logging.debug('Connecting to db: dbi=%s server=%s user=%s database=%s'
                   % (opt.dbi, opt.server, opt.user, opt.database))
     try:
@@ -403,11 +452,15 @@ def main():
 
     # Update cmd_states in database
     logging.debug('Updating database cmd_states table')
-    update_states_db(states, db, h5)
+    states_changed = update_states_db(states, db, h5)
 
-    # Check that last 100 states match between HDF5 and SQL
     if h5:
-        check_consistency(db, h5, 100)
+        # Check for consistency between HDF5 and SQL
+        n_check = 3000 if states_changed else 100
+        check_consistency(db, h5, n_check)
+
+        if states_changed:
+            put_h5_to_lucky(opt.h5file)
 
     # Close down for good measure.
     db.conn.close()
