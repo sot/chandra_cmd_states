@@ -5,9 +5,9 @@ VERSI0N = 0.03
 # Uncomment the correct choice indicating either SKA or TST flight environment
 FLIGHT_ENV = SKA
 
-SHARE = add_nonload_cmds.py  fix_pitch_simz.py   make_cmd_tables.py  nonload_cmds_archive.py  \
-	update_cmd_states.py  interrupt_loads.py  make_new_tl_ls.py get_cmd_states.py
-DATA = *_def.sql task_schedule.cfg
+SHARE = add_nonload_cmds.py  nonload_cmds_archive.py \
+	update_cmd_states.py  interrupt_loads.py  get_cmd_states.py
+DATA = *_def.sql task_schedule_occ.cfg
 DOC = docs/_build/html/
 BIN = get_cmd_states
 

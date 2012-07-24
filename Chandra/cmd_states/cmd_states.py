@@ -7,8 +7,10 @@ import re
 import logging
 import os
 import time
+import pprint
 
 import numpy as np
+
 import Ska.File
 import Ska.DBI
 from Chandra.Time import DateTime
@@ -16,18 +18,18 @@ import Chandra.Maneuver
 from Quaternion import Quat
 import Ska.ParseCM
 import Ska.Numpy
-import pprint
 
-# Canonical state0 giving spacecraft state at beginning of timelines 2002:007:13
-# fetch --start 2002:007:13:00:00 --stop 2002:007:13:02:00 aoattqt1 aoattqt2 aoattqt3 aoattqt4 cobsrqid aopcadmd tscpos
+# Canonical state0 giving spacecraft state at beginning of timelines
+# 2002:007:13 fetch --start 2002:007:13:00:00 --stop 2002:007:13:02:00 aoattqt1
+# aoattqt2 aoattqt3 aoattqt4 cobsrqid aopcadmd tscpos
 STATE0 = {'ccd_count': 5,
           'clocking': 0,
           'datestart': '2002:007:13:00:00.000',
           'datestop': '2099:001:00:00:00.000',
           'dec': -11.500,
           'fep_count': 0,
-          'hetg': 'RETR', 
-          'letg': 'RETR', 
+          'hetg': 'RETR',
+          'letg': 'RETR',
           'obsid': 61358,
           'pcad_mode': 'NPNT',
           'pitch': 61.37,
@@ -45,14 +47,14 @@ STATE0 = {'ccd_count': 5,
           'tstart': 127020624.552,
           'tstop': 3187296066.184,
           'vid_board': 0,
-          'dither': None}
+          'dither': 'None'}
 
 
 def decode_power(mnem):
-    """ 
-    Decode number of chips and feps from a ACIS power command 
+    """
+    Decode number of chips and feps from a ACIS power command
     Return a dictionary with the number of chips and their identifiers
-    
+
     Example::
 
      >>> decode_power("WSPOW08F3E")
@@ -67,17 +69,17 @@ def decode_power(mnem):
     # the hex for the commanding is after the WSPOW
     powstr = mnem[5:]
     if (len(powstr) != 5):
-        raise ValueError("%s in unexpected format" % mnem )
+        raise ValueError("%s in unexpected format" % mnem)
 
     # convert the hex to decimal and "&" it with 63 (binary 111111)
     fepkey = int(powstr, 16) & 63
-    fep_info = { 'fep_count' : 0,
-                 'ccd_count' : 0,
-                 'feps' : '',
-                 'ccds' : '' }
+    fep_info = {'fep_count': 0,
+                'ccd_count': 0,
+                'feps': '',
+                'ccds': ''}
     # count the true binary bits
-    for bit in xrange(0,6):
-        if (fepkey & ( 1 << bit )):
+    for bit in xrange(0, 6):
+        if (fepkey & (1 << bit)):
             fep_info['fep_count'] = fep_info['fep_count'] + 1
             fep_info['feps'] = fep_info['feps'] + str(bit) + ' '
 
@@ -85,16 +87,17 @@ def decode_power(mnem):
     vidkey = int(powstr, 16) >> 8
 
     # count the true bits
-    for bit in xrange(0,10):
+    for bit in xrange(0, 10):
         if (vidkey & (1 << bit)):
             fep_info['ccd_count'] = fep_info['ccd_count'] + 1
             # position indicates I or S chip
-            if (bit < 4 ):
+            if (bit < 4):
                 fep_info['ccds'] = fep_info['ccds'] + 'I' + str(bit) + ' '
             else:
                 fep_info['ccds'] = fep_info['ccds'] + 'S' + str(bit - 4) + ' '
 
     return fep_info
+
 
 def _make_add_trans(transitions, date, exclude):
     def add_trans(date=date, **kwargs):
@@ -103,19 +106,21 @@ def _make_add_trans(transitions, date, exclude):
             transitions.setdefault(date, {}).update(kwargs)
     return add_trans
 
+
 def get_states(state0, cmds, exclude=None):
     """Get states resulting from the spacecraft commands ``cmds`` starting
     from an initial ``state0``.
 
     State keys in the ``exclude`` list or set will be excluded from causing a
     transition.  This is useful if a state parameter (e.g. simfa_pos) is not of
-    interest.  An excluding parameter will have incorrect values in the returned
-    states.
+    interest.  An excluding parameter will have incorrect values in the
+    returned states.
 
-    A state is a dict with key values corresponding to the following database schema:
+    A state is a dict with key values corresponding to the following database
+    schema:
 
     ============   =========   ====
-    Name           Type        Size         
+    Name           Type        Size
     ============   =========   ====
      datestart     varchar      21
      datestop      varchar      21
@@ -142,7 +147,7 @@ def get_states(state0, cmds, exclude=None):
      hetg          varchar       4
      dither        varchar       4
     ============   =========   ====
-    
+
     The input commands must be a list of dicts including keys ``date, vcdu,
     cmd, params, time``.  See also Ska.ParseCM.read_backstop().
 
@@ -150,7 +155,7 @@ def get_states(state0, cmds, exclude=None):
     :param cmds: list of commands
     :param ignore: list or set of state keys to ignore
 
-    :returns: numpy recarray of states starting with state0 (which might be modified)
+    :returns: recarray of states starting with state0 (which might be modified)
     """
 
     logging.debug('get_states: starting from %s' % state0['datestart'])
@@ -158,28 +163,29 @@ def get_states(state0, cmds, exclude=None):
     curr_att = [state0[x] for x in ('q1', 'q2', 'q3', 'q4')]
 
     # A transition is a dictionary of state updates occuring at one time, e.g.
-    # {'simpos':-99616, 'pcad_mode': 'NMAN'}. The transition dicts are collected
-    # 'transitions' dict and keyed by cmd date.  In this way multiple commands at the
-    # same time can easily be accumulated to a single transition.
+    # {'simpos': -99616, 'pcad_mode': 'NMAN'}. The transition dicts are
+    # collected 'transitions' dict and keyed by cmd date.  In this way multiple
+    # commands at the same time can easily be accumulated to a single
+    # transition.
     transitions = {}
 
     cmds_after_state0 = [x for x in cmds if x['date'] > state0['datestart']]
-    
+
     for cmd in cmds_after_state0:
         params = cmd.get('params', {})
-        tlmsid = cmd['tlmsid'] or params.get('TLMSID', '')      # These two might not be in cmd
-        msid = cmd['msid'] or params.get('MSID', '')
+        # Following two might not be in cmd
+        tlmsid = cmd['tlmsid'] or params.get('TLMSID', '')
         cmd_type = cmd['cmd']
         date = cmd['date']
 
         # Make a convenience function to add to transitions at command date
         add_trans = _make_add_trans(transitions, date, exclude)
-        
+
         # Obsid
         if cmd_type == 'MP_OBSID':
             add_trans(obsid=params['ID'])
 
-        # SIM Z 
+        # SIM Z
         elif cmd_type == 'SIMTRANS':
             add_trans(simpos=params['POS'])
 
@@ -191,7 +197,8 @@ def get_states(state0, cmds, exclude=None):
         elif cmd_type == 'ACISPKT':
             if tlmsid.startswith('WSPOW'):
                 pwr = decode_power(tlmsid)
-                add_trans(fep_count=pwr['fep_count'], ccd_count=pwr['ccd_count'], 
+                add_trans(fep_count=pwr['fep_count'],
+                          ccd_count=pwr['ccd_count'],
                           vid_board=1, clocking=0, power_cmd=tlmsid)
 
             elif re.match(r'X(T|C)Z0000005', tlmsid):
@@ -244,12 +251,11 @@ def get_states(state0, cmds, exclude=None):
         elif cmd_type == 'COMMAND_SW' and tlmsid == '4OLETGRE':
             add_trans(letg='RETR')
 
-        elif cmd_type =='COMMAND_SW' and tlmsid == 'AOENDITH':
+        elif cmd_type == 'COMMAND_SW' and tlmsid == 'AOENDITH':
             add_trans(dither='ENAB')
 
-        elif cmd_type =='COMMAND_SW' and tlmsid == 'AODSDITH':
+        elif cmd_type == 'COMMAND_SW' and tlmsid == 'AODSDITH':
             add_trans(dither='DISA')
-
 
         # Start a maneuver to targ_att or else to normal sun pointed attitude
         # via normal sun mode
@@ -260,11 +266,13 @@ def get_states(state0, cmds, exclude=None):
                 auto_npnt = False
 
             # add pitch/attitude commands
-            atts = Chandra.Maneuver.attitudes(curr_att, targ_att, tstart=cmd['time'])
+            atts = Chandra.Maneuver.attitudes(curr_att, targ_att,
+                                              tstart=cmd['time'])
             logging.debug('Maneuver at {0} {1}\nfrom {2}\nto {3}'.format(
                 DateTime(cmd['time']).date, cmd['time'], curr_att, targ_att))
             logging.debug(Ska.Numpy.pformat(atts))
-            pitches = np.hstack([(atts[:-1].pitch + atts[1:].pitch)/2, atts[-1].pitch])
+            pitches = np.hstack([(atts[:-1].pitch + atts[1:].pitch) / 2,
+                                 atts[-1].pitch])
             for att, pitch in zip(atts, pitches):
                 q_att = Quat([att[x] for x in ('q1', 'q2', 'q3', 'q4')])
                 add_trans(date=DateTime(att.time).date,
@@ -283,7 +291,7 @@ def get_states(state0, cmds, exclude=None):
 
             # update the current attitude to the target attitude
             curr_att = targ_att
-    
+
     # Make the states from state0 and the final dict of transitions
     states = [state0]
     for datekey in sorted(transitions):
@@ -310,98 +318,10 @@ def get_states(state0, cmds, exclude=None):
 
     return np.rec.fromrecords(staterecs, names=statecols)
 
-def log_mismatch(mismatches, db_states, states, i_diff):
-    """Log the states and state differences leading to a diff between the
-    database cmd_states and the proposed states from commanding / products
-    """
-    mismatches = sorted(mismatches)
-    logging.debug('update_states_db: mismatch between existing DB cmd_states'
-                  ' and new cmd_states for {0}'.format(mismatches))
-    logging.debug('  DB datestart: {0}   New datestart: {1}'.format(
-        db_states[i_diff]['datestart'], states[i_diff]['datestart']))
-    for mismatch in mismatches:
-        if mismatch == 'attitude':
-            logging.debug('  DB  ra: {0:9.5f} dec: {1:9.5f}'.format(db_states[i_diff]['ra'],
-                                                                    db_states[i_diff]['dec']))
-            logging.debug('  New ra: {0:9.5f} dec: {1:9.5f}'.format(states[i_diff]['ra'],
-                                                                    states[i_diff]['dec']))
-        else:
-            logging.debug('  DB  {0}: {1}'.format(mismatch, db_states[i_diff][mismatch]))
-            logging.debug('  New {0}: {1}'.format(mismatch, states[i_diff][mismatch]))
-    i0 = max(i_diff - 4, 0)
-    i1 = min(i_diff + 4, len(db_states))
-    logging.debug('** Existing DB states')
-    logging.debug(Ska.Numpy.pformat(db_states[i0:i1]))
-    i1 = min(i_diff + 4, len(states))
-
-    colnames = db_states.dtype.names
-    states = np.rec.fromarrays([states[x][i0:i1] for x in colnames], names=colnames)
-
-    logging.debug('** New states')
-    logging.debug(Ska.Numpy.pformat(states))
-
-def update_states_db(states, db):
-    """Make the ``db`` database cmd_states table consistent with the supplied
-    ``states``.  Match ``states`` to corresponding values in cmd_states
-    tables, then delete from table at the point of a mismatch (if any).
-
-    :param states: input states (numpy recarray)
-    :param db: Ska.DBI.DBI object
-
-    :rtype: None
-    """
-    from itertools import count, izip
-    
-    # Get existing cmd_states from the database that overlap with states
-    db_states = db.fetchall("""SELECT * from cmd_states
-                               WHERE datestop > '%s'
-                               AND datestart < '%s'""" % 
-                               (states[0].datestart, states[-1].datestop))
-
-    if len(db_states) > 0:
-        # Get states columns that are not float type. descr gives list of (colname, type_descr)
-        match_cols = [x[0] for x in states.dtype.descr if 'f' not in x[1]]
-
-        # Find mismatches: direct compare or where pitch or attitude differs by > 1 arcsec
-        for i_diff, db_state, state in izip(count(), db_states, states):
-            mismatches = set(x for x in match_cols if db_state[x] != state[x])
-            if abs(db_state.pitch - state.pitch) > 0.0003:
-                mismatches.add('pitch')
-            if Ska.Sun.sph_dist(db_state.ra, db_state.dec, state.ra, state.dec) > 0.0003:
-                mismatches.add('attitude')
-            if mismatches:
-                log_mismatch(mismatches, db_states, states, i_diff)
-                break
-        else:
-            if len(states) == len(db_states):
-                # made it with no mismatches and number of states match so no action required
-                logging.debug('update_states_db: No database update required')
-                return
-
-            # Else there is a mismatch in number of states.  This catches the
-            # typical case when every db_state is in states but states was
-            # extended by the addition of new timeline load segments.  In this
-            # case just drop through with i_diff left at the last available index
-            # in db_states and states.
-
-        # Mismatch occured at i_diff.  Drop cmd_states after db_state[i_diff].datestart
-        cmd = "DELETE FROM cmd_states WHERE datestart >= '%s'" % db_states[i_diff].datestart
-        logging.info('udpate_states_db: ' + cmd)
-        db.execute(cmd)
-    else:
-        # No cmd_states in database so just insert all new states
-        i_diff = 0
-
-    # Insert new states[i_diff:] into cmd_states 
-    logging.info('udpate_states_db: inserting states[%d:%d] to cmd_states' %
-                  (i_diff, len(states)))
-    for state in states[i_diff:]:
-        # Need commit=True for sybase -- very large inserts will fail
-        db.insert(dict((x, state[x]) for x in state.dtype.names), 'cmd_states', commit=True)
-    db.commit()
 
 def get_state0(date=None, db=None, date_margin=10, datepar='datestop'):
-    """From the cmd_states table get the last state with ``datepar`` before ``date``.
+    """From the cmd_states table get the last state with ``datepar`` before
+    ``date``.
 
      It is assumed that the cmd_states database table is populated and accurate
      (definitive) at times more than ``date_margin`` days before the present
@@ -417,7 +337,8 @@ def get_state0(date=None, db=None, date_margin=10, datepar='datestop'):
     :rtype: dict
     """
     if db is None:
-        db = Ska.DBI.DBI(dbi='sybase', server='sybase', user='aca_read', database='aca')
+        db = Ska.DBI.DBI(dbi='sybase', server='sybase', user='aca_read',
+                         database='aca')
 
     # Date for which cmd_states are certainly reliable
     definitive_date = DateTime(time.time() - date_margin * 86400.,
@@ -426,19 +347,22 @@ def get_state0(date=None, db=None, date_margin=10, datepar='datestop'):
         date = definitive_date
     else:
         date = DateTime(date).date
-        
+
     state0 = db.fetchone("""SELECT * FROM cmd_states
                             WHERE %s < '%s'
                             AND pcad_mode = 'NPNT'
                             ORDER BY %s DESC""" % (datepar, date, datepar))
 
     if state0:
-        logging.debug('get_state0: found definitive state at %s' % state0['datestart'])
+        logging.debug('get_state0: found definitive state at %s'
+                      % state0['datestart'])
     else:
-        logging.debug('get_state0: using default state at %s' % STATE0['datestart'])
+        logging.debug('get_state0: using default state at %s'
+                      % STATE0['datestart'])
 
     # return the selected state or the default STATE0 if nothing found
     return state0 or STATE0
+
 
 def _tl_to_bs_cmds(tl_cmds, tl_id, db):
     """
@@ -453,13 +377,15 @@ def _tl_to_bs_cmds(tl_cmds, tl_id, db):
 
     :returns: list of command dicts
     """
-    bs_cmds = [dict((col, row[col]) for col in tl_cmds.dtype.names) for row in tl_cmds]
+    bs_cmds = [dict((col, row[col]) for col in tl_cmds.dtype.names)
+               for row in tl_cmds]
     cmd_index = dict((x['id'], x) for x in bs_cmds)
 
     # Add 'params' dict of command parameter key=val pairs to each tl_cmd
     for par_table in ('cmd_intpars', 'cmd_fltpars'):
         tl_params = db.fetchall("SELECT * FROM %s WHERE timeline_id %s" %
-                                (par_table, '= %d' % tl_id if tl_id else 'IS NULL'))
+                                (par_table,
+                                 '= %d' % tl_id if tl_id else 'IS NULL'))
 
         # Build up the params dict for each command in timeline load segment
         for par in tl_params:
@@ -470,9 +396,11 @@ def _tl_to_bs_cmds(tl_cmds, tl_id, db):
 
     return bs_cmds
 
+
 def get_cmds(datestart='1998:001:00:00:00.000',
              datestop='2099:001:00:00:00.000',
-             db=None, update_db=None, timeline_loads=None, mp_dir='/data/mpcrit1/mplogs'):
+             db=None, update_db=None, timeline_loads=None,
+             mp_dir='/data/mpcrit1/mplogs'):
     """Get all commands with ``datestart`` < date <= ``datestop`` using DBI
     object ``db``.  This includes both commands already in the database and new
     commands.  If ``update_db`` is True then update the database cmds table
@@ -490,7 +418,7 @@ def get_cmds(datestart='1998:001:00:00:00.000',
     supplemented by backstop commands found in the SOTMP repository of load
     products.
 
-    :param datestart: start date (Chandra.Time 'date' string) (default=1998:001)
+    :param datestart: start date (Chandra.Time 'date' str) (default=1998:001)
     :param datestop: stop date (default=2099:001)
     :param db: Ska.DBI.DBI object (required)
     :param update_db: update the 'cmds' table
@@ -506,56 +434,72 @@ def get_cmds(datestart='1998:001:00:00:00.000',
     # Get non-load commands (from autonomous or ground SCS107, NSM, etc)
     nl_cmds = db.fetchall("""SELECT * from cmds where timeline_id IS NULL""")
     cmds = _tl_to_bs_cmds(nl_cmds, None, db)
- 
+
     # Values of cmd or tlmsid for commands that are retained
-    cmd_types = set(('MP_OBSID', 'SIMTRANS', 'SIMFOCUS', 'ACISPKT', 'MP_TARGQUAT'))
-    tlmsids = set(('AONM2NPE', 'AONM2NPD', 'AONMMODE', 'AONPMODE', 'AOMANUVR', 'AONSMSAF',
-                   '4OHETGRE', '4OLETGRE', '4OHETGIN', '4OLETGIN', 'AOENDITH', 'AODSDITH'))
+    cmd_types = set(('MP_OBSID', 'SIMTRANS', 'SIMFOCUS',
+                     'ACISPKT', 'MP_TARGQUAT'))
+    tlmsids = set(('AONM2NPE', 'AONM2NPD', 'AONMMODE',
+                   'AONPMODE', 'AOMANUVR', 'AONSMSAF',
+                   '4OHETGRE', '4OLETGRE', '4OHETGIN',
+                   '4OLETGIN', 'AOENDITH', 'AODSDITH'))
 
     for tl in timeline_loads:
-        tl_cmds = db.fetchall("SELECT * from cmds WHERE timeline_id = %d" % tl.id)
+        tl_cmds = db.fetchall("SELECT * from cmds WHERE timeline_id = %d"
+                              % tl.id)
 
-        logging.debug('get_cmds: got %3d cmds from db for timeline_id=%d (%s - %s)' %
-                      (len(tl_cmds), tl.id, tl.datestart, tl.datestop))
+        logging.debug('get_cmds: got %3d cmds from db for timeline_id=%d '
+                      '(%s - %s)'
+                      % (len(tl_cmds), tl.id, tl.datestart, tl.datestop))
 
-        # If not yet in DB then read from MP backstop file.  Put into DB if needed.
+        # If not yet in DB then read from MP backstop file.  Put into DB if
+        # needed.
         if len(tl_cmds) == 0:
             bs_file = Ska.File.get_globfiles(os.path.join(mp_dir + tl.mp_dir,
                                                           '*.backstop'))[0]
             bs_cmds = Ska.ParseCM.read_backstop(bs_file)
             # Retain state-changing cmds within timeline for database
-            bs_cmds = [x for x in bs_cmds if tl.datestart <= x['date'] <= tl.datestop
-                       and (x['cmd'] in cmd_types or x['params'].get('TLMSID') in tlmsids)]
+            bs_cmds = [x for x in bs_cmds
+                       if tl.datestart <= x['date'] <= tl.datestop
+                       and (x['cmd'] in cmd_types or x['params'].get('TLMSID')
+                            in tlmsids)]
             # Only store commands for this timelines's scs
             bs_cmds = [x for x in bs_cmds if x['scs'] == tl['scs']]
-            logging.info('get_cmds: got %d commands from %s' % (len(bs_cmds), bs_file))
+            logging.info('get_cmds: got %d commands from %s'
+                         % (len(bs_cmds), bs_file))
             if update_db and bs_cmds:
                 insert_cmds_db(bs_cmds, tl.id, db)
         else:
-            # Check for commands before the timeline start, which is a problem. 
+            # Check for commands before the timeline start, which is a problem.
             if any(tl_cmds.date < tl.datestart):
-                raise ValueError('Found commands in database before start of %d:%s load segment' %
+                raise ValueError('Found commands in database before start '
+                                 'of %d:%s load segment' %
                                  (tl.year, tl.name))
-            # Check for commands after the timeline stop, which is normal for an interrupt. 
+            # Check for commands after the timeline stop, which is normal for
+            # an interrupt.
             after = tl_cmds.date > tl.datestop
             if any(after):
                 logging.debug('get_cmds: %d commands were after datestop'
                               % (len(np.flatnonzero(after))))
-                tl_cmds = tl_cmds[np.logical_not(after)]  # Filter out commands after tl.datestop
+                # Filter out commands after tl.datestop
+                tl_cmds = tl_cmds[np.logical_not(after)]
 
-            # Now flatten to a list of dicts to emulate read_backstop and incorporate params
+            # Now flatten to a list of dicts to emulate read_backstop and
+            # incorporate params
             bs_cmds = _tl_to_bs_cmds(tl_cmds, tl.id, db)
 
         cmds.extend(bs_cmds)
 
     # Filter commands on date and sort by date.
-    #   IS THE "datestart <=" CORRECT?  docstring above says "<".  ?????
-    return sorted((x for x in cmds if datestart <= x['date'] <= datestop), key=lambda y: y['date'])
+    # IS THE "datestart <=" CORRECT?  docstring above says "<".  ?????
+    return sorted((x for x in cmds if datestart <= x['date'] <= datestop),
+                  key=lambda y: y['date'])
+
 
 def insert_cmds_db(cmds, timeline_id, db):
     """Insert the ``cmds`` into the ``db`` table 'cmds' with ``timeline_id``.
-    Command parameters are also inserted into 'cmd_intpars' and 'cmd_fltpars' tables.
-    ``timeline_id`` can be None to indicate non-load commands (from ground or autonomous).
+    Command parameters are also inserted into 'cmd_intpars' and 'cmd_fltpars'
+    tables.  ``timeline_id`` can be None to indicate non-load commands (from
+    ground or autonomous).
 
     Each command must be dict with at least the following keys:
 
@@ -572,9 +516,9 @@ def insert_cmds_db(cmds, timeline_id, db):
     paramstr  char
     tlmsid    char
     msid      char
-    vcdu      int 
-    step      int 
-    scs       int 
+    vcdu      int
+    step      int
+    scs       int
     ========= ======
 
     The input ``cmds`` are used to populate three tables:
@@ -582,10 +526,10 @@ def insert_cmds_db(cmds, timeline_id, db):
     **cmds**
 
     ================  ========  =======
-    name              type      length     
+    name              type      length
     ================  ========  =======
-    id (PK)            int        4 
-    timeline_id        int        4   
+    id (PK)            int        4
+    timeline_id        int        4
     date               char      21
     time              float       8,
     cmd               varchar    12
@@ -599,7 +543,7 @@ def insert_cmds_db(cmds, timeline_id, db):
     **cmd_intpars** and **cmd_fltpars**
 
     ================  ==========  =======
-    name              type        length     
+    name              type        length
     ================  ==========  =======
     cmd_id (FK)        int           4
     timeline_id (FK)   int           4
@@ -609,18 +553,20 @@ def insert_cmds_db(cmds, timeline_id, db):
 
     :param cmds: list of command dicts, e.g. from Ska.ParseCM.read_backstop()
     :param db: Ska.DBI.DBI object
-    :param timeline_id: id of timeline load segment that contains these commands
+    :param timeline_id: id of timeline load segment that contains commands
 
     :returns: None
     """
     cmd_id = db.fetchone('SELECT max(id) AS max_id FROM cmds')['max_id'] or 0
-    logging.info('insert_cmds_db: inserting %d cmds to commands tables' % (len(cmds)))
+    logging.info('insert_cmds_db: inserting %d cmds to commands tables'
+                 % (len(cmds)))
 
     for cmd in cmds:
         cmd_id += 1
 
         # Make a copy of the cmd while skipping any None values
-        db_cmd = dict((key, val) for (key, val) in cmd.items() if val is not None)
+        db_cmd = dict((key, val) for (key, val) in cmd.items()
+                      if val is not None)
         db_cmd['id'] = cmd_id
         if timeline_id is not None:
             db_cmd['timeline_id'] = timeline_id
@@ -644,8 +590,9 @@ def insert_cmds_db(cmds, timeline_id, db):
                 db.insert(par, 'cmd_intpars', commit=False)
             elif isinstance(value, float):
                 db.insert(par, 'cmd_fltpars', commit=False)
-            
+
     db.conn.commit()
+
 
 def interpolate_states(states, times):
     """Interpolate ``states`` np.recarray at given times.
@@ -655,8 +602,9 @@ def interpolate_states(states, times):
 
     :returns: ``states`` view at ``times``
     """
-    indexes = np.searchsorted(states.tstop, times)
+    indexes = np.searchsorted(states['tstop'], times)
     return states[indexes]
+
 
 def generate_cmds(time, cmd_set):
     """
@@ -679,7 +627,7 @@ def generate_cmds(time, cmd_set):
     time = DateTime(time).secs
     for cmd in cmd_set:
         if 'cmd' in cmd:
-            # Generate a copy of cmd except for 'dur' key.  
+            # Generate a copy of cmd except for 'dur' key.
             newcmd = dict(time=time,
                           date=DateTime(time).date,
                           tlmsid=None,
@@ -689,8 +637,9 @@ def generate_cmds(time, cmd_set):
                 del newcmd['dur']
             cmds.append(newcmd)
         time += cmd.get('dur', 0.0)
-            
+
     return cmds
+
 
 def cmd_set(name, *args):
     """
@@ -701,7 +650,9 @@ def cmd_set(name, *args):
     :returns: cmd set
     """
     def obsid(*args):
-        """Return a command set that initiates a maneuver to the given attitude ``att``.
+        """Return a command set that initiates a maneuver to the given attitude
+        ``att``.
+
         :param att: attitude compatible with Quat() initializer
         :returns: list of command defs suitable for generate_cmds()
         """
@@ -710,7 +661,9 @@ def cmd_set(name, *args):
                 )
 
     def manvr(*args):
-        """Return a command set that initiates a maneuver to the given attitude ``att``.
+        """Return a command set that initiates a maneuver to the given attitude
+        ``att``.
+
         :param att: attitude compatible with Quat() initializer
         :returns: list of command defs suitable for generate_cmds()
         """
@@ -725,7 +678,8 @@ def cmd_set(name, *args):
                      dur=4.1),
                 dict(cmd='MP_TARGQUAT',
                      tlmsid='AOUPTARQ',
-                     params=dict(Q1=att.q[0], Q2=att.q[1], Q3=att.q[2], Q4=att.q[3]),
+                     params=dict(Q1=att.q[0], Q2=att.q[1],
+                                 Q3=att.q[2], Q4=att.q[3]),
                      dur=5.894),
                 dict(cmd='COMMAND_SW',
                      tlmsid='AOMANUVR',
@@ -773,6 +727,7 @@ def cmd_set(name, *args):
                     acis=acis, aciscti=aciscti)
     return cmd_sets[name](*args)
 
+
 def interrupt_loads(datestop, db, observing_only=False, current_only=False):
     """Interrupt the timelines  with
     db.datestop > ``datestop`` by updating the table datestop accordingly.
@@ -781,49 +736,60 @@ def interrupt_loads(datestop, db, observing_only=False, current_only=False):
 
     :param datestop: load stop date
     :param db: Ska.DBI.DBI object
-    :param observing_only: only interrupt 'observing' slots (131,132,133) 
+    :param observing_only: only interrupt 'observing' slots (131,132,133)
     :param current_only: only stop the load containing datestop
     :returns: None
     """
     datestop = DateTime(datestop).date
 
     select = "SELECT * FROM timeline_loads WHERE datestop > '%s'" % datestop
-    select_datestart = " AND datestart <= '%s'" % datestop if current_only else ''
+    select_datestart = (" AND datestart <= '%s'" % datestop
+                        if current_only else '')
     select_observing = " AND scs > 130" if observing_only else ''
 
-    logging.info('interrupt_loads: ' + select + select_datestart + select_observing)
+    logging.info('interrupt_loads: '
+                 + select + select_datestart + select_observing)
     timelines = db.fetchall(select + select_datestart + select_observing)
     if len(timelines) == 0:
         logging.info('No timelines containing %s' % datestop)
         return
 
-    logging.info('Updating %d timelines with datestop > %s' % (len(timelines), datestop))
+    logging.info('Updating %d timelines with datestop > %s'
+                 % (len(timelines), datestop))
     for tl in timelines:
-        logging.info("%s %s %s" % (tl['datestart'], tl['datestop'], tl['mp_dir']))
+        logging.info("%s %s %s" % (tl['datestart'], tl['datestop'],
+                                   tl['mp_dir']))
 
     # Get confirmation to update timeslines table in database
     logging.info('Revert with:')
     for tl in timelines:
-        logging.info("UPDATE timelines SET datestop='%s' where id=%d ;" % (tl['datestop'], tl['id']))
+        logging.info("UPDATE timelines SET datestop='%s' where id=%d ;"
+                     % (tl['datestop'], tl['id']))
 
     for tl in timelines:
-        update = "UPDATE timelines SET datestop='%s' where id=%d" % (datestop, tl['id'])
+        update = ("UPDATE timelines SET datestop='%s' where id=%d"
+                  % (datestop, tl['id']))
         db.execute(update)
+
 
 def reduce_states(states, cols, allow_identical=True):
     """
-    Reduce the input ``states`` so that only transitions in the ``cols`` columns are noticed.
-    
+    Reduce the input ``states`` so that only transitions in the ``cols``
+    columns are noticed.
+
     :param states: numpy recarray of states
     :param cols: notice transitions in this list of columns
     :param allow_identical: allow null transitions between apparently identical states
+
     :returns: numpy recarray of reduced states
     """
     cols = set(cols)
 
-    # Boolean func for when at least one state transition key is among the supplied cols
-    # Transition keys are are the values that changed between previous and current state
-    trans_in_cols = lambda state: bool(cols.intersection(state['trans_keys'].split(',')))
+    # Boolean func for when at least one state transition key is among the
+    # supplied cols Transition keys are are the values that changed between
+    # previous and current state
+    trans_in_cols = lambda state: bool(cols.intersection(state['trans_keys']
+                                                         .split(',')))
 
     # Generate the transition markers
     transitions = np.array([trans_in_cols(state) for state in states])
@@ -833,7 +799,7 @@ def reduce_states(states, cols, allow_identical=True):
         i_transitions = np.flatnonzero(transitions)
         no_trans = []
         for i in i_transitions[1:]:  # Skip the first one which is index=0
-            state0 = states[i-1]
+            state0 = states[i - 1]
             state1 = states[i]
             trans_keys = state1['trans_keys'].split(',')
             if all(state0[key] == state1[key] for key in trans_keys):
@@ -841,9 +807,9 @@ def reduce_states(states, cols, allow_identical=True):
         transitions[no_trans] = False
 
     newstates = states[transitions].copy()
-    newstates.datestop[:-1] = newstates.datestart[1:]
-    newstates.tstop[:-1] = newstates.tstart[1:]
-    newstates.datestop[-1] = states.datestop[-1]
-    newstates.tstop[-1] = states.tstop[-1]
+    newstates['datestop'][:-1] = newstates['datestart'][1:]
+    newstates['tstop'][:-1] = newstates['tstart'][1:]
+    newstates['datestop'][-1] = states['datestop'][-1]
+    newstates['tstop'][-1] = states['tstop'][-1]
 
     return newstates
