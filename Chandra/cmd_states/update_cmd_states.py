@@ -112,25 +112,42 @@ def update_states_db(states, db, h5):
                                 state.ra, state.dec) > 0.0003:
                 mismatches.add('attitude')
             if mismatches:
+                # Case 1: direct mismatch in states
                 log_mismatch(mismatches, db_states, states, i_diff)
                 break
         else:
+            # At this point the for loop finished with no detected diffs.
+            # Now i_diff = min(len(db_states), len(states)) - 1.
+
             if len(states) == len(db_states):
-                # made it with no mismatches and number of states match so no
-                # action required
+                # Case 2: made it with no mismatches and the number of states
+                # match so no action is required.
                 logging.debug('update_states_db: No database update required')
-                return False  # No states changed
+                return False
 
-            # Else there is a mismatch in number of states.  This catches the
-            # typical case when every db_state is in states but states was
-            # extended by the addition of new timeline load segments.  In this
-            # case just drop through with i_diff left at the last available
-            # index in db_states and states.
+            # Otherwise there is an indirect mismatch in states because one
+            # table has a valid state row where the other table has no row
+            # (i.e. the table ends).  There are two more cases here:
+            #
+            # Case 3. The typical case is when len(db_states) > len(states):
+            #   * Every db_state is in states but states was extended by adding
+            #     new timeline load segments due to new weekly products.
+            #
+            # Case 4. Less common case is when len(states) < len(db_states):
+            #   * db_states needs to be shortened to delete states, probably
+            #     due to a load interrupt like NSM or safemode (but not SCS107)
+            #
+            # Now increment i_diff by one to point at the position of the
+            # "mismatch", between an existing state and a null state beyond the
+            # end of available states.
 
-        # Mismatch occured at i_diff.  Drop cmd_states after
-        # db_state['datesstart'][i_diff]
-        delete_cmd_states(db_states['datestart'][i_diff], db, h5)
+            i_diff += 1
 
+        # Mismatch occurred at i_diff.  If that index is within db_states
+        # (cases 1 and 4 in get_states_i_diff) drop db_states after
+        # db_states['datesstart'][i_diff]
+        if i_diff < len(db_states):
+            delete_cmd_states(db_states['datestart'][i_diff], db, h5)
     else:
         # No cmd_states in database so just insert all new states
         i_diff = 0
