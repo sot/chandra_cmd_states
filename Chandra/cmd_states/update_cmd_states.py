@@ -76,6 +76,63 @@ def log_mismatch(mismatches, db_states, states, i_diff):
     logging.debug(Ska.Numpy.pformat(states))
 
 
+def get_states_i_diff(db_states, states):
+    """Get the index position where db_states and states differ.
+
+    If the states are identical then None is returned.
+
+    :param db_states: states in database
+    :param states: new reference states
+    :returns: i_diff
+    """
+
+    # Get states columns that are not float type. descr gives list of
+    # (colname, type_descr)
+    match_cols = [x[0] for x in states.dtype.descr if 'f' not in x[1]]
+
+    # Find mismatches: direct compare or where pitch or attitude differs by
+    # > 1 arcsec
+    for i_diff, db_state, state in izip(count(), db_states, states):
+        mismatches = set(x for x in match_cols if db_state[x] != state[x])
+        if abs(db_state.pitch - state.pitch) > 0.0003:
+            mismatches.add('pitch')
+        if Ska.Sun.sph_dist(db_state.ra, db_state.dec,
+                            state.ra, state.dec) > 0.0003:
+            mismatches.add('attitude')
+        if mismatches:
+            # Case 1: direct mismatch in states
+            log_mismatch(mismatches, db_states, states, i_diff)
+            break
+    else:
+        # At this point the for loop finished with no detected diffs.
+        # Now i_diff = min(len(db_states), len(states)) - 1.
+
+        if len(states) == len(db_states):
+            # Case 2: made it with no mismatches and the number of states
+            # match so no action is required.
+            return None  # No states changed
+
+        # Otherwise there is an indirect mismatch in states because one
+        # table has a valid state row where the other table has no row
+        # (i.e. the table ends).  There are two more cases here:
+        #
+        # Case 3. The typical case is when len(db_states) > len(states):
+        #   * Every db_state is in states but states was extended by adding
+        #     new timeline load segments due to new weekly products.
+        #
+        # Case 4. Less common case is when len(states) < len(db_states):
+        #   * db_states needs to be shortened to delete states, probably
+        #     due to a load interrupt like NSM or safemode (but not SCS107)
+        #
+        # Now increment i_diff by one to point at the position of the
+        # "mismatch", between an existing state and a null state beyond the
+        # end of available states.
+
+        i_diff += 1
+
+    return i_diff
+
+
 def update_states_db(states, db, h5):
     """Make the ``db`` database cmd_states table consistent with the supplied
     ``states``.  Match ``states`` to corresponding values in cmd_states
@@ -98,50 +155,10 @@ def update_states_db(states, db, h5):
                                (states[0].datestart, states[-1].datestop))
 
     if len(db_states) > 0:
-        # Get states columns that are not float type. descr gives list of
-        # (colname, type_descr)
-        match_cols = [x[0] for x in states.dtype.descr if 'f' not in x[1]]
-
-        # Find mismatches: direct compare or where pitch or attitude differs by
-        # > 1 arcsec
-        for i_diff, db_state, state in izip(count(), db_states, states):
-            mismatches = set(x for x in match_cols if db_state[x] != state[x])
-            if abs(db_state.pitch - state.pitch) > 0.0003:
-                mismatches.add('pitch')
-            if Ska.Sun.sph_dist(db_state.ra, db_state.dec,
-                                state.ra, state.dec) > 0.0003:
-                mismatches.add('attitude')
-            if mismatches:
-                # Case 1: direct mismatch in states
-                log_mismatch(mismatches, db_states, states, i_diff)
-                break
-        else:
-            # At this point the for loop finished with no detected diffs.
-            # Now i_diff = min(len(db_states), len(states)) - 1.
-
-            if len(states) == len(db_states):
-                # Case 2: made it with no mismatches and the number of states
-                # match so no action is required.
-                logging.debug('update_states_db: No database update required')
-                return False
-
-            # Otherwise there is an indirect mismatch in states because one
-            # table has a valid state row where the other table has no row
-            # (i.e. the table ends).  There are two more cases here:
-            #
-            # Case 3. The typical case is when len(db_states) > len(states):
-            #   * Every db_state is in states but states was extended by adding
-            #     new timeline load segments due to new weekly products.
-            #
-            # Case 4. Less common case is when len(states) < len(db_states):
-            #   * db_states needs to be shortened to delete states, probably
-            #     due to a load interrupt like NSM or safemode (but not SCS107)
-            #
-            # Now increment i_diff by one to point at the position of the
-            # "mismatch", between an existing state and a null state beyond the
-            # end of available states.
-
-            i_diff += 1
+        i_diff = get_states_i_diff(db_states, states)
+        if i_diff is None:
+            logging.debug('update_states_db: No database update required')
+            return False
 
         # Mismatch occurred at i_diff.  If that index is within db_states
         # (cases 1 and 4 in get_states_i_diff) drop db_states after
