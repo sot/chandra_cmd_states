@@ -1,8 +1,3 @@
-.. cmd_states documentation master file, created by
-   sphinx-quickstart on Thu May  7 14:33:29 2009.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Chandra commanded states database
 ==================================
 
@@ -14,11 +9,11 @@ state and a predictive state at any time.
 
 A commanded state is an interval of time over which certain parameters of
 interest (obsid, SIM-Z position, commanded attitude, ACIS power configuration,
-etc) are invariant.  This database is useful for several reasons: 
+etc) are invariant.  This database is useful for several reasons:
 
 1. It goes out into the future to the extent of approved load products
-2. It is extremely fast and the commanded states for the entire mission can be 
-   retrieved in 15 seconds.
+2. It is extremely fast and the commanded states for the entire mission can be
+   retrieved in a few seconds.
 3. It takes care of the difficult task of tracking which command loads and
    mission planning products actually ran on the spacecraft.
 4. It provides a path from each command back to the mission planning products
@@ -29,19 +24,35 @@ tracked.
 
 Database access
 ---------------
-A convenient front end to access the commanded states database is available
-via the `get_cmd_states <get_cmd_states.html>`_ tool.
 
-Low-level database access and manipulation is done via the Chandra.cmd_states_ module.
+A convenient linux command line tool to access the commanded states database is
+available via the :ref:`get_cmd_states` tool.  For example::
 
-.. _Chandra.cmd_states: ../pydocs/Chandra.cmd_states.html
+  % get_cmd_states --start 2012:121 --stop 2012:122 --vals obsid,simpos
+  datestart             datestop              tstart        tstop         obsid simpos
+  2012:121:10:32:46.375 2012:121:13:17:43.375 452169232.559 452179129.559 54646 -99616
+  2012:121:13:17:43.375 2012:121:15:08:21.375 452179129.559 452185767.559 14212 75624
+  2012:121:15:08:21.375 2012:121:16:04:07.192 452185767.559 452189113.376 13331 75624
+  2012:121:16:04:07.192 2012:123:11:23:20.985 452189113.376 452345067.169 13847 75624
 
-cmd_states
------------
+To access the commanded states database from within a Python script use the
+:func:`~Chandra.cmd_states.get_states` function.  For instance::
+
+  >>> from Chandra.cmd_states import get_states
+  >>> states = get_states('2011:100', '2011:101')
+  >>> states[['datestart', 'datestop', 'obsid', 'simpos']]
+  array([('2011:100:11:53:12.378', '2011:101:00:23:01.434', 13255, 75624),
+         ('2011:101:00:23:01.434', '2011:101:00:26:01.434', 13255, 91272),
+         ('2011:101:00:26:01.434', '2011:102:13:39:07.421', 12878, 91272)],
+        dtype=[('datestart', '|S21'), ('datestop', '|S21'), ('obsid', '<i8'), ('simpos', '<i8')])
+
+
+cmd_states table
+------------------
 The main table is the ``cmd_states`` table with the following columns:
 
 ============   =========   ====
-Name           Type        Size         
+Name           Type        Size
 ============   =========   ====
  datestart     varchar      21
  datestop      varchar      21
@@ -69,8 +80,8 @@ Name           Type        Size
  dither        varchar       4
 ============   =========   ====
 
-cmds
-----
+cmds table
+----------
 
 In addition the ``cmds`` table maintains a history (definitive and predictive)
 of every on-board command that will affect the commanded state.  The command
@@ -80,10 +91,10 @@ autonomous or ground commanding (e.g. SCS107, Normal Sun Mode transitions,
 anomaly recovery, etc).
 
 ================  ========  =======
-name              type      length     
+name              type      length
 ================  ========  =======
-id (PK)            int        4 
-timeline_id        int        4   
+id (PK)            int        4
+timeline_id        int        4
 date               char      21
 time              float       8
 cmd               varchar    12
@@ -97,7 +108,7 @@ scs               int         4
 **cmd_intpars** and **cmd_fltpars**
 
 ================  ==========  =======
-name              type        length     
+name              type        length
 ================  ==========  =======
 cmd_id (FK)        int           4
 timeline_id (FK)   int           4
@@ -105,12 +116,14 @@ name               varchar      15
 value              int/float     8
 ================  ==========  =======
 
+Note that unlike the commanded states table, the cmds tables are only available
+on Sybase on the HEAD network.
 
 Tools
-====================
+------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    add_nonload_cmds
    get_cmd_states
@@ -119,10 +132,36 @@ Tools
    make_cmd_tables
    update_cmd_states
 
-Indices and tables
-==================
+Chandra.cmd_states functions
+-----------------------------
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+The following key functions within the ``Chandra.cmd_states`` module are
+available for users.
 
+.. automodule:: Chandra.cmd_states
+
+get_cmds
+^^^^^^^^^
+.. autofunction:: get_cmds
+
+get_states
+^^^^^^^^^^
+.. autofunction:: get_states
+
+interpolate_states
+^^^^^^^^^^^^^^^^^^^^^^^
+.. autofunction:: interpolate_states
+
+reduce_states
+^^^^^^^^^^^^^^
+.. autofunction:: reduce_states
+
+API docs
+--------------
+
+The full API docs for ``Chandra.cmd_states`` are available here:
+
+.. toctree::
+   :maxdepth: 2
+
+   api

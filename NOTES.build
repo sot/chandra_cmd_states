@@ -9,7 +9,8 @@ This build commands and command states valid from 2002:007
 ##
 
 # Create sqlite3 db_base.db3 with timelines and load_segments since 2002.
-# This is for testing, not production.
+# This is for testing, not production.  One can use --start and --stop options
+# as needed.
 ./make_new_tl_ls.py
 
 # Apply fixes for known issues
