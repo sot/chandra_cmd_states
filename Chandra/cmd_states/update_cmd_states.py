@@ -364,6 +364,9 @@ def get_options():
                       type='int',
                       default=20,
                       help='Log level (10=debug, 20=info, 30=warnings)')
+    parser.add_option("--occ",
+                      action='store_true',
+                      help="Running on the OCC GRETA network")
 
     (opt, args) = parser.parse_args()
     return (opt, args)
