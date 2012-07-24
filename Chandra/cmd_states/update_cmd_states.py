@@ -144,6 +144,11 @@ def update_states_db(states, db, h5):
 
     :rtype: None
     """
+    # If input states list is empty then no update needed
+    if len(states) == 0:
+        raise ValueError('Unexpected input of an empty states table in '
+                         'update_states_db')
+
     # If the HDF5 version does not exist then try to make it now.
     if h5 and not hasattr(h5.root, 'data'):
         make_hdf5_cmd_states(db, h5)
