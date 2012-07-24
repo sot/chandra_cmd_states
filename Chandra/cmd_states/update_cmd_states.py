@@ -214,10 +214,9 @@ def delete_cmd_states(datestart, db, h5):
             h5d.removeRows(idxs[0], h5d.nrows)
         else:
             # Remove all rows from file.  HDF5 cannot support this so just
-            # set obsid to an illegal value and remove later.
-            h5d.cols.obsid[:] = -999
-            logging.warning('WARNING: Setting obsid values to '
-                            '-999 to remove later')
+            # issue a non-fatal error that will generate a warning email.
+            logging.error('ERROR: trying to delete all HDF5 rows, IGNORING')
+
         h5d.flush()
 
     # Delete rows from database table
@@ -288,15 +287,6 @@ def check_consistency(db, h5, n_check=3000):
     final datestart.
     """
     h5d = h5.root.data
-
-    # Possibly remove an initial row as a cleanup from previous processing.
-    # This is only expected to happen in testing.
-    if h5d[0]['obsid'] == -999:
-        idxs = h5d.getWhereList("obsid == -999")
-        logging.warning('WARNING: Removing previously unremoved rows {}:{}'
-                        .format(0, np.max(idxs) + 1))
-        h5d.removeRows(0, np.max(idxs) + 1)
-        h5d.flush()
 
     # Check that lengths match
     db_len = db.fetchone('select count(*) as cnt from cmd_states')['cnt']
