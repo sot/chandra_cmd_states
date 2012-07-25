@@ -86,15 +86,15 @@ def get_sql_states(start, stop, dbi, server, user, database):
     return states
 
 
-def get_states(start=None, stop=None, vals=None, allow_identical=False,
+def fetch_states(start=None, stop=None, vals=None, allow_identical=False,
                    dbi='hdf5', server=None, user='aca_read', database='aca'):
     """Get Chandra commanded states over a range of time as a structured array.
 
     Examples::
 
       # Get commanded states using the default HDF5 table
-      >>> from Chandra.cmd_states import get_states
-      >>> states = get_states('2011:100', '2011:101', vals=['obsid', 'simpos'])
+      >>> from Chandra.cmd_states import fetch_states
+      >>> states = fetch_states('2011:100', '2011:101', vals=['obsid', 'simpos'])
       >>> states[['datestart', 'datestop', 'obsid', 'simpos']]
       array([('2011:100:11:53:12.378', '2011:101:00:23:01.434', 13255, 75624),
              ('2011:101:00:23:01.434', '2011:101:00:26:01.434', 13255, 91272),
@@ -102,7 +102,7 @@ def get_states(start=None, stop=None, vals=None, allow_identical=False,
             dtype=[('datestart', '|S21'), ('datestop', '|S21'), ('obsid', '<i8'), ('simpos', '<i8')])
 
       # Get same states from Sybase (25 times slower)
-      >>> states2 = get_states('2011:100', '2011:101', vals=['obsid', 'simpos'], dbi='sybase')
+      >>> states2 = fetch_states('2011:100', '2011:101', vals=['obsid', 'simpos'], dbi='sybase')
       >>> states2 == states
       array([ True,  True,  True], dtype=bool)
 
@@ -149,7 +149,7 @@ def get_states(start=None, stop=None, vals=None, allow_identical=False,
 
 
 def main(main_args=None):
-    """Command line interface to get_states.
+    """Command line interface to fetch_states.
     """
 
     descr = ('Get the Chandra commanded states over a range '
@@ -193,7 +193,7 @@ def main(main_args=None):
                 ordered_vals.append(state_val)
         kwargs['vals'] = ordered_vals
 
-    states = get_states(**kwargs)
+    states = fetch_states(**kwargs)
 
     out = open(outfile, 'w') if outfile else sys.stdout
     out.write(Ska.Numpy.pformat(states))

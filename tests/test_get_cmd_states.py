@@ -4,7 +4,7 @@ from StringIO import StringIO
 import numpy as np
 import asciitable
 
-from Chandra.cmd_states.get_cmd_states import get_states_cli, get_states
+from Chandra.cmd_states.get_cmd_states import main, fetch_states
 
 # This is taken from the output of
 #  get_cmd_states --start=2010:100 --stop=2010:101 --vals=obsid,simpos,pcad_mode,clocking,power_cmd
@@ -30,12 +30,12 @@ OUT = "\n".join(LINES) + "\n"
 VALS = asciitable.read(LINES, guess=False)
 
 
-def test_get_states_cli():
+def test_get_states_main():
     """Test command line interface to getting commanded states.
     """
     cli_string = "--start=2010:100 --stop=2010:101 --vals=obsid,simpos,pcad_mode,clocking,power_cmd"
     sys.stdout = StringIO()
-    get_states_cli(cli_string.split())
+    main(cli_string.split())
     out = sys.stdout.getvalue()
     sys.stdout = sys.__stdout__
     assert out == OUT
@@ -46,8 +46,8 @@ def test_get_states():
     """
     val_names = "obsid,simpos,pcad_mode,clocking,power_cmd".split(',')
     for dbi in ('sybase', 'hdf5'):
-        states = get_states(start='2010:100', stop='2010:101', dbi=dbi,
-                            vals=val_names)
+        states = fetch_states(start='2010:100', stop='2010:101', dbi=dbi,
+                              vals=val_names)
         for name in states.dtype.names:
             if states[name].dtype.kind == 'f':
                 assert np.allclose(states[name], VALS[name])
