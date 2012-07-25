@@ -36,10 +36,10 @@ available via the :ref:`get_cmd_states` tool.  For example::
   2012:121:16:04:07.192 2012:123:11:23:20.985 452189113.376 452345067.169 13847 75624
 
 To access the commanded states database from within a Python script use the
-:func:`~Chandra.cmd_states.get_states` function.  For instance::
+:func:`~Chandra.cmd_states.fetch_states` function.  For instance::
 
-  >>> from Chandra.cmd_states import get_states
-  >>> states = get_states('2011:100', '2011:101')
+  >>> from Chandra.cmd_states import fetch_states
+  >>> states = fetch_states('2011:100', '2011:101')
   >>> states[['datestart', 'datestop', 'obsid', 'simpos']]
   array([('2011:100:11:53:12.378', '2011:101:00:23:01.434', 13255, 75624),
          ('2011:101:00:23:01.434', '2011:101:00:26:01.434', 13255, 91272),
@@ -143,6 +143,10 @@ available for users.
 get_cmds
 ^^^^^^^^^
 .. autofunction:: get_cmds
+
+fetch_states
+^^^^^^^^^^^^^^
+.. autofunction:: fetch_states
 
 get_states
 ^^^^^^^^^^
