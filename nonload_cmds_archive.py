@@ -327,3 +327,12 @@ cmd_states.interrupt_loads('2012:247:12:57:33.000', db, observing_only=True, cur
 cmds = generate_cmds('2013:076:12:32:40.000', cmd_set('scs107'))
 cmd_states.insert_cmds_db(cmds, None, db)
 cmd_states.interrupt_loads('2013:076:12:32:40.000', db, observing_only=True, current_only=True)
+
+# forgot to set permissions on nonload_cmd_archive before running
+# add_nonload_cmds.  Cmds added here manually
+# date=2013:076:21:19:00.000 cmd_set=aciscti args=
+cmds = generate_cmds('2013:076:21:19:00.000', cmd_set('aciscti'))
+cmd_states.insert_cmds_db(cmds, None, db)
+# date=2013:077:18:50:00.000 cmd_set=acis args=AA00000000 WSVIDALLDN
+cmds = generate_cmds('2013:077:18:50:00.000', cmd_set('acis','AA00000000','WSVIDALLDN'))
+cmd_states.insert_cmds_db(cmds, None, db)
