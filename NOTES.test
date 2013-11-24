@@ -27,4 +27,12 @@ X Ingest into sybase
   - Science recovery loads (?)
   - Proper updates to cmd_states and cmds after iFOT updates 5 days later
 
+##################################################
+# Test cmd_states syncing with OCC / GRETA
+##################################################
 
+cp /proj/sot/ska/data/cmd_states/cmd_states.h5 ./cmd_states.h5
+./update_cmd_states.py --dbi=sybase --server=sybase --user=aca_read --h5file=cmd_states.h5
+rm cmd_states.h5
+./update_cmd_states.py --occ --h5file=cmd_states.h5
+diff /proj/sot/ska/data/cmd_states/cmd_states.h5 ./cmd_states.h5

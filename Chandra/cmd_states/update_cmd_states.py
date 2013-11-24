@@ -9,6 +9,7 @@ import Ska.ftp
 import numpy as np
 import tables
 import Ska.DBI
+from kadi import occweb
 
 from . import cmd_states
 
@@ -324,47 +325,6 @@ def check_consistency(db, h5, n_check=3000):
                       'mismatch starting at {}'.format(datestart_mismatch))
 
 
-def put_h5_to_lucky(h5file):
-    """Put the HDF5 cmd_states ``h5file`` on to lucky.  First put it at the top
-    level, then when complete move it into a subdir eng_archive.  This lets the
-    OCC side just watch for fully-uploaded files in that directory.
-    """
-    h5dir, h5base = os.path.split(os.path.abspath(h5file))
-    logging.info('ftp to lucky')
-    ftp = Ska.ftp.FTP('lucky')
-    ftp.cd('/taldcroft')
-    files = ftp.nlst()
-    if 'cmd_states' not in files:
-        logging.info('mkdir cmd_states')
-        ftp.mkd('cmd_states')
-    logging.info('put {0}'.format(h5file))
-    with Ska.File.chdir(h5dir):
-        ftp.put(h5base)
-        logging.info('rename {0} cmd_states/{0}'.format(h5base))
-        ftp.rename(h5base, 'cmd_states/' + h5base)
-
-    ftp.close()
-
-
-def get_h5_from_lucky(h5file):
-    """Get HDF5 cmd_states file from lucky and copy to ``h5file``.
-    """
-    # Open lucky ftp connection and look for h5file in '/taldcroft/cmd_states/'
-    h5dir, h5base = os.path.split(os.path.abspath(h5file))
-    logging.info('ftp to lucky')
-    ftp = Ska.ftp.FTP('lucky')
-    ftp.set_pasv(False)  # req'd on GRETA network
-    ftp.cd('/taldcroft/cmd_states')
-    if h5base in ftp.ls():
-        with Ska.File.chdir(h5dir):
-            logging.info('Getting h5 file {0} from lucky'.format(h5base))
-            ftp.get(h5base)
-            logging.info('Deleting ftp {0}'.format(h5base))
-            ftp.delete(h5base)
-
-    ftp.close()
-
-
 def get_options():
     """Get options for command line interface to update_cmd_states.
     """
@@ -431,12 +391,17 @@ def main():
     logging.info('Running {0} at {1}'
                  .format(os.path.basename(sys.argv[0]), time.ctime()))
 
+    # Set val to indicate if the output h5file is the "flight" version.
+    # In that case use ftp directory cmd_states, else cmd_states_test.
+    is_flight = opt.h5file == '/proj/sot/ska/data/cmd_states/cmd_states.h5'
+    ftp_dirname = 'cmd_states' if is_flight else 'cmd_states_test'
+
     # If running on the OCC (GRETA) network then just try to get a new HDF5
-    # file from lucky in /taldcroft/cmd_states and copy to opt.h5file.  The
+    # file from lucky in /home/taldcroft/cmd_states and copy to opt.h5file.  The
     # file will appear on lucky only when the HEAD network version gets updated
     # with changed content.
     if opt.occ and opt.h5file:
-        get_h5_from_lucky(opt.h5file)
+        occweb.ftp_get_from_lucky(ftp_dirname, [opt.h5file], logger=logging)
         sys.exit(0)
 
     logging.debug('Connecting to db: dbi=%s server=%s user=%s database=%s'
@@ -492,11 +457,10 @@ def main():
         n_check = 3000 if states_changed else 100
         check_consistency(db, h5, n_check)
 
-        # If states were updated AND the HDF5 is the "flight" version then
-        # upload to the lucky ftp server.
-        h5file_flight = '/proj/sot/ska/data/cmd_states/cmd_states.h5'
-        if states_changed and os.path.abspath(opt.h5file) == h5file_flight:
-            put_h5_to_lucky(opt.h5file)
+        # If states were updated OR the HDF5 is NOT the "flight" version (i.e. doing
+        # testing) then upload to the lucky ftp server.
+        if states_changed or not is_flight:
+            occweb.ftp_put_to_lucky(ftp_dirname, [opt.h5file], logger=logging)
 
     # Close down for good measure.
     db.conn.close()
