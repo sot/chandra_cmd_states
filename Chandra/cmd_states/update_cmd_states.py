@@ -457,10 +457,8 @@ def main():
         n_check = 3000 if states_changed else 100
         check_consistency(db, h5, n_check)
 
-        # If states were updated OR the HDF5 is NOT the "flight" version (i.e. doing
-        # testing) then upload to the lucky ftp server.
-        if states_changed or not is_flight:
-            occweb.ftp_put_to_lucky(ftp_dirname, [opt.h5file], logger=logging)
+        # upload to lucky ftp server
+        occweb.ftp_put_to_lucky(ftp_dirname, [opt.h5file], logger=logging)
 
     # Close down for good measure.
     db.conn.close()
