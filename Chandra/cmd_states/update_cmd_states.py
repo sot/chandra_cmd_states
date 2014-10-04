@@ -214,7 +214,7 @@ def delete_cmd_states(datestart, db, h5):
                           'by datestart after {}'.format(datestart))
 
         if idxs[0] > 0:
-            logging.info('udpate_states_db: '
+            logging.info('update_states_db: '
                          'removed HDF5 cmd_states rows from {} to {}'
                          .format(idxs[0], h5d.nrows - 1))
             h5d.removeRows(idxs[0], h5d.nrows)
@@ -228,7 +228,7 @@ def delete_cmd_states(datestart, db, h5):
     # Delete rows from database table
     cmd = ("DELETE FROM cmd_states WHERE datestart >= '{}'"
            .format(datestart))
-    logging.info('udpate_states_db: ' + cmd)
+    logging.info('update_states_db: ' + cmd)
     db.execute(cmd)
 
 
@@ -240,7 +240,7 @@ def insert_cmd_states(states, i_diff, db, h5):
     # consistent.
     if h5 and hasattr(h5.root, 'data'):
         h5d = h5.root.data
-        logging.info('udpate_states_db: '
+        logging.info('update_states_db: '
                      'inserting states[{}:{}] to HDF5 cmd_states'
                      .format(i_diff, len(states)))
         # Create new struct array from states which is in the column
@@ -252,7 +252,7 @@ def insert_cmd_states(states, i_diff, db, h5):
         h5d.append(rows)
         h5d.flush()
 
-    logging.info('udpate_states_db: '
+    logging.info('update_states_db: '
                  'inserting states[{}:{}] to database cmd_states'
                  .format(i_diff, len(states)))
 
