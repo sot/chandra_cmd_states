@@ -669,8 +669,8 @@ def cmd_set(name, *args):
         """
         att = Quat(args)
         return (dict(cmd='COMMAND_SW',
-                     tlmsid='AONNMODE',
-                     msid='AONNMODE',
+                     tlmsid='AONMMODE',
+                     msid='AONMMODE',
                      dur=0.25625),
                 dict(cmd='COMMAND_SW',
                      tlmsid='AONM2NPE',
