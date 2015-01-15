@@ -485,3 +485,18 @@ cmd_states.insert_cmds_db(cmds, None, db)
 # date=2015:008:17:38:02.000 cmd_set=acis args=WSVIDALLDN
 cmds = generate_cmds('2015:008:17:38:02.000', cmd_set('acis', 'WSVIDALLDN'))
 cmd_states.insert_cmds_db(cmds, None, db)
+
+# Add cmds to include dither disable and obsid=0 during NSM
+cmds = []
+dith_on = (dict(dur=1.025),
+           dict(cmd='COMMAND_SW',
+                tlmsid='AOENDITH',
+                ))
+dith_off = (dict(dur=1.025),
+            dict(cmd='COMMAND_SW',
+                 tlmsid='AODSDITH',
+                 ))
+cmds += generate_cmds('2015:006:12:53:43.100', cmd_set('obsid', 0))
+cmds += generate_cmds('2015:006:12:53:43.100', dith_off)
+cmds += generate_cmds('2015:009:03:38:36.100', dith_on)
+cmd_states.insert_cmds_db(cmds, None, db)
