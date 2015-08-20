@@ -16,6 +16,7 @@ import Ska.DBI
 from Chandra.Time import DateTime
 import Chandra.Maneuver
 from Quaternion import Quat
+import Ska.Sun
 import Ska.ParseCM
 import Ska.Numpy
 
@@ -107,6 +108,23 @@ def _make_add_trans(transitions, date, exclude):
     return add_trans
 
 
+def _make_pitch_cmds(cmds, sample_time=5000):
+    """
+    Add cmds to clock out pitch for any long states
+    """
+    cmd_times = np.array(DateTime([cmd['date'] for cmd in cmds]).secs)
+    durations = cmd_times[1:] - cmd_times[0:-1]
+    long_dur = durations > sample_time
+    pitch_cmd_times = []
+    for cmd_time, dur in zip(cmd_times[long_dur], durations[long_dur]):
+        pitch_cmd_times.extend(cmd_time + np.arange(0, dur, step=sample_time))
+    pitch_cmds = [{'cmd': 'GET_PITCH',
+                   'tlmsid': 'GET_PITCH',
+                   'date': DateTime(t).date,}
+                  for t in pitch_cmd_times]
+    return pitch_cmds
+
+
 def get_states(state0, cmds, exclude=None):
     """Get states resulting from the spacecraft commands ``cmds`` starting
     from an initial ``state0``.
@@ -169,6 +187,11 @@ def get_states(state0, cmds, exclude=None):
     # transition.
     transitions = {}
 
+    # Add extra mocked-up cmds to sample pitch
+    pitch_cmds = _make_pitch_cmds(cmds)
+    cmds.extend(pitch_cmds)
+    cmds.sort(key=lambda y: y['date'])
+
     cmds_after_state0 = [x for x in cmds if x['date'] > state0['datestart']]
 
     for cmd in cmds_after_state0:
@@ -184,6 +207,13 @@ def get_states(state0, cmds, exclude=None):
         # Obsid
         if cmd_type == 'MP_OBSID':
             add_trans(obsid=params['ID'])
+
+        # Mocked-up cmds to sample pitch
+        elif cmd_type == 'GET_PITCH':
+            q_att = Quat(curr_att)
+            # add pitch/attitude commands
+            pitch = Ska.Sun.pitch(q_att.ra, q_att.dec, date)
+            add_trans(pitch=pitch)
 
         # SIM Z
         elif cmd_type == 'SIMTRANS':
