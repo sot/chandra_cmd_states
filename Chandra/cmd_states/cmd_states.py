@@ -102,7 +102,15 @@ def decode_power(mnem):
 
 def _make_add_trans(transitions, date, exclude):
     def add_trans(date=date, **kwargs):
-        # if no key in kwargs is in the exclude set then update transition
+        # If no key in kwargs is in the exclude set then update transition
+        # And, when doing any update, update a bookkeeping key 'last_date'
+        # that stores the latest date of any processed cmd/transition.
+        # This is used to prevent overlap between the GET_PITCH mocked
+        # up cmds and the inserted/mock maneuver cmds.  If any one of the
+        # equally-spaced GET_PITCH cmds occurs during a maneuver, the GET_PITCH
+        # will be ignored in processing because the maneuver cmd insertion
+        # through the maneuver time range will have updated last_date to
+        # a time later than that GET_PITCH command.
         if not (exclude and set(exclude).intersection(kwargs)):
             transitions.setdefault(date, {}).update(kwargs)
             transitions['last_date'] = date
@@ -324,6 +332,8 @@ def get_states(state0, cmds, exclude=None):
             curr_att = targ_att
 
     # Delete the last_date bookkeeping key
+    # It is no longer needed and would break the following loop
+    # over sorted(transitions)
     del transitions['last_date']
 
     # Make the states from state0 and the final dict of transitions
