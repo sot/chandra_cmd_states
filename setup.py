@@ -14,6 +14,5 @@ setup(name='Chandra.cmd_states',
                   ],
       version=version,
       zip_safe=False,
-      namespace_packages=['Chandra'],
       packages=['Chandra', 'Chandra.cmd_states'],
       )
