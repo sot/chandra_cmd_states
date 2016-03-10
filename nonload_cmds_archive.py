@@ -569,3 +569,6 @@ cmd_states.insert_cmds_db(cmds, None, db)
 # date=2016:064:21:45:03.000 cmd_set=manvr args=158.900 -17.400 343.301
 cmds = generate_cmds('2016:064:21:45:03.000', cmd_set('manvr',158.900,-17.400,343.301))
 cmd_states.insert_cmds_db(cmds, None, db)
+
+# Realtime load interruption for MAR1116 replan
+cmd_states.interrupt_loads('2016:071:12:05:00.000', db, observing_only=False)
