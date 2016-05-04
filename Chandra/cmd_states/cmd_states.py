@@ -213,6 +213,14 @@ def get_states(state0, cmds, exclude=None):
             elif tlmsid == 'WSFEPALLUP':
                 add_trans(fep_count=6, power_cmd=tlmsid)
 
+            # first special case raw mode si mode
+            elif tlsmid == 'WT000B5024':
+                add_trans(si_mode='TN_000B4')
+
+            # second special case raw mode si mode
+            elif tlsmid == 'WT000B7024':
+                add_trans(si_mode='TN_000B6')
+
             elif tlmsid.startswith('WC'):
                 add_trans(si_mode='CC_' + tlmsid[2:7])
 
