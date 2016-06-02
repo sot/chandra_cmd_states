@@ -113,7 +113,10 @@ def _make_add_trans(transitions, date, exclude):
         # a time later than that GET_PITCH command.
         if not (exclude and set(exclude).intersection(kwargs)):
             transitions.setdefault(date, {}).update(kwargs)
-            transitions['last_date'] = date
+            # Only update 'last_date' if the supplied date to _make_add_trans
+            # is actually later than the stored 'last_date' in the structure
+            if date > transitions['last_date']:
+                transitions['last_date'] = date
     return add_trans
 
 
