@@ -196,7 +196,7 @@ def get_states(state0, cmds, exclude=None):
     transitions = {'last_date': cmds[0]['date']}
 
     # Add extra mocked-up cmds to sample pitch
-    pitch_cmds = _make_pitch_cmds(cmds[0]['date'], cmds[-1]['date'])
+    pitch_cmds = _make_pitch_cmds(state0['datestart'], cmds[-1]['date'])
     cmds.extend(pitch_cmds)
     cmds.sort(key=lambda y: y['date'])
 
