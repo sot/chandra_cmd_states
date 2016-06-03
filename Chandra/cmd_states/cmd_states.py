@@ -120,16 +120,16 @@ def _make_add_trans(transitions, date, exclude):
     return add_trans
 
 
-def _make_pitch_cmds(datestart, datestop, sample_time=10000):
+def _make_pitch_cmds(datestart, datestop, sample_time=10000.):
     """
     Add cmds to clock out pitch for any long states
     """
     return [{'cmd': 'GET_PITCH',
              'tlmsid': 'GET_PITCH',
-             'date': DateTime(t).date,}
-            for t in np.arange(DateTime(datestart).secs,
-                               DateTime(datestop).secs,
-                               sample_time)]
+             'date': DateTime(t).date}
+            for t in np.arange(np.floor(DateTime(datestart).secs / sample_time),
+                               1 + np.floor(DateTime(datestop).secs / sample_time),
+                               1) * sample_time]
 
 
 def get_states(state0, cmds, exclude=None):
