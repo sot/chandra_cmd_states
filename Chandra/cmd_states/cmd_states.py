@@ -120,7 +120,7 @@ def _make_add_trans(transitions, date, exclude):
     return add_trans
 
 
-def _make_pitch_cmds(datestart, datestop, sample_time=5000):
+def _make_pitch_cmds(datestart, datestop, sample_time=10000):
     """
     Add cmds to clock out pitch for any long states
     """
