@@ -187,6 +187,11 @@ def get_states(state0, cmds, exclude=None):
 
     curr_att = [state0[x] for x in ('q1', 'q2', 'q3', 'q4')]
 
+    # Add extra mocked-up cmds to sample pitch
+    pitch_cmds = _make_pitch_cmds(state0['datestart'], cmds[-1]['date'])
+    cmds.extend(pitch_cmds)
+    cmds.sort(key=lambda y: y['date'])
+
     # A transition is a dictionary of state updates occuring at one time, e.g.
     # {'simpos': -99616, 'pcad_mode': 'NMAN'}. The transition dicts are
     # collected 'transitions' dict and keyed by cmd date.  In this way multiple
@@ -194,11 +199,6 @@ def get_states(state0, cmds, exclude=None):
     # transition.  Also use the dictionary to store a value for the
     # last transition date.
     transitions = {'last_date': cmds[0]['date']}
-
-    # Add extra mocked-up cmds to sample pitch
-    pitch_cmds = _make_pitch_cmds(state0['datestart'], cmds[-1]['date'])
-    cmds.extend(pitch_cmds)
-    cmds.sort(key=lambda y: y['date'])
 
     cmds_after_state0 = [x for x in cmds if x['date'] > state0['datestart']]
 
