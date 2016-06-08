@@ -16,6 +16,7 @@ import Ska.DBI
 from Chandra.Time import DateTime
 import Chandra.Maneuver
 from Quaternion import Quat
+import Ska.Sun
 import Ska.ParseCM
 import Ska.Numpy
 
@@ -101,10 +102,40 @@ def decode_power(mnem):
 
 def _make_add_trans(transitions, date, exclude):
     def add_trans(date=date, **kwargs):
-        # if no key in kwargs is in the exclude set then update transition
+        # If no key in kwargs is in the exclude set then update transition
+        # And, when doing any update, update a bookkeeping key 'last_date'
+        # that stores the latest date of any processed cmd/transition.
+        # This is used to prevent overlap between the GET_PITCH mocked
+        # up cmds and the inserted/mock maneuver cmds.  If any one of the
+        # equally-spaced GET_PITCH cmds occurs during a maneuver, the GET_PITCH
+        # will be ignored in processing because the maneuver cmd insertion
+        # through the maneuver time range will have updated last_date to
+        # a time later than that GET_PITCH command.
         if not (exclude and set(exclude).intersection(kwargs)):
             transitions.setdefault(date, {}).update(kwargs)
+            # Only update 'last_date' if the supplied date to _make_add_trans
+            # is actually later than the stored 'last_date' in the structure
+            if date > transitions['last_date']:
+                transitions['last_date'] = date
     return add_trans
+
+
+def _make_pitch_cmds(datestart, datestop, sample_time=10000.):
+    """
+    Make cmds to break states into smaller states to sample pitch
+
+    """
+    # np.floor is used here to get 'times' at even increments of "sample_time"
+    # so that the commands will be at the same times in an interval even
+    # if a different time range is being updated.
+    tstart = np.floor(DateTime(datestart).secs / sample_time) * sample_time
+    tstop = DateTime(datestop).secs
+    times = np.arange(tstart, tstop, sample_time)
+    out = [{'cmd': 'GET_PITCH',
+            'tlmsid': 'GET_PITCH',
+            'date': DateTime(t).date}
+            for t in times]
+    return out
 
 
 def get_states(state0, cmds, exclude=None):
@@ -162,12 +193,18 @@ def get_states(state0, cmds, exclude=None):
 
     curr_att = [state0[x] for x in ('q1', 'q2', 'q3', 'q4')]
 
+    # Add extra mocked-up cmds to sample pitch
+    pitch_cmds = _make_pitch_cmds(state0['datestart'], cmds[-1]['date'])
+    cmds.extend(pitch_cmds)
+    cmds.sort(key=lambda y: y['date'])
+
     # A transition is a dictionary of state updates occuring at one time, e.g.
     # {'simpos': -99616, 'pcad_mode': 'NMAN'}. The transition dicts are
     # collected 'transitions' dict and keyed by cmd date.  In this way multiple
     # commands at the same time can easily be accumulated to a single
-    # transition.
-    transitions = {}
+    # transition.  Also use the dictionary to store a value for the
+    # last transition date.
+    transitions = {'last_date': cmds[0]['date']}
 
     cmds_after_state0 = [x for x in cmds if x['date'] > state0['datestart']]
 
@@ -184,6 +221,18 @@ def get_states(state0, cmds, exclude=None):
         # Obsid
         if cmd_type == 'MP_OBSID':
             add_trans(obsid=params['ID'])
+
+        # Mocked-up cmds to sample pitch
+        elif cmd_type == 'GET_PITCH':
+            # If we have made transitions with dates after
+            # this mock command (maneuver transitions),
+            # skip the 'GET_PITCH'
+            if cmd['date'] < transitions['last_date']:
+                continue
+            q_att = Quat(curr_att)
+            # add pitch/attitude commands
+            pitch = Ska.Sun.pitch(q_att.ra, q_att.dec, date)
+            add_trans(pitch=pitch)
 
         # SIM Z
         elif cmd_type == 'SIMTRANS':
@@ -283,7 +332,6 @@ def get_states(state0, cmds, exclude=None):
                           pitch=pitch,
                           q1=att.q1, q2=att.q2, q3=att.q3, q4=att.q4,
                           ra=q_att.ra, dec=q_att.dec, roll=q_att.roll)))
-
             # If auto-transition to NPM after manvr is enabled (this is
             # normally the case) then back to NPNT at end of maneuver
             if auto_npnt:
@@ -291,6 +339,11 @@ def get_states(state0, cmds, exclude=None):
 
             # update the current attitude to the target attitude
             curr_att = targ_att
+
+    # Delete the last_date bookkeeping key
+    # It is no longer needed and would break the following loop
+    # over sorted(transitions)
+    del transitions['last_date']
 
     # Make the states from state0 and the final dict of transitions
     states = [state0]
