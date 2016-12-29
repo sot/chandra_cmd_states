@@ -259,7 +259,7 @@ def insert_cmd_states(states, i_diff, db, h5):
     for state in states[i_diff:]:
         # Need commit=True for sybase -- very large inserts will fail
         db.insert(dict((x, state[x]) for x in state.dtype.names), 'cmd_states',
-                  commit=True)
+                  commit=(db.dbi == 'sybase'))
     db.commit()
 
     if h5 and not hasattr(h5.root, 'data'):
@@ -271,7 +271,7 @@ def make_hdf5_cmd_states(db, h5):
     database version.
     """
     # This takes a little while...
-    logging.info('Reading cmd_states table from sybase, stand by ..')
+    logging.info('Reading cmd_states table from {}, stand by ..'.format(db.server))
     db_rows = db.fetchall('select * from cmd_states')
     if len(db_rows) == 0:
         # Need some initial data in SQL version so just return
