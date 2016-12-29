@@ -10,6 +10,7 @@ import time
 import pprint
 
 import numpy as np
+from six.moves import range
 
 import Ska.File
 import Ska.DBI
@@ -79,7 +80,7 @@ def decode_power(mnem):
                 'feps': '',
                 'ccds': ''}
     # count the true binary bits
-    for bit in xrange(0, 6):
+    for bit in range(0, 6):
         if (fepkey & (1 << bit)):
             fep_info['fep_count'] = fep_info['fep_count'] + 1
             fep_info['feps'] = fep_info['feps'] + str(bit) + ' '
@@ -88,7 +89,7 @@ def decode_power(mnem):
     vidkey = int(powstr, 16) >> 8
 
     # count the true bits
-    for bit in xrange(0, 10):
+    for bit in range(0, 10):
         if (vidkey & (1 << bit)):
             fep_info['ccd_count'] = fep_info['ccd_count'] + 1
             # position indicates I or S chip

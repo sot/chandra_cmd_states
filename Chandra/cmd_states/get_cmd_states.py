@@ -73,7 +73,7 @@ def get_sql_states(start, stop, dbi, server, user, database):
     try:
         db = Ska.DBI.DBI(dbi=dbi, server=server, user=user,
                          database=database, verbose=False)
-    except Exception, msg:
+    except Exception as msg:
         raise IOError('ERROR: failed to connect to {0}:{1} server: {2}'
                       .format(dbi, server, msg))
 

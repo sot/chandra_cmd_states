@@ -2,7 +2,8 @@ import sys
 import os
 import logging
 import time
-from itertools import count, izip
+from itertools import count
+from six.moves import zip
 import Ska.ftp
 
 
@@ -93,7 +94,7 @@ def get_states_i_diff(db_states, states):
 
     # Find mismatches: direct compare or where pitch or attitude differs by
     # > 1 arcsec
-    for i_diff, db_state, state in izip(count(), db_states, states):
+    for i_diff, db_state, state in zip(count(), db_states, states):
         mismatches = set(x for x in match_cols if db_state[x] != state[x])
         if abs(db_state.pitch - state.pitch) > 0.0003:
             mismatches.add('pitch')
@@ -306,7 +307,7 @@ def check_consistency(db, h5, n_check=3000):
     db_rows = db.fetch('select * from cmd_states order by datestart desc')
     h5_rows = h5d[-n_check:][::-1]
     all_ok = True
-    for db_row, h5_row in izip(db_rows, h5_rows):
+    for db_row, h5_row in zip(db_rows, h5_rows):
         row_ok = True
         for name in h5_row.dtype.names:
             ok = (np.allclose(db_row[name], h5_row[name])
@@ -411,7 +412,7 @@ def main():
                          database=opt.database, verbose=False)
         if opt.dbi == 'sqlite':
             db.conn.text_factory = str
-    except Exception, msg:
+    except Exception as msg:
         logging.error('ERROR: failed to connect to {0}:{1} server: {2}'
                       .format(opt.dbi, opt.server, msg))
         sys.exit(0)
