@@ -1,6 +1,10 @@
 from setuptools import setup
 
 from Chandra.cmd_states import __version__
+try:
+    from testr.setup_helper import cmdclass
+except ImportError:
+    cmdclass = {}
 
 setup(name='Chandra.cmd_states',
       author='Tom Aldcroft',
@@ -15,5 +19,7 @@ setup(name='Chandra.cmd_states',
                   ],
       version=__version__,
       zip_safe=False,
-      packages=['Chandra', 'Chandra.cmd_states'],
+      packages=['Chandra', 'Chandra.cmd_states', 'Chandra.cmd_states.tests'],
+      tests_require=['pytest'],
+      cmdclass=cmdclass,
       )

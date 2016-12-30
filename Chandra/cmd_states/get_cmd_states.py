@@ -5,6 +5,8 @@ Get the Chandra commanded states over a range of time.
 import sys
 import argparse
 import os
+import re
+import six
 
 from Chandra.Time import DateTime
 import Ska.Numpy
@@ -50,18 +52,27 @@ def get_h5_states(start, stop, server):
     if not os.path.exists(server):
         raise IOError('HDF5 cmd_states file {} not found'
                       .format(server))
-    h5 = tables.openFile(server, mode='r')
+    tables_open_file = getattr(tables, 'open_file', None) or tables.openFile
+    h5 = tables_open_file(server, mode='r')
     h5d = h5.root.data
 
-    query = "(datestop > '{}')".format(start.date)
+    query = "(datestop > b'{}')".format(start.date)
     if stop:
-        query += " & (datestart < '{}')".format(stop.date)
-    idxs = h5d.getWhereList(query)
+        query += " & (datestart < b'{}')".format(stop.date)
+    idxs = (getattr(h5d, 'get_where_list', None) or h5d.getWhereList)(query)
     idx0, idx1 = np.min(idxs), np.max(idxs)
     if idx1 - idx0 != len(idxs) - 1:
         raise ValueError('HDF5 table seems to have elements out of order')
     states = h5d[idx0:idx1 + 1]
     h5.close()
+
+    if not six.PY2:
+        dtypes = []
+        for dtype in states.dtype.descr:
+            dtype = list(dtype)
+            dtype[1] = re.sub('S', 'U', str(dtype[1]))
+            dtypes.append(tuple(dtype))
+        states = states.astype(dtypes)
 
     return states
 
@@ -70,6 +81,10 @@ def get_sql_states(start, stop, dbi, server, user, database):
     """Get states from SQL server between ``start`` and ``stop``.
     """
     import Ska.DBI
+
+    if dbi == 'sqlite' and server is None:
+        server = os.path.join(os.environ['SKA'], 'data', 'cmd_states', 'cmd_states.db3')
+
     try:
         db = Ska.DBI.DBI(dbi=dbi, server=server, user=user,
                          database=database, verbose=False)

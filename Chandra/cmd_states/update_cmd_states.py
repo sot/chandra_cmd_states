@@ -419,7 +419,8 @@ def main():
 
     if opt.h5file:
         filters = tables.Filters(complevel=5, complib='zlib')
-        h5 = tables.openFile(opt.h5file, mode='a', filters=filters)
+        tables_open_file = getattr(tables, 'open_file', None) or tables.openFile
+        h5 = tables_open_file(opt.h5file, mode='a', filters=filters)
     else:
         h5 = None
 
