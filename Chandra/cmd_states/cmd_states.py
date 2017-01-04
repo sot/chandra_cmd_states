@@ -382,9 +382,14 @@ def get_state0(date=None, db=None, date_margin=10, datepar='datestop'):
      time.  The conservative default value of ``date_margin=10`` allows for
      processing downtime.  The table is accessed via the ``db`` object.
 
+     If ``date_margin`` is None then no date margin is applied and the most
+     recent available state that meets the date selection criteria (including
+     that pcad_mode == 'NPNT') will be used.  In this case a ``date`` must be
+     supplied.
+
     :param db: Ska.DBI.DBI object.  Created automatically if not supplied.
-    :param date: date cutoff for state0 (Chandra.Time 'date' string)
-    :param date_margin: days before current time for definitive values
+    :param date: date cutoff for state0 (Chandra.Time compatible value) or None
+    :param date_margin: days before current time for definitive values or None
     :param datepar: table parameter for select (datestop|datestart)
 
     :returns: ``state0``
@@ -394,13 +399,15 @@ def get_state0(date=None, db=None, date_margin=10, datepar='datestop'):
         db = Ska.DBI.DBI(dbi='sybase', server='sybase', user='aca_read',
                          database='aca')
 
-    # Date for which cmd_states are certainly reliable
-    definitive_date = DateTime(time.time() - date_margin * 86400.,
-                               format='unix').date
-    if date is None or date > definitive_date:
-        date = definitive_date
-    else:
+    if date is not None:
         date = DateTime(date).date
+
+    if date_margin is not None:
+        # Date for which cmd_states are certainly reliable
+        definitive_date = DateTime(time.time() - date_margin * 86400.,
+                                   format='unix').date
+        if date is None or date > definitive_date:
+            date = definitive_date
 
     state0 = db.fetchone("""SELECT * FROM cmd_states
                             WHERE %s < '%s'
