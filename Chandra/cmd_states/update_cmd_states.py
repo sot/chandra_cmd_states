@@ -2,7 +2,8 @@ import sys
 import os
 import logging
 import time
-from itertools import count, izip
+from itertools import count
+from six.moves import zip
 import Ska.ftp
 
 
@@ -93,7 +94,7 @@ def get_states_i_diff(db_states, states):
 
     # Find mismatches: direct compare or where pitch or attitude differs by
     # > 1 arcsec
-    for i_diff, db_state, state in izip(count(), db_states, states):
+    for i_diff, db_state, state in zip(count(), db_states, states):
         mismatches = set(x for x in match_cols if db_state[x] != state[x])
         if abs(db_state.pitch - state.pitch) > 0.0003:
             mismatches.add('pitch')
@@ -259,7 +260,7 @@ def insert_cmd_states(states, i_diff, db, h5):
     for state in states[i_diff:]:
         # Need commit=True for sybase -- very large inserts will fail
         db.insert(dict((x, state[x]) for x in state.dtype.names), 'cmd_states',
-                  commit=True)
+                  commit=(db.dbi == 'sybase'))
     db.commit()
 
     if h5 and not hasattr(h5.root, 'data'):
@@ -271,7 +272,7 @@ def make_hdf5_cmd_states(db, h5):
     database version.
     """
     # This takes a little while...
-    logging.info('Reading cmd_states table from sybase, stand by ..')
+    logging.info('Reading cmd_states table from {}, stand by ..'.format(db.server))
     db_rows = db.fetchall('select * from cmd_states')
     if len(db_rows) == 0:
         # Need some initial data in SQL version so just return
@@ -306,7 +307,7 @@ def check_consistency(db, h5, n_check=3000):
     db_rows = db.fetch('select * from cmd_states order by datestart desc')
     h5_rows = h5d[-n_check:][::-1]
     all_ok = True
-    for db_row, h5_row in izip(db_rows, h5_rows):
+    for db_row, h5_row in zip(db_rows, h5_rows):
         row_ok = True
         for name in h5_row.dtype.names:
             ok = (np.allclose(db_row[name], h5_row[name])
@@ -411,14 +412,15 @@ def main():
                          database=opt.database, verbose=False)
         if opt.dbi == 'sqlite':
             db.conn.text_factory = str
-    except Exception, msg:
+    except Exception as msg:
         logging.error('ERROR: failed to connect to {0}:{1} server: {2}'
                       .format(opt.dbi, opt.server, msg))
         sys.exit(0)
 
     if opt.h5file:
         filters = tables.Filters(complevel=5, complib='zlib')
-        h5 = tables.openFile(opt.h5file, mode='a', filters=filters)
+        tables_open_file = getattr(tables, 'open_file', None) or tables.openFile
+        h5 = tables_open_file(opt.h5file, mode='a', filters=filters)
     else:
         h5 = None
 

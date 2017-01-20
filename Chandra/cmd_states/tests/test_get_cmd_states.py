@@ -1,8 +1,10 @@
 import sys
-from StringIO import StringIO
+import six
+from six.moves import cStringIO as StringIO
+import pytest
 
 import numpy as np
-import asciitable
+from astropy.io import ascii
 
 from Chandra.cmd_states.get_cmd_states import main, fetch_states
 
@@ -27,7 +29,7 @@ LINES = [
     "2010:101:01:19:50.514 2010:101:20:50:50.263 387336056.698 387406316.447 11390 XTZ0000005 NPNT      1        75624 "]
 
 OUT = "\n".join(LINES) + "\n"
-VALS = asciitable.read(LINES, guess=False)
+VALS = ascii.read(LINES, guess=False)
 
 
 def test_get_states_main():
@@ -41,18 +43,25 @@ def test_get_states_main():
     assert out == OUT
 
 
-def test_get_states():
+# Set up possible backends
+dbis = ['hdf5', 'sqlite']
+if six.PY2:
+    dbis.append('sybase')
+
+
+@pytest.mark.parametrize('dbi', dbis)
+def test_get_states(dbi):
     """Test Python function interface to getting commanded states.
     """
     val_names = "obsid,simpos,pcad_mode,clocking,power_cmd".split(',')
-    for dbi in ('sybase', 'hdf5'):
-        states = fetch_states(start='2010:100', stop='2010:101', dbi=dbi,
-                              vals=val_names)
-        for name in states.dtype.names:
-            if states[name].dtype.kind == 'f':
-                assert np.allclose(states[name], VALS[name])
-            else:
-                assert np.all(states[name] == VALS[name])
 
-        names = ["datestart", "datestop", "tstart", "tstop"]
-        assert names + val_names == list(states.dtype.names)
+    states = fetch_states(start='2010:100', stop='2010:101', dbi=dbi,
+                          vals=val_names)
+    for name in states.dtype.names:
+        if states[name].dtype.kind == 'f':
+            assert np.allclose(states[name], VALS[name])
+        else:
+            assert np.all(states[name] == VALS[name])
+
+    names = ["datestart", "datestop", "tstart", "tstop"]
+    assert names + val_names == list(states.dtype.names)
