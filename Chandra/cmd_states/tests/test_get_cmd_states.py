@@ -1,3 +1,4 @@
+import os
 import sys
 import six
 from six.moves import cStringIO as StringIO
@@ -45,7 +46,7 @@ def test_get_states_main():
 
 # Set up possible backends
 dbis = ['hdf5', 'sqlite']
-if six.PY2:
+if six.PY2 and 'SYBASE' in os.environ and os.path.exists(os.environ['SYBASE']):
     dbis.append('sybase')
 
 
