@@ -37,6 +37,10 @@ STATE_VALS = """
      hetg
      letg
      dither
+     dither_ampl_pitch
+     dither_ampl_yaw
+     dither_period_pitch
+     dither_period_yaw
 """.split()
 
 

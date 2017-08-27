@@ -74,28 +74,35 @@ networks.
 State values
 ------------
 
-============   =========
-Name           Type
-============   =========
- obsid         int
- power_cmd     varchar
- si_mode       varchar
- pcad_mode     varchar
- vid_board     bit
- clocking      bit
- fep_count     int
- ccd_count     int
- simpos        int
- simfa_pos     int
- hetg          varchar
- letg          varchar
- pitch         float
- ra            float
- dec           float
- roll          float
- q1            float
- q2            float
- q3            float
- q4            float
- dither        varchar
-============   =========
+==================== =========
+Name                 Type
+==================== =========
+ datestart           varchar
+ datestop            varchar
+ obsid               int
+ power_cmd           varchar
+ si_mode             varchar
+ pcad_mode           varchar
+ vid_board           bit
+ clocking            bit
+ fep_count           int
+ ccd_count           int
+ simpos              int
+ simfa_pos           int
+ pitch               float
+ ra                  float
+ dec                 float
+ roll                float
+ q1                  float
+ q2                  float
+ q3                  float
+ q4                  float
+ trans_keys          varchar
+ letg                varchar
+ hetg                varchar
+ dither              varchar
+ dither_ampl_pitch   float
+ dither_ampl_yaw     float
+ dither_period_pitch float
+ dither_period_yaw   float
+==================== =========

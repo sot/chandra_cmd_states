@@ -51,34 +51,38 @@ cmd_states table
 ------------------
 The main table is the ``cmd_states`` table with the following columns:
 
-============   =========   ====
-Name           Type        Size
-============   =========   ====
- datestart     varchar      21
- datestop      varchar      21
- obsid         int           4
- power_cmd     varchar      11
- si_mode       varchar       8
- pcad_mode     varchar       6
- vid_board     bit           1
- clocking      bit           1
- fep_count     int           4
- ccd_count     int           4
- simpos        int           4
- simfa_pos     int           4
- pitch         float         8
- ra            float         8
- dec           float         8
- roll          float         8
- q1            float         8
- q2            float         8
- q3            float         8
- q4            float         8
- trans_keys    varchar      60
- hetg          varchar       4
- letg          varchar       4
- dither        varchar       4
-============   =========   ====
+==================== =========   ====
+Name                 Type        Size
+==================== =========   ====
+ datestart           varchar      21
+ datestop            varchar      21
+ obsid               int           4
+ power_cmd           varchar      11
+ si_mode             varchar       8
+ pcad_mode           varchar       6
+ vid_board           bit           1
+ clocking            bit           1
+ fep_count           int           4
+ ccd_count           int           4
+ simpos              int           4
+ simfa_pos           int           4
+ pitch               float         8
+ ra                  float         8
+ dec                 float         8
+ roll                float         8
+ q1                  float         8
+ q2                  float         8
+ q3                  float         8
+ q4                  float         8
+ trans_keys          varchar      60
+ letg                varchar       4
+ hetg                varchar       4
+ dither              varchar       4
+ dither_ampl_pitch   float         8
+ dither_ampl_yaw     float         8
+ dither_period_pitch float         8
+ dither_period_yaw   float         8
+==================== =========   ====
 
 cmds table
 ----------

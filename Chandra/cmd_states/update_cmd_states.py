@@ -40,7 +40,11 @@ CMD_STATES_DTYPE = [('datestart', '|S21'),
                     ('trans_keys', '|S60'),
                     ('hetg', '|S4'),
                     ('letg', '|S4'),
-                    ('dither', '|S4')]
+                    ('dither', '|S4'),
+                    ('dither_ampl_pitch', '<f8'),
+                    ('dither_ampl_yaw', '<f8'),
+                    ('dither_period_pitch', '<f8'),
+                    ('dither_period_yaw', '<f8'),]
 
 
 def log_mismatch(mismatches, db_states, states, i_diff):

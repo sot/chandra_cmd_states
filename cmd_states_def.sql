@@ -25,6 +25,11 @@ CREATE TABLE cmd_states (
      hetg          varchar(4)  null,
      letg          varchar(4)  null,
      dither        varchar(4)  null,
+     dither_ampl_pitch   float null,
+     dither_ampl_yaw     float null,
+     dither_period_pitch float null,
+     dither_period_yaw   float null,
+
   CONSTRAINT pk_cmd_states_datestart PRIMARY KEY (datestart)
 )
 ;

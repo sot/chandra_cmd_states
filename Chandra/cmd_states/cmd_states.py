@@ -22,6 +22,7 @@ import Ska.Sun
 import Ska.ParseCM
 import Ska.Numpy
 
+
 # Canonical state0 giving spacecraft state at beginning of timelines
 # 2002:007:13 fetch --start 2002:007:13:00:00 --stop 2002:007:13:02:00 aoattqt1
 # aoattqt2 aoattqt3 aoattqt4 cobsrqid aopcadmd tscpos
@@ -50,7 +51,12 @@ STATE0 = {'ccd_count': 5,
           'tstart': 127020624.552,
           'tstop': 3187296066.184,
           'vid_board': 0,
-          'dither': 'None'}
+          'dither': 'ENAB',
+          'dither_ampl_pitch': 8.0,
+          'dither_ampl_yaw': 8.0,
+          'dither_period_pitch': 707.1,
+          'dither_period_yaw': 1000.0,
+}
 
 
 def decode_power(mnem):
@@ -161,34 +167,38 @@ def get_states(state0, cmds, exclude=None):
     A state is a dict with key values corresponding to the following database
     schema:
 
-    ============   =========   ====
-    Name           Type        Size
-    ============   =========   ====
-     datestart     varchar      21
-     datestop      varchar      21
-     obsid         int           4
-     power_cmd     varchar      11
-     si_mode       varchar       8
-     pcad_mode     varchar       6
-     vid_board     bit           1
-     clocking      bit           1
-     fep_count     int           4
-     ccd_count     int           4
-     simpos        int           4
-     simfa_pos     int           4
-     pitch         float         8
-     ra            float         8
-     dec           float         8
-     roll          float         8
-     q1            float         8
-     q2            float         8
-     q3            float         8
-     q4            float         8
-     trans_keys    varchar      60
-     letg          varchar       4
-     hetg          varchar       4
-     dither        varchar       4
-    ============   =========   ====
+    ==================== =========   ====
+    Name                 Type        Size
+    ==================== =========   ====
+     datestart           varchar      21
+     datestop            varchar      21
+     obsid               int           4
+     power_cmd           varchar      11
+     si_mode             varchar       8
+     pcad_mode           varchar       6
+     vid_board           bit           1
+     clocking            bit           1
+     fep_count           int           4
+     ccd_count           int           4
+     simpos              int           4
+     simfa_pos           int           4
+     pitch               float         8
+     ra                  float         8
+     dec                 float         8
+     roll                float         8
+     q1                  float         8
+     q2                  float         8
+     q3                  float         8
+     q4                  float         8
+     trans_keys          varchar      60
+     letg                varchar       4
+     hetg                varchar       4
+     dither              varchar       4
+     dither_ampl_pitch   float         8
+     dither_ampl_yaw     float         8
+     dither_period_pitch float         8
+     dither_period_yaw   float         8
+    ==================== =========   ====
 
     The input commands must be a list of dicts including keys ``date, vcdu,
     cmd, params, time``.  See also Ska.ParseCM.read_backstop().
@@ -312,6 +322,12 @@ def get_states(state0, cmds, exclude=None):
         # Transition to LETG retracted
         elif cmd_type == 'COMMAND_SW' and tlmsid == '4OLETGRE':
             add_trans(letg='RETR')
+
+        elif cmd_type == 'MP_DITHER' and tlmsid == 'AODITPAR':
+            add_trans(dither_ampl_pitch = np.degrees(cmd['params']['COEFP']) * 3600,
+                      dither_ampl_yaw = np.degrees(cmd['params']['COEFY']) * 3600,
+                      dither_period_pitch = 2 * np.pi / cmd['params']['RATEP'],
+                      dither_period_yaw = 2 * np.pi / cmd['params']['RATEY'])
 
         elif cmd_type == 'COMMAND_SW' and tlmsid == 'AOENDITH':
             add_trans(dither='ENAB')
