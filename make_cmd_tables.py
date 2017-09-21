@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Licensed under a 3-clause BSD style license - see LICENSE.rst
 """
 Make command tables cmd_states, cmds, cmd_intpar, cmd_fltpars.
 Drop tables if already existing.
