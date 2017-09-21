@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Licensed under a 3-clause BSD style license - see LICENSE.rst
 
 import Ska.DBI
 import Chandra.cmd_states as cmd_states

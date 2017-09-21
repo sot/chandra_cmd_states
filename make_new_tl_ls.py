@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Licensed under a 3-clause BSD style license - see LICENSE.rst
 """
 Copy timelines and load_segments tables from sybase to local sqlite db and
 create timeline_loads view.

@@ -1,3 +1,4 @@
+# Licensed under a 3-clause BSD style license - see LICENSE.rst
 from .cmd_states import *
 from .get_cmd_states import fetch_states
 
