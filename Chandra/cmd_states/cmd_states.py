@@ -245,7 +245,12 @@ def get_states(state0, cmds, exclude=None):
 
         # ACIS power command section
         elif cmd_type == 'ACISPKT':
-            if tlmsid.startswith('WSPOW'):
+            if tlmsid == 'WSPOW00000':
+                add_trans(fep_count=0,
+                          ccd_count=0,
+                          vid_board=0, clocking=0, power_cmd=tlmsid)
+
+            elif tlmsid.startswith('WSPOW'):
                 pwr = decode_power(tlmsid)
                 add_trans(fep_count=pwr['fep_count'],
                           ccd_count=pwr['ccd_count'],
