@@ -245,6 +245,7 @@ def get_states(state0, cmds, exclude=None):
 
         # ACIS power command section
         elif cmd_type == 'ACISPKT':
+            # The power-down command is a special-case that also turns off the vid board
             if tlmsid == 'WSPOW00000':
                 add_trans(fep_count=0,
                           ccd_count=0,
