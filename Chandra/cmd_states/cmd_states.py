@@ -69,6 +69,17 @@ def decode_power(mnem):
     :param mnem: power command string
 
     """
+    fep_info = {'fep_count': 0,
+                'ccd_count': 0,
+                'feps': '',
+                'ccds': '',
+                'vid_board': 1,
+                'clocking': 0}
+
+    # Special case WSPOW00000 to turn off vid_board
+    if mnem == 'WSPOW00000':
+        fep_info['vid_board'] = 0
+
     # the hex for the commanding is after the WSPOW
     powstr = mnem[5:]
     if (len(powstr) != 5):
@@ -76,10 +87,6 @@ def decode_power(mnem):
 
     # convert the hex to decimal and "&" it with 63 (binary 111111)
     fepkey = int(powstr, 16) & 63
-    fep_info = {'fep_count': 0,
-                'ccd_count': 0,
-                'feps': '',
-                'ccds': ''}
     # count the true binary bits
     for bit in range(0, 6):
         if (fepkey & (1 << bit)):
@@ -250,7 +257,9 @@ def get_states(state0, cmds, exclude=None):
                 pwr = decode_power(tlmsid)
                 add_trans(fep_count=pwr['fep_count'],
                           ccd_count=pwr['ccd_count'],
-                          vid_board=1, clocking=0, power_cmd=tlmsid)
+                          vid_board=pwr['vid_board'],
+                          clocking=pwr['clocking'],
+                          power_cmd=tlmsid)
 
             elif re.match(r'X(T|C)Z0000005', tlmsid):
                 add_trans(clocking=1, power_cmd=tlmsid)
