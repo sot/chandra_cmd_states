@@ -395,15 +395,19 @@ def main():
 
     # Set val to indicate if the output h5file is the "flight" version.
     # In that case use ftp directory cmd_states, else cmd_states_test.
-    is_flight = opt.h5file == '/proj/sot/ska/data/cmd_states/cmd_states.h5'
+    is_flight = ((opt.h5file == '/proj/sot/ska/data/cmd_states/cmd_states.h5')
+                 or (opt.server == '/proj/sot/ska/data/cmd_states/cmd_states.db3'))
     ftp_dirname = 'cmd_states' if is_flight else 'cmd_states_test'
 
     # If running on the OCC (GRETA) network then just try to get a new HDF5
     # file from lucky in /home/taldcroft/cmd_states and copy to opt.h5file.  The
     # file will appear on lucky only when the HEAD network version gets updated
     # with changed content.
-    if opt.occ and opt.h5file:
-        occweb.ftp_get_from_lucky(ftp_dirname, [opt.h5file], logger=logging)
+    if opt.occ:
+        if opt.server:
+            occweb.ftp_get_from_lucky(ftp_dirname, [opt.server], logger=logging)
+        if opt.h5file:
+            occweb.ftp_get_from_lucky(ftp_dirname, [opt.h5file], logger=logging)
         sys.exit(0)
 
     logging.debug('Connecting to db: dbi=%s server=%s user=%s database=%s'
@@ -454,6 +458,10 @@ def main():
     # Update cmd_states in database
     logging.debug('Updating database cmd_states table')
     states_changed = update_states_db(states, db, h5)
+
+    # If updating sqlite, push that to lucky
+    if opt.dbi == 'sqlite':
+        occweb.ftp_put_to_lucky(ftp_dirname, [opt.server], logger=logging)
 
     if h5:
         # Check for consistency between HDF5 and SQL
