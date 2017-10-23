@@ -393,17 +393,21 @@ def main():
     logging.info('Running {0} at {1}'
                  .format(os.path.basename(sys.argv[0]), time.ctime()))
 
-    # Set val to indicate if the output h5file is the "flight" version.
+    # Paths for the "flight" versions
     # In that case use ftp directory cmd_states, else cmd_states_test.
-    is_flight = opt.h5file == '/proj/sot/ska/data/cmd_states/cmd_states.h5'
-    ftp_dirname = 'cmd_states' if is_flight else 'cmd_states_test'
-
+    flt_h5 = '/proj/sot/ska/data/cmd_states/cmd_states.h5'
+    flt_db3 = '/proj/sot/ska/data/cmd_states/cmd_states.db3'
+    ftp_h5_dirname = 'cmd_states' if opt.h5file == flt_h5 else 'cmd_states_test'
+    ftp_db3_dirname = 'cmd_states' if opt.server == flt_db3 else 'cmd_states_test'
     # If running on the OCC (GRETA) network then just try to get a new HDF5
     # file from lucky in /home/taldcroft/cmd_states and copy to opt.h5file.  The
     # file will appear on lucky only when the HEAD network version gets updated
     # with changed content.
-    if opt.occ and opt.h5file:
-        occweb.ftp_get_from_lucky(ftp_dirname, [opt.h5file], logger=logging)
+    if opt.occ:
+        if opt.server:
+            occweb.ftp_get_from_lucky(ftp_db3_dirname, [opt.server], logger=logging)
+        if opt.h5file:
+            occweb.ftp_get_from_lucky(ftp_h5_dirname, [opt.h5file], logger=logging)
         sys.exit(0)
 
     logging.debug('Connecting to db: dbi=%s server=%s user=%s database=%s'
@@ -455,13 +459,17 @@ def main():
     logging.debug('Updating database cmd_states table')
     states_changed = update_states_db(states, db, h5)
 
+    # If updating sqlite, push that to lucky
+    if opt.dbi == 'sqlite':
+        occweb.ftp_put_to_lucky(ftp_db3_dirname, [opt.server], logger=logging)
+
     if h5:
         # Check for consistency between HDF5 and SQL
         n_check = 3000 if states_changed else 100
         check_consistency(db, h5, n_check)
 
         # upload to lucky ftp server
-        occweb.ftp_put_to_lucky(ftp_dirname, [opt.h5file], logger=logging)
+        occweb.ftp_put_to_lucky(ftp_h5_dirname, [opt.h5file], logger=logging)
 
     # Close down for good measure.
     db.conn.close()
