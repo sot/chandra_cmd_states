@@ -76,8 +76,8 @@ def decode_power(mnem):
                 'vid_board': 1,
                 'clocking': 0}
 
-    # Special case WSPOW00000 to turn off vid_board
-    if mnem == 'WSPOW00000':
+    # Special case WSPOW000XX to turn off vid_board
+    if mnem.startswith('WSPOW000'):
         fep_info['vid_board'] = 0
 
     # the hex for the commanding is after the WSPOW
