@@ -60,11 +60,13 @@ def decode_power(mnem):
 
     Example::
 
-     >>> decode_power("WSPOW08F3E")
-     {'ccd_count': 5,
-      'ccds': 'I0 I1 I2 I3 S3 ',
-      'fep_count': 5,
-      'feps': '1 2 3 4 5 '}
+    >>> decode_power("WSPOW08F3E")
+    {'ccd_count': 5,
+     'ccds': 'I0 I1 I2 I3 S3 ',
+     'clocking': 0,
+     'fep_count': 5,
+     'feps': '1 2 3 4 5 ',
+     'vid_board': 1}
 
     :param mnem: power command string
 
