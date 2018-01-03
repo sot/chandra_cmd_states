@@ -60,11 +60,13 @@ def decode_power(mnem):
 
     Example::
 
-     >>> decode_power("WSPOW08F3E")
-     {'ccd_count': 5,
-      'ccds': 'I0 I1 I2 I3 S3 ',
-      'fep_count': 5,
-      'feps': '1 2 3 4 5 '}
+    >>> decode_power("WSPOW08F3E")
+    {'ccd_count': 5,
+     'ccds': 'I0 I1 I2 I3 S3 ',
+     'clocking': 0,
+     'fep_count': 5,
+     'feps': '1 2 3 4 5 ',
+     'vid_board': 1}
 
     :param mnem: power command string
 
@@ -76,8 +78,8 @@ def decode_power(mnem):
                 'vid_board': 1,
                 'clocking': 0}
 
-    # Special case WSPOW00000 to turn off vid_board
-    if mnem == 'WSPOW00000':
+    # Special case WSPOW000XX to turn off vid_board
+    if mnem.startswith('WSPOW000'):
         fep_info['vid_board'] = 0
 
     # the hex for the commanding is after the WSPOW
