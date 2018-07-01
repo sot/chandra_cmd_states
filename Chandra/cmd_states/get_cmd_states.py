@@ -15,6 +15,8 @@ import Ska.Numpy
 
 from .cmd_states import reduce_states
 
+SKA = os.environ.get('SKA', '/proj/sot/ska')
+
 STATE_VALS = """
      obsid
      power_cmd
@@ -48,7 +50,7 @@ def get_h5_states(start, stop, server):
     import numpy as np
 
     if server is None:
-        server = os.path.join(os.environ['SKA'], 'data', 'cmd_states',
+        server = os.path.join(SKA, 'data', 'cmd_states',
                               'cmd_states.h5')
 
     if not os.path.exists(server):
@@ -85,7 +87,7 @@ def get_sql_states(start, stop, dbi, server, user, database):
     import Ska.DBI
 
     if dbi == 'sqlite' and server is None:
-        server = os.path.join(os.environ['SKA'], 'data', 'cmd_states', 'cmd_states.db3')
+        server = os.path.join(SKA, 'data', 'cmd_states', 'cmd_states.db3')
 
     try:
         db = Ska.DBI.DBI(dbi=dbi, server=server, user=user,
