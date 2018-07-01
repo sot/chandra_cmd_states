@@ -9,6 +9,7 @@ import os
 import re
 import six
 
+import numpy as np
 from Chandra.Time import DateTime
 import Ska.Numpy
 
@@ -160,6 +161,9 @@ def fetch_states(start=None, stop=None, vals=None, allow_identical=False,
     states = Ska.Numpy.structured_array(
         states, colnames=['datestart', 'datestop',
                           'tstart', 'tstop'] + state_vals)
+
+    states['tstart'] = np.round(states['tstart'], 3)
+    states['tstop'] = np.round(states['tstop'], 3)
 
     return states
 
