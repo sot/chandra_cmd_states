@@ -9,10 +9,13 @@ import os
 import re
 import six
 
+import numpy as np
 from Chandra.Time import DateTime
 import Ska.Numpy
 
 from .cmd_states import reduce_states
+
+SKA = os.environ.get('SKA', '/proj/sot/ska')
 
 STATE_VALS = """
      obsid
@@ -47,7 +50,7 @@ def get_h5_states(start, stop, server):
     import numpy as np
 
     if server is None:
-        server = os.path.join(os.environ['SKA'], 'data', 'cmd_states',
+        server = os.path.join(SKA, 'data', 'cmd_states',
                               'cmd_states.h5')
 
     if not os.path.exists(server):
@@ -84,7 +87,7 @@ def get_sql_states(start, stop, dbi, server, user, database):
     import Ska.DBI
 
     if dbi == 'sqlite' and server is None:
-        server = os.path.join(os.environ['SKA'], 'data', 'cmd_states', 'cmd_states.db3')
+        server = os.path.join(SKA, 'data', 'cmd_states', 'cmd_states.db3')
 
     try:
         db = Ska.DBI.DBI(dbi=dbi, server=server, user=user,
@@ -160,6 +163,9 @@ def fetch_states(start=None, stop=None, vals=None, allow_identical=False,
     states = Ska.Numpy.structured_array(
         states, colnames=['datestart', 'datestop',
                           'tstart', 'tstop'] + state_vals)
+
+    states['tstart'] = np.round(states['tstart'], 3)
+    states['tstop'] = np.round(states['tstop'], 3)
 
     return states
 
