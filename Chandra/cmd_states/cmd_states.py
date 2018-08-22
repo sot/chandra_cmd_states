@@ -267,7 +267,8 @@ def get_states(state0, cmds, exclude=None):
                 add_trans(clocking=1, power_cmd=tlmsid)
 
             elif tlmsid == 'WSVIDALLDN':
-                add_trans(vid_board=0, power_cmd=tlmsid)
+                add_trans(vid_board=0, ccd_count=0,
+                          power_cmd=tlmsid)
 
             elif tlmsid == 'AA00000000':
                 add_trans(clocking=0, power_cmd=tlmsid)
