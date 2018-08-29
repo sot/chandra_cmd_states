@@ -9,6 +9,7 @@ import numpy as np
 from astropy.io import ascii
 
 from Chandra.cmd_states.get_cmd_states import main, fetch_states
+from Chandra.cmd_states.cmd_states import decode_power, get_state0, get_cmds, get_states
 
 # This is taken from the output of
 #  get_cmd_states --start=2010:100 --stop=2010:101 --vals=obsid,simpos,pcad_mode,clocking,power_cmd
@@ -67,3 +68,21 @@ def test_get_states(dbi):
 
     names = ["datestart", "datestop", "tstart", "tstop"]
     assert names + val_names == list(states.dtype.names)
+
+def test_acis_power_cmds():
+    import Ska.DBI
+    all_off = decode_power("WSPOW00000")
+    assert all_off["ccd_count"] == 0
+    assert all_off["fep_count"] == 0
+    assert all_off["vid_board"] == 0
+    server = os.path.join(os.environ['SKA'], 'data', 'cmd_states', 'cmd_states.db3')
+    db = Ska.DBI.DBI(dbi="sqlite", server=server, user='aca_read', database='aca')
+    state0 = get_state0("2017:359:13:37:50", db=db)
+    cmds = get_cmds("2017:359:13:37:50", "2017:360:00:46:00", db=db)
+    states = get_states(state0, cmds)
+    vid_dn = np.where(states["power_cmd"] == "WSVIDALLDN")[0]
+    assert (states["ccd_count"][vid_dn] == 0).all()
+    assert (states["fep_count"][vid_dn] == states["fep_count"][vid_dn[0]-1]).all()
+    pow_zero = np.where(states["power_cmd"] == "WSPOW00000")[0]
+    assert (states["ccd_count"][pow_zero] == 0).all()
+    assert (states["fep_count"][pow_zero] == 0).all()
