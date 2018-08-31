@@ -2,7 +2,7 @@
 from .cmd_states import *
 from .get_cmd_states import fetch_states
 
-__version__ = '3.14.1'
+__version__ = '3.14.2'
 
 
 def test(*args, **kwargs):
