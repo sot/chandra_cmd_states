@@ -15,7 +15,7 @@ fetch --start 2002:010 --stop 2009:001:00:00:00 --dt 600 --outfile tlm2002_2008.
 
 """
 
-import Ska.Table
+# import Ska.Table
 import Ska.DBI
 import Chandra.cmd_states as cmd_states
 
@@ -40,7 +40,7 @@ def main():
     opt, args = get_options()
 
     if 'tlm' not in globals():
-        print 'Reading telemetry'
+        print('Reading telemetry')
         tlm = Ska.Table.read_ascii_table('t/tlm2002_2008.dat', delimiters=[','])
 
     db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server)
@@ -49,7 +49,7 @@ def main():
     datestop = '2009:001:00:00:00'
 
     if 'states' not in globals():
-        print 'Getting states'
+        print('Getting states')
         states = db.fetchall("""SELECT * from cmd_states
                                 WHERE datestart > '%s'
                                 AND datestop < '%s'""" % (datestart, datestop))
@@ -64,7 +64,7 @@ def main():
         ok = (tlm.date >= bad_state.tstart) & (tlm.date <= bad_state.tstop)
         simpos = np.median(tlm[ok].tscpos)
         cmd = "UPDATE cmd_states SET simpos=%d WHERE datestart='%s'" % (simpos, bad_state.datestart)
-        print cmd
+        print(cmd)
         db.execute(cmd)
 
     pitchdiff = medfilt(tlm.aosares1 - state_vals.pitch, 9)
@@ -74,7 +74,7 @@ def main():
         ok = (tlm.date >= bad_state.tstart) & (tlm.date <= bad_state.tstop)
         pitch = np.median(tlm[ok].aosares1)
         cmd = "UPDATE cmd_states SET pitch=%f WHERE datestart='%s'" % (pitch, bad_state.datestart)
-        print cmd
+        print(cmd)
         db.execute(cmd)
 
     db.commit()
