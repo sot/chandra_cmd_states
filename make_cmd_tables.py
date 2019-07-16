@@ -49,14 +49,14 @@ def main():
         try:
             db.execute('DROP TABLE %s' % table)
         except:
-            print '%s not found' % table
+            print('%s not found' % table)
 
     for table in tables:
         sqldef = file(table + '_def.sql').read()
         db.execute(sqldef, commit=True)
 
     if os.path.exists(opt.h5file):
-        print 'Deleting', opt.h5file
+        print('Deleting', opt.h5file)
         os.unlink(opt.h5file)
 
 if __name__ == '__main__':

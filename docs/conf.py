@@ -46,7 +46,7 @@ copyright = u'2009, Tom Aldcroft'
 # built documents.
 #
 # The short X.Y version.
-from Chandra.cmd_states.version import version
+from Chandra.cmd_states import __version__ as version
 # The full version, including alpha/beta/rc tags.
 release = version
 
