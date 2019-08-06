@@ -447,17 +447,10 @@ def main():
     logging.debug('Updating database cmd_states table')
     states_changed = update_states_db(states, db, h5)
 
-    # If updating sqlite, push that to lucky
-    if opt.dbi == 'sqlite':
-        occweb.ftp_put_to_lucky(ftp_db3_dirname, [opt.server], logger=logging)
-
     if h5:
         # Check for consistency between HDF5 and SQL
         n_check = 3000 if states_changed else 100
         check_consistency(db, h5, n_check)
-
-        # upload to lucky ftp server
-        occweb.ftp_put_to_lucky(ftp_h5_dirname, [opt.h5file], logger=logging)
 
     # Close down for good measure.
     db.conn.close()
