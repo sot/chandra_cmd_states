@@ -354,9 +354,6 @@ def get_options():
                       type='int',
                       default=20,
                       help='Log level (10=debug, 20=info, 30=warnings)')
-    parser.add_option("--occ",
-                      action='store_true',
-                      help="Running on the OCC GRETA network")
 
     (opt, args) = parser.parse_args()
     return (opt, args)
@@ -380,7 +377,6 @@ def main():
                               Starting date for update (default=Now-10 days)
         --mp_dir=DIR          MP directory. (default=/data/mpcrit1/mplogs)
         --loglevel=LOGLEVEL   Log level (10=debug, 20=info, 30=warnings)
-        --occ                 Running on OCC network (default=False)
     """
     opt, args = get_options()
 
@@ -391,11 +387,6 @@ def main():
 
     logging.info('Running {0} at {1}'
                  .format(os.path.basename(sys.argv[0]), time.ctime()))
-
-    # If running in no-longer-supported occ mode, quit.
-    if opt.occ:
-        logging.error('ERROR: occ mode no longer supported')
-        sys.exit(0)
 
     logging.debug('Connecting to db: dbi=%s server=%s user=%s database=%s'
                   % (opt.dbi, opt.server, opt.user, opt.database))
