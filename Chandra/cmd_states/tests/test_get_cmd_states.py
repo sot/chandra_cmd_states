@@ -11,6 +11,9 @@ from astropy.io import ascii
 from Chandra.cmd_states.get_cmd_states import main, fetch_states
 from Chandra.cmd_states.cmd_states import decode_power, get_state0, get_cmds, get_states
 
+HAS_SOTMP_FILES = os.path.exists('/data/mpcrit1/mplogs/2017')
+
+
 # This is taken from the output of
 #  get_cmd_states --start=2010:100 --stop=2010:101 --vals=obsid,simpos,pcad_mode,clocking,power_cmd
 # for Chandra.cmd_states version 0.07 in skare 0.13 on July 18, 2012.
@@ -69,6 +72,8 @@ def test_get_states(dbi):
     names = ["datestart", "datestop", "tstart", "tstop"]
     assert names + val_names == list(states.dtype.names)
 
+
+@pytest.mark.skipif('not HAS_SOTMP_FILES', reason='Needs 2017 products')
 def test_acis_power_cmds():
     import Ska.DBI
     all_off = decode_power("WSPOW00000")
