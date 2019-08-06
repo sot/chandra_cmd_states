@@ -5,13 +5,12 @@ import logging
 import time
 from itertools import count
 from six.moves import zip
-import Ska.ftp
 
 
 import numpy as np
 import tables
 import Ska.DBI
-from kadi import occweb
+
 
 from . import cmd_states
 
