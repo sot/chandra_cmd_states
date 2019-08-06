@@ -421,7 +421,7 @@ def main():
     logging.debug('Getting initial state0')
     state0 = cmd_states.get_state0(date=opt.datestart, db=db)
     logging.debug('Initial state0: datestart=%s datestop=%s obsid=%d' %
-                 (state0['datestart'], state0['datestop'], state0['obsid']))
+                  (state0['datestart'], state0['datestop'], state0['obsid']))
 
     # Sync up datestart to state0 and get timeline load segments including
     # state0 and beyond.
