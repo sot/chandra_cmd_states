@@ -393,21 +393,9 @@ def main():
     logging.info('Running {0} at {1}'
                  .format(os.path.basename(sys.argv[0]), time.ctime()))
 
-    # Paths for the "flight" versions
-    # In that case use ftp directory cmd_states, else cmd_states_test.
-    flt_h5 = '/proj/sot/ska/data/cmd_states/cmd_states.h5'
-    flt_db3 = '/proj/sot/ska/data/cmd_states/cmd_states.db3'
-    ftp_h5_dirname = 'cmd_states' if opt.h5file == flt_h5 else 'cmd_states_test'
-    ftp_db3_dirname = 'cmd_states' if opt.server == flt_db3 else 'cmd_states_test'
-    # If running on the OCC (GRETA) network then just try to get a new HDF5
-    # file from lucky in /home/taldcroft/cmd_states and copy to opt.h5file.  The
-    # file will appear on lucky only when the HEAD network version gets updated
-    # with changed content.
+    # If running in no-longer-supported occ mode, quit.
     if opt.occ:
-        if opt.server:
-            occweb.ftp_get_from_lucky(ftp_db3_dirname, [opt.server], logger=logging)
-        if opt.h5file:
-            occweb.ftp_get_from_lucky(ftp_h5_dirname, [opt.h5file], logger=logging)
+        logging.error('ERROR: occ mode no longer supported')
         sys.exit(0)
 
     logging.debug('Connecting to db: dbi=%s server=%s user=%s database=%s'
