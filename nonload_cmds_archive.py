@@ -987,3 +987,10 @@ cmd_states.insert_cmds_db(cmds, None, db)
 # date=2019:249:01:59:00.000 cmd_set=manvr args=-0.54577727 0.27602874 -0.17407247 0.77177334
 cmds = generate_cmds('2019:249:01:59:00.000', cmd_set('manvr', -0.54577727, 0.27602874, -0.17407247, 0.77177334))
 cmd_states.insert_cmds_db(cmds, None, db)
+
+dith_off = (dict(dur=1.025),
+            dict(cmd='COMMAND_SW',
+                 tlmsid='AODSDITH',
+                 ))
+cmds = generate_cmds('2019:248:16:56:18.000', dith_off)
+cmd_states.insert_cmds_db(cmds, None, db)
