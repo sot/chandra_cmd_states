@@ -1,7 +1,6 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 from setuptools import setup
 
-from Chandra.cmd_states import __version__
 try:
     from testr.setup_helper import cmdclass
 except ImportError:
@@ -18,7 +17,8 @@ setup(name='Chandra.cmd_states',
                   'Chandra.cmd_states.interrupt_loads',
                   'Chandra.cmd_states.add_nonload_cmds',
                   ],
-      version=__version__,
+      use_scm_version=True,
+      setup_requires=['setuptools_scm', 'setuptools_scm_git_archive'],
       zip_safe=False,
       packages=['Chandra', 'Chandra.cmd_states', 'Chandra.cmd_states.tests'],
       tests_require=['pytest'],

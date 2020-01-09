@@ -1,8 +1,9 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
+import ska_helpers
 from .cmd_states import *
 from .get_cmd_states import fetch_states
 
-__version__ = '3.15'
+__version__ = ska_helpers.get_version(__package__)
 
 
 def test(*args, **kwargs):
