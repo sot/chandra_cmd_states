@@ -1040,3 +1040,11 @@ cmd_states.insert_cmds_db(cmds, None, db)
 # date=2020:147:11:21:00.000 cmd_set=manvr args=-0.04470333 0.63502552 -0.67575906 0.37160988
 cmds = generate_cmds('2020:147:11:21:00.000', cmd_set('manvr', -0.04470333, 0.63502552, -0.67575906, 0.37160988))
 cmd_states.insert_cmds_db(cmds, None, db)
+
+# Add a dither disable around the NSM transition
+dith_off = (dict(dur=1.025),
+            dict(cmd='COMMAND_SW',
+                 tlmsid='AODSDITH',
+                 ))
+cmds = generate_cmds('2020:145:14:17:30.000', dith_off)
+cmd_states.insert_cmds_db(cmds, None, db)
