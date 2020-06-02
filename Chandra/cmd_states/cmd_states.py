@@ -794,8 +794,11 @@ def cmd_set(name, *args):
 
     def nsm():
         return (dict(cmd='COMMAND_SW',
-                     tlmsid='AONSMSAF'),
-                )
+                     tlmsid='AONSMSAF',
+                     dur=1.025),
+                dict(cmd='COMMAND_SW',
+                     tlmsid='AODSDITH'))
+
 
     cmd_sets = dict(manvr=manvr, scs107=scs107, nsm=nsm, obsid=obsid,
                     acis=acis, aciscti=aciscti)
