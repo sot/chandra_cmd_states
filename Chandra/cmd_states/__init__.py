@@ -3,7 +3,7 @@ import ska_helpers
 from .cmd_states import *
 from .get_cmd_states import fetch_states
 
-__version__ = ska_helpers.get_version(__package__)
+__version__ = ska_helpers.get_version('Chandra.cmd_states')
 
 
 def test(*args, **kwargs):
