@@ -22,12 +22,12 @@ logging.basicConfig(level=10,
                     format='%(message)s',
                     stream=sys.stdout)
 
-tlm = fetch.MSIDset(['4HPOSARO', '4LPOSARO'], '2009:010', '2010:210', stat='5min')
+tlm = fetch.MSIDset(['4HPOSARO', '4LPOSARO'], '2009:010:12:00:00', '2010:210:12:00:00', stat='5min')
 
 # db = Ska.DBI.DBI(dbi='sybase')
 
-datestart = DateTime('2008:360').date
-datestop = DateTime('2010:220').date
+datestart = DateTime('2008:360:12:00:00').date
+datestop = DateTime('2010:220:12:00:00').date
 
 if 1 or 'states' not in globals():
     print 'Getting states'
