@@ -1,17 +1,24 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 import os
 import sys
-import six
-from six.moves import cStringIO as StringIO
+from pathlib import Path
+from io import StringIO
 import pytest
 
 import numpy as np
 from astropy.io import ascii
 
+import Chandra.cmd_states
 from Chandra.cmd_states.get_cmd_states import main, fetch_states
 from Chandra.cmd_states.cmd_states import decode_power, get_state0, get_cmds, get_states
 
-HAS_SOTMP_FILES = os.path.exists('/data/mpcrit1/mplogs/2017')
+# Check that this test file is in the same package as the imported Chandra.cmd_states.
+# Due to subtleties with pytest test collection and native namespace pacakges,
+# running `pytest Ska/Numpy` in the git repo will end up getting the installed
+# Chandra.cmd_states not the local one.  Use `python setup.py test` instead.
+assert Path(__file__).parent.parent == Path(Chandra.cmd_states.__file__).parent
+
+HAS_SOTMP_FILES = os.path.exists(f'{os.environ["SKA"]}/data/mpcrit1/mplogs/2017')
 
 
 # This is taken from the output of
@@ -41,7 +48,7 @@ VALS = ascii.read(LINES, guess=False)
 def test_get_states_main():
     """Test command line interface to getting commanded states.
     """
-    cli_string = "--start=2010:100 --stop=2010:101 --vals=obsid,simpos,pcad_mode,clocking,power_cmd"
+    cli_string = "--start=2010:100:12:00:00 --stop=2010:101:12:00:00 --vals=obsid,simpos,pcad_mode,clocking,power_cmd"
     sys.stdout = StringIO()
     main(cli_string.split())
     out = sys.stdout.getvalue()
@@ -51,8 +58,6 @@ def test_get_states_main():
 
 # Set up possible backends
 dbis = ['hdf5', 'sqlite']
-if six.PY2 and 'SYBASE' in os.environ and os.path.exists(os.environ['SYBASE']):
-    dbis.append('sybase')
 
 
 @pytest.mark.parametrize('dbi', dbis)
@@ -61,7 +66,7 @@ def test_get_states(dbi):
     """
     val_names = "obsid,simpos,pcad_mode,clocking,power_cmd".split(',')
 
-    states = fetch_states(start='2010:100', stop='2010:101', dbi=dbi,
+    states = fetch_states(start='2010:100:12:00:00', stop='2010:101:12:00:00', dbi=dbi,
                           vals=val_names)
     for name in states.dtype.names:
         if states[name].dtype.kind == 'f':

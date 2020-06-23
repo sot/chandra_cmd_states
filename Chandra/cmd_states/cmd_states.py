@@ -474,7 +474,7 @@ def _tl_to_bs_cmds(tl_cmds, tl_id, db):
 def get_cmds(datestart='1998:001:00:00:00.000',
              datestop='2099:001:00:00:00.000',
              db=None, update_db=None, timeline_loads=None,
-             mp_dir='/data/mpcrit1/mplogs'):
+             mp_dir=f'{os.environ["SKA"]}/data/mpcrit1/mplogs'):
     """Get all commands with ``datestart`` < date <= ``datestop`` using DBI
     object ``db``.  This includes both commands already in the database and new
     commands.  If ``update_db`` is True then update the database cmds table
@@ -716,7 +716,7 @@ def generate_cmds(time, cmd_set):
 
 
 def cmd_set(name, *args):
-    """
+    r"""
     Return a predefined cmd_set ``name`` generated with \*args.
 
     :param name: cmd set name (manvr|scs107|nsm)

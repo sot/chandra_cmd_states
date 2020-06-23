@@ -113,7 +113,7 @@ def fetch_states(start=None, stop=None, vals=None, allow_identical=False,
 
       # Get commanded states using the default HDF5 table
       >>> from Chandra.cmd_states import fetch_states
-      >>> states = fetch_states('2011:100', '2011:101', vals=['obsid', 'simpos'])
+      >>> states = fetch_states('2011:100:12:00:00', '2011:101:12:00:00', vals=['obsid', 'simpos'])
       >>> states[['datestart', 'datestop', 'obsid', 'simpos']]
       array([('2011:100:11:53:12.378', '2011:101:00:23:01.434', 13255, 75624),
              ('2011:101:00:23:01.434', '2011:101:00:26:01.434', 13255, 91272),
@@ -121,7 +121,7 @@ def fetch_states(start=None, stop=None, vals=None, allow_identical=False,
             dtype=[('datestart', '|S21'), ('datestop', '|S21'), ('obsid', '<i8'), ('simpos', '<i8')])
 
       # Get same states from Sybase (25 times slower)
-      >>> states2 = fetch_states('2011:100', '2011:101', vals=['obsid', 'simpos'], dbi='sybase')
+      >>> states2 = fetch_states('2011:100:12:00:00', '2011:101:12:00:00', vals=['obsid', 'simpos'], dbi='sybase')
       >>> states2 == states
       array([ True,  True,  True], dtype=bool)
 
