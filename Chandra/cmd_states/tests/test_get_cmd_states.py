@@ -3,8 +3,8 @@ import os
 import sys
 from pathlib import Path
 from io import StringIO
-import pytest
 
+import pytest
 import numpy as np
 from astropy.io import ascii
 
