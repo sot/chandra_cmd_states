@@ -8,6 +8,7 @@ import argparse
 import os
 import re
 import six
+import warnings
 
 import numpy as np
 from Chandra.Time import DateTime
@@ -86,6 +87,8 @@ def get_sql_states(start, stop, dbi, server, user, database):
     """
     import Ska.DBI
 
+    if dbi == 'sybase':
+        warnings.warn('sybase cmd_states are no longer supported', FutureWarning)
     if dbi == 'sqlite' and server is None:
         server = os.path.join(SKA, 'data', 'cmd_states', 'cmd_states.db3')
 
