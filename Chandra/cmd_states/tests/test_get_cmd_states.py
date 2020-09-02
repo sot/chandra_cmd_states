@@ -86,7 +86,7 @@ def test_acis_power_cmds():
     assert all_off["fep_count"] == 0
     assert all_off["vid_board"] == 0
     server = os.path.join(os.environ['SKA'], 'data', 'cmd_states', 'cmd_states.db3')
-    db = Ska.DBI.DBI(dbi="sqlite", server=server, user='aca_read', database='aca')
+    db = Ska.DBI.DBI(dbi="sqlite", server=server)
     state0 = get_state0("2017:359:13:37:50", db=db)
     cmds = get_cmds("2017:359:13:37:50", "2017:360:00:46:00", db=db)
     states = get_states(state0, cmds)
