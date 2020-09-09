@@ -409,9 +409,9 @@ def get_state0(date=None, db=None, date_margin=10, datepar='datestop'):
     :rtype: dict
     """
     if db is None:
-        db = Ska.DBI.DBI(dbi='sybase', server='sybase', user='aca_read',
-                         database='aca')
-
+        db = Ska.DBI.DBI(dbi='sqlite',
+                         server=os.path.join(
+                             os.environ['SKA'], 'data', 'cmd_states', 'cmd_states.db3'))
     if date is not None:
         date = DateTime(date).date
 
