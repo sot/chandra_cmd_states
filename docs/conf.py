@@ -94,9 +94,9 @@ pygments_style = 'sphinx'
 # Sphinx are currently 'default' and 'sphinxdoc'.
 html_theme = 'bootstrap-ska'
 html_theme_options = {
-logotext1: 'Ska!' ,
-logotext2: 'cmd_states',
-logotext3: '',
+    'logotext1': 'Ska!' ,
+    'logotext2': 'cmd_states',
+    'logotext3': '',
 }
 
 # Theme options are theme-specific and customize the look and feel of a theme
