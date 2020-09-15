@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix_pitch_simz &#8212; cmd_states 3.15.3.dev11+g9733ed8 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-astropy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="interrupt_loads" href="interrupt_loads.html" />
+    <link rel="prev" title="get_cmd_states" href="get_cmd_states.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">Ska!</span><span id="logotext2">cmd_states</span><span id="logotext3"></span></a>
+  <ul>
+    
+    <li><a class="home" title="Homepage" href="">
+        <span id="logotext1"></span><span id="logotext2"></span>
+    </a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="interrupt_loads.html" title="interrupt_loads">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="get_cmd_states.html" title="get_cmd_states">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">cmd_states 3.15.3.dev11+g9733ed8 documentation</a>
+	 &#187;
+      </li>
+      
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">fix_pitch_simz</span></code></li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-fix_pitch_simz">
+<span id="fix-pitch-simz"></span><h1><a class="reference internal" href="#module-fix_pitch_simz" title="fix_pitch_simz"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fix_pitch_simz</span></code></a><a class="headerlink" href="#module-fix_pitch_simz" title="Permalink to this headline">¶</a></h1>
+<p>One-off script to fix residual mismatches in cmd_states pitch and SIM-Z.  These
+are largely due to SCS107 runs with a dense set of replans that are not exactly
+captured in the timeline loads.</p>
+<p>This script uses telemetry to repair the errant command states.  The result is still
+not perfect but mostly good.  The last fix is 2007:153.</p>
+<p># Fetch comparison telemetry
+fetch –start 2002:010 –stop 2009:001:00:00:00 –dt 600 –outfile tlm2002_2008.dat       –time-format secs aopcadmd cobsrqid tscpos aosares1 point_suncentang</p>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fix_pitch_simz</span></code></a></li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="get_cmd_states.html"
+                        title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">get_cmd_states</span></code></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="interrupt_loads.html"
+                        title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">interrupt_loads</span></code></a></p>
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2009, Tom Aldcroft.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.1.2. &nbsp;
+  </p>
+</footer>
+  </body>
+</html>

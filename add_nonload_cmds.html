@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add_nonload_cmds &#8212; cmd_states 3.15.3.dev11+g9733ed8 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-astropy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="get_cmd_states" href="get_cmd_states.html" />
+    <link rel="prev" title="Chandra commanded states database" href="index.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">Ska!</span><span id="logotext2">cmd_states</span><span id="logotext3"></span></a>
+  <ul>
+    
+    <li><a class="home" title="Homepage" href="">
+        <span id="logotext1"></span><span id="logotext2"></span>
+    </a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="get_cmd_states.html" title="get_cmd_states">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="index.html" title="Chandra commanded states database">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">cmd_states 3.15.3.dev11+g9733ed8 documentation</a>
+	 &#187;
+      </li>
+      
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">add_nonload_cmds</span></code></li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="add-nonload-cmds">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">add_nonload_cmds</span></code><a class="headerlink" href="#add-nonload-cmds" title="Permalink to this headline">¶</a></h1>
+<p>Add non-load commands to the database and generate code to recreate those
+commands for archive purposes.  See also cmd_states.cmd_set().</p>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Usage: add_nonload_cmds.py [options] [cmd_set_arg1 ...]::
+
+Options:
+  -h, --help            show this help message and exit
+  --dbi=DBI             Database interface (sqlite|sybase)
+  --server=SERVER       DBI server (&lt;filename&gt;|sybase)
+  --check               Check for recent non-load commands and do not generate
+                        commands
+  --date=DATE           Date for command set
+  --cmd-set=CMD_SET     Command set name (obsid|manvr|scs107|nsm)
+  --loglevel=LOGLEVEL   Log level (10=debug, 20=info, 30=warnings)
+  --archive-file=FILE   Archive file for storing nonload cmd sets
+  --interrupt           Interrupt timelines and load_segments after ``date``
+  --observing-only      Interrupt only &#39;observing&#39; timelines
+</pre></div>
+</div>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print recent non-load commands</span>
+<span class="n">add_nonload_cmds</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">check</span>
+
+<span class="c1"># Add a maneuver to RA, Dec, Roll = 10, 20, 30</span>
+<span class="n">add_nonload_cmds</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">date</span> <span class="s1">&#39;2009:065:12:13:14&#39;</span> <span class="o">--</span><span class="n">cmd</span><span class="o">-</span><span class="nb">set</span> <span class="n">manvr</span> <span class="mi">10</span> <span class="mi">20</span> <span class="mi">30</span>
+
+<span class="c1"># Add an autonomous NSM transition (which also runs SCS107)</span>
+<span class="n">add_nonload_cmds</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">date</span> <span class="s1">&#39;2009:001:12:13:14&#39;</span> <span class="o">--</span><span class="n">interrupt</span> <span class="o">--</span><span class="n">cmd</span><span class="o">-</span><span class="nb">set</span> <span class="n">nsm</span> <span class="o">--</span><span class="n">dry</span><span class="o">-</span><span class="n">run</span>
+<span class="n">add_nonload_cmds</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">date</span> <span class="s1">&#39;2009:001:12:13:14&#39;</span> <span class="o">--</span><span class="n">interrupt</span> <span class="o">--</span><span class="n">cmd</span><span class="o">-</span><span class="nb">set</span> <span class="n">scs107</span>
+
+<span class="c1"># Add ACIS CTI commanding</span>
+<span class="n">add_nonload_cmds</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">date</span> <span class="s1">&#39;2012:072:20:52:00.000&#39;</span> <span class="o">--</span><span class="n">cmd</span><span class="o">-</span><span class="nb">set</span> <span class="n">aciscti</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">add_nonload_cmds</span></code></a><ul>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Chandra commanded states database</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="get_cmd_states.html"
+                        title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">get_cmd_states</span></code></a></p>
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2009, Tom Aldcroft.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.1.2. &nbsp;
+  </p>
+</footer>
+  </body>
+</html>

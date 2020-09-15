@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>update_cmd_states &#8212; cmd_states 3.15.3.dev11+g9733ed8 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-astropy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Chandra.cmd_states API" href="api.html" />
+    <link rel="prev" title="make_cmd_tables" href="make_cmd_tables.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">Ska!</span><span id="logotext2">cmd_states</span><span id="logotext3"></span></a>
+  <ul>
+    
+    <li><a class="home" title="Homepage" href="">
+        <span id="logotext1"></span><span id="logotext2"></span>
+    </a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="api.html" title="Chandra.cmd_states API">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="make_cmd_tables.html" title="make_cmd_tables">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">cmd_states 3.15.3.dev11+g9733ed8 documentation</a>
+	 &#187;
+      </li>
+      
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">update_cmd_states</span></code></li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="update-cmd-states">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">update_cmd_states</span></code><a class="headerlink" href="#update-cmd-states" title="Permalink to this headline">¶</a></h1>
+<p>Update the cmd_states table to reflect current load segments / timelines
+in database.  This is normally run as a cron job via the
+<code class="docutils literal notranslate"><span class="pre">cmd_states/task_schedule.cfg</span></code> task schedule file.</p>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Usage</span><span class="p">:</span> <span class="n">update_cmd_states</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span>
+
+<span class="n">Options</span><span class="p">:</span>
+  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
+  <span class="o">--</span><span class="n">dbi</span><span class="o">=</span><span class="n">DBI</span>             <span class="n">Database</span> <span class="n">interface</span> <span class="p">(</span><span class="n">sqlite</span><span class="o">|</span><span class="n">sybase</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">server</span><span class="o">=</span><span class="n">SERVER</span>       <span class="n">DBI</span> <span class="n">server</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">filename</span><span class="o">&gt;|</span><span class="n">sybase</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">user</span><span class="o">=</span><span class="n">USER</span>           <span class="n">sybase</span> <span class="n">user</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">Ska</span><span class="o">.</span><span class="n">DBI</span> <span class="n">default</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">database</span><span class="o">=</span><span class="n">DATABASE</span>   <span class="n">sybase</span> <span class="n">database</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">Ska</span><span class="o">.</span><span class="n">DBI</span> <span class="n">default</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">mp_dir</span><span class="o">=</span><span class="n">MP_DIR</span>       <span class="n">MP</span> <span class="n">load</span> <span class="n">directory</span>
+  <span class="o">--</span><span class="n">h5file</span><span class="o">=</span><span class="n">H5FILE</span>       <span class="n">filename</span> <span class="k">for</span> <span class="n">HDF5</span> <span class="n">version</span> <span class="n">of</span> <span class="n">cmd_states</span>
+  <span class="o">--</span><span class="n">datestart</span><span class="o">=</span><span class="n">DATESTART</span>
+                        <span class="n">Starting</span> <span class="n">date</span> <span class="k">for</span> <span class="n">update</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">Now</span><span class="o">-</span><span class="mi">10</span> <span class="n">days</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">loglevel</span><span class="o">=</span><span class="n">LOGLEVEL</span>   <span class="n">Log</span> <span class="n">level</span> <span class="p">(</span><span class="mi">10</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span> <span class="mi">20</span><span class="o">=</span><span class="n">info</span><span class="p">,</span> <span class="mi">30</span><span class="o">=</span><span class="n">warnings</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--h5file</span></code> option defaults to <code class="docutils literal notranslate"><span class="pre">$SKA/share/cmd_states/cmd_states.h5</span></code>.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">update_cmd_states</span></code></a><ul>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="make_cmd_tables.html"
+                        title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">make_cmd_tables</span></code></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="next chapter">Chandra.cmd_states API</a></p>
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2009, Tom Aldcroft.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.1.2. &nbsp;
+  </p>
+</footer>
+  </body>
+</html>

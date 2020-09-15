@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>get_cmd_states &#8212; cmd_states 3.15.3.dev11+g9733ed8 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-astropy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="fix_pitch_simz" href="fix_pitch_simz.html" />
+    <link rel="prev" title="add_nonload_cmds" href="add_nonload_cmds.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">Ska!</span><span id="logotext2">cmd_states</span><span id="logotext3"></span></a>
+  <ul>
+    
+    <li><a class="home" title="Homepage" href="">
+        <span id="logotext1"></span><span id="logotext2"></span>
+    </a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="fix_pitch_simz.html" title="fix_pitch_simz">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="add_nonload_cmds.html" title="add_nonload_cmds">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">cmd_states 3.15.3.dev11+g9733ed8 documentation</a>
+	 &#187;
+      </li>
+      
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">get_cmd_states</span></code></li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="get-cmd-states">
+<span id="id1"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">get_cmd_states</span></code><a class="headerlink" href="#get-cmd-states" title="Permalink to this headline">¶</a></h1>
+<p>Get the Chandra commanded states over a range of time as a space-delimited
+ASCII table.</p>
+<p>This tool is a wrapper around the <code class="docutils literal notranslate"><span class="pre">Chandra.cmd_states.get_cmd_states()</span></code>
+function.  This function should be used within any Python code that requires
+use of commanded states.</p>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Usage</span><span class="p">:</span> <span class="n">get_cmd_states</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">start</span> <span class="n">START</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">stop</span> <span class="n">STOP</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">vals</span> <span class="n">VALS</span><span class="p">]</span>
+                         <span class="p">[</span><span class="o">--</span><span class="n">allow</span><span class="o">-</span><span class="n">identical</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">outfile</span> <span class="n">OUTFILE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">dbi</span> <span class="n">DBI</span><span class="p">]</span>
+                         <span class="p">[</span><span class="o">--</span><span class="n">server</span> <span class="n">SERVER</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">user</span> <span class="n">USER</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">database</span> <span class="n">DATABASE</span><span class="p">]</span>
+
+<span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
+  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>           <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
+  <span class="o">--</span><span class="n">start</span> <span class="n">START</span>        <span class="n">Start</span> <span class="n">date</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">Now</span><span class="o">-</span><span class="mi">10</span> <span class="n">days</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">stop</span> <span class="n">STOP</span>          <span class="n">Stop</span> <span class="n">date</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">vals</span> <span class="n">VALS</span>          <span class="n">Comma</span><span class="o">-</span><span class="n">separated</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">state</span> <span class="n">values</span><span class="o">.</span> <span class="n">Possible</span> <span class="n">values</span>
+                       <span class="n">are</span><span class="p">:</span> <span class="n">obsid</span> <span class="n">power_cmd</span> <span class="n">si_mode</span> <span class="n">pcad_mode</span> <span class="n">vid_board</span>
+                       <span class="n">clocking</span> <span class="n">fep_count</span> <span class="n">ccd_count</span> <span class="n">simpos</span> <span class="n">simfa_pos</span> <span class="n">pitch</span> <span class="n">ra</span>
+                       <span class="n">dec</span> <span class="n">roll</span> <span class="n">q1</span> <span class="n">q2</span> <span class="n">q3</span> <span class="n">q4</span> <span class="n">trans_keys</span> <span class="n">hetg</span> <span class="n">letg</span> <span class="n">dither</span>
+  <span class="o">--</span><span class="n">allow</span><span class="o">-</span><span class="n">identical</span>    <span class="n">Allow</span> <span class="n">identical</span> <span class="n">states</span> <span class="kn">from</span> <span class="nn">cmd_states</span> <span class="n">table</span>
+                       <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">outfile</span> <span class="n">OUTFILE</span>    <span class="n">Output</span> <span class="n">file</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">dbi</span> <span class="n">DBI</span>            <span class="n">Cmd</span> <span class="n">states</span> <span class="n">data</span> <span class="n">source</span> <span class="p">(</span><span class="n">sybase</span><span class="o">|</span><span class="n">hdf5</span><span class="o">|</span><span class="n">sqlite</span><span class="p">)</span>
+                       <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">hdf5</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">server</span> <span class="n">SERVER</span>      <span class="n">DBI</span> <span class="n">server</span> <span class="p">(</span><span class="n">sybase</span><span class="p">)</span> <span class="ow">or</span> <span class="n">data</span> <span class="n">file</span> <span class="p">(</span><span class="n">hdf5</span> <span class="ow">or</span> <span class="n">sqlite</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">user</span> <span class="n">USER</span>          <span class="n">sybase</span> <span class="n">database</span> <span class="n">user</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;aca_read&#39;</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">database</span> <span class="n">DATABASE</span>  <span class="n">sybase</span> <span class="n">database</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">Ska</span><span class="o">.</span><span class="n">DBI</span> <span class="n">default</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Set PATH so get_cmd_states is found
+% setenv PATH ${PATH}:/proj/sot/ska/bin
+
+# Print help
+% get_cmd_states --help
+
+# Get attitude info for the last 10 days and into the available future
+% get_cmd_states --vals pcad_mode,ra,dec,roll
+
+# Get grating config from 2010:001 and output to file gratings.dat
+% get_cmd_states --vals hetg,letg --start 2010:001 --outfile gratings.dat
+
+# Get Obsid and ACIS config for 2010:001 to 2010:010
+% get_cmd_states --vals obsid,power_cmd,si_mode,vid_board,clocking,fep_count --stop 2010:010
+
+# Get all state values using different valid time formats to specify start and stop times
+% get_cmd_states --start 347198466.18 --stop 2009-01-03T12:00:00 --outfile all_states.dat
+</pre></div>
+</div>
+</div>
+<div class="section" id="hdf5-and-sybase">
+<h2>HDF5 and Sybase<a class="headerlink" href="#hdf5-and-sybase" title="Permalink to this headline">¶</a></h2>
+<p>Starting with version 0.08 of the commanded states package, the commanded
+states table is also stored in an HDF5 table
+(/proj/sot/ska/data/cmd_states/cmd_states.h5 by default).  This supplements the
+heritage Sybase version which is available on the HEAD network.</p>
+<p>The choice of which one to use is controlled by the <code class="docutils literal notranslate"><span class="pre">--dbi</span></code> command line
+option.  In general the default choice of <code class="docutils literal notranslate"><span class="pre">hdf5</span></code> is preferred because it is
+typically at least 20 times faster and is available on both HEAD and GRETA
+networks.</p>
+</div>
+<div class="section" id="state-values">
+<h2>State values<a class="headerlink" href="#state-values" title="Permalink to this headline">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 57%" />
+<col style="width: 43%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>obsid</p></td>
+<td><p>int</p></td>
+</tr>
+<tr class="row-odd"><td><p>power_cmd</p></td>
+<td><p>varchar</p></td>
+</tr>
+<tr class="row-even"><td><p>si_mode</p></td>
+<td><p>varchar</p></td>
+</tr>
+<tr class="row-odd"><td><p>pcad_mode</p></td>
+<td><p>varchar</p></td>
+</tr>
+<tr class="row-even"><td><p>vid_board</p></td>
+<td><p>bit</p></td>
+</tr>
+<tr class="row-odd"><td><p>clocking</p></td>
+<td><p>bit</p></td>
+</tr>
+<tr class="row-even"><td><p>fep_count</p></td>
+<td><p>int</p></td>
+</tr>
+<tr class="row-odd"><td><p>ccd_count</p></td>
+<td><p>int</p></td>
+</tr>
+<tr class="row-even"><td><p>simpos</p></td>
+<td><p>int</p></td>
+</tr>
+<tr class="row-odd"><td><p>simfa_pos</p></td>
+<td><p>int</p></td>
+</tr>
+<tr class="row-even"><td><p>hetg</p></td>
+<td><p>varchar</p></td>
+</tr>
+<tr class="row-odd"><td><p>letg</p></td>
+<td><p>varchar</p></td>
+</tr>
+<tr class="row-even"><td><p>pitch</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>ra</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>dec</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>roll</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>q1</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>q2</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>q3</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>q4</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>dither</p></td>
+<td><p>varchar</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">get_cmd_states</span></code></a><ul>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#hdf5-and-sybase">HDF5 and Sybase</a></li>
+<li><a class="reference internal" href="#state-values">State values</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="add_nonload_cmds.html"
+                        title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">add_nonload_cmds</span></code></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fix_pitch_simz.html"
+                        title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fix_pitch_simz</span></code></a></p>
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2009, Tom Aldcroft.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.1.2. &nbsp;
+  </p>
+</footer>
+  </body>
+</html>
