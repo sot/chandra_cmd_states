@@ -97,6 +97,9 @@ html_theme_options = {
     'logotext1': 'Ska!' ,
     'logotext2': 'cmd_states',
     'logotext3': '',
+    'homepage_url': 'https://cxc.cfa.harvard.edu/mta/ASPECT/tool_doc',
+    'homepage_text': 'ska',
+    'homepage_text_2': 'tools'
 }
 
 # Theme options are theme-specific and customize the look and feel of a theme
