@@ -17,7 +17,7 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.append(os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -92,7 +92,15 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme = 'default'
+html_theme = 'bootstrap-ska'
+html_theme_options = {
+    'logotext1': 'Ska!' ,
+    'logotext2': 'cmd_states',
+    'logotext3': '',
+    'homepage_url': 'https://cxc.cfa.harvard.edu/mta/ASPECT/tool_doc',
+    'homepage_text': 'ska',
+    'homepage_text_2': 'tools'
+}
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
