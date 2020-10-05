@@ -840,9 +840,16 @@ def interrupt_loads(datestop, db, observing_only=False, current_only=False):
         logging.info("UPDATE timelines SET datestop='%s' where id=%d ;"
                      % (tl['datestop'], tl['id']))
 
+    # For timelines in this set that start before the interrupt (datestop)
+    # time, interrupt at datestop.  For the ones after the interrupt time,
+    # set datestop=datestart so they just have zero length.
     for tl in timelines:
+        if tl['datestart'] < datestop:
+            interrupt_time = datestop
+        else:
+            interrupt_time = tl['datestart']
         update = ("UPDATE timelines SET datestop='%s' where id=%d"
-                  % (datestop, tl['id']))
+                  % (interrupt_time, tl['id']))
         db.execute(update)
 
 
