@@ -1120,3 +1120,10 @@ cmd_states.insert_cmds_db(cmds, None, db)
 cmds = generate_cmds('2021:244:10:34:00.000', cmd_set('scs107'))
 cmd_states.insert_cmds_db(cmds, None, db)
 cmd_states.interrupt_loads('2021:244:10:34:00.000', db, observing_only=True, current_only=True)
+
+# LETG retract done as part of LETG insert anomaly recovery
+letg_retr = (dict(dur=1.025),
+             dict(cmd='COMMAND_SW',
+                  tlmsid='4OLETGRE'))
+cmds = generate_cmds('2021:245:18:57:00',  letg_retr)
+cmd_states.insert_cmds_db(cmds, None, db)
