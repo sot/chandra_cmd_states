@@ -1143,3 +1143,7 @@ cmd_states.insert_cmds_db(cmds, None, db)
 # date=2021:297:01:41:01.000 cmd_set=manvr args=0.70546907 0.32988307 0.53440901 0.32847766
 cmds = generate_cmds('2021:297:01:41:01.000', cmd_set('manvr', 0.70546907, 0.32988307, 0.53440901, 0.32847766))
 cmd_states.insert_cmds_db(cmds, None, db)
+
+# Add a dither off at the NSUN
+cmds = generate_cmds('2021:296:10:41:57.000', dith_off)
+cmd_states.insert_cmds_db(cmds, None, db)
