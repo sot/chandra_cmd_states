@@ -761,7 +761,7 @@ def cmd_set(name, *args):
                 )
 
     def acis(*args):
-        cmds = [dict(cmd='ACISPKT', tlmsid=tlmsid) for tlmsid in args]
+        cmds = tuple(dict(cmd='ACISPKT', tlmsid=tlmsid) for tlmsid in args)
         return cmds
 
     def aciscti():
