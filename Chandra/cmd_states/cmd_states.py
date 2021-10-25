@@ -792,13 +792,32 @@ def cmd_set(name, *args):
                      tlmsid='WSPOW00000'),
                 )
 
-    def nsm():
-        return (dict(cmd='COMMAND_SW',
-                     tlmsid='AONSMSAF'),
+    def dith_on():
+        return (dict(dur=1.025),
+                dict(cmd='COMMAND_SW',
+                     tlmsid='AOENDITH',
+                     )
                 )
 
+    def dith_off():
+        return (dict(dur=1.025),
+                dict(cmd='COMMAND_SW',
+                     tlmsid='AODSDITH',
+                     )
+                )
+
+    def nsm():
+        nsm_cmd = dict(cmd='COMMAND_SW',
+                       tlmsid='AONSMSAF')
+        out = ((nsm_cmd,)
+               + scs107()
+               + dith_off()
+               )
+        return out
+
     cmd_sets = dict(manvr=manvr, scs107=scs107, nsm=nsm, obsid=obsid,
-                    acis=acis, aciscti=aciscti)
+                    acis=acis, aciscti=aciscti,
+                    dith_on=dith_on, dith_off=dith_off)
     return cmd_sets[name](*args)
 
 
