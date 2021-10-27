@@ -789,7 +789,7 @@ def cmd_set(name, *args):
                      tlmsid='AA00000000',
                      dur=10.25),
                 dict(cmd='ACISPKT',
-                     tlmsid='WSPOW00000'),
+                     tlmsid='WSPOW0002A'),
                 )
 
     def dith_on():
