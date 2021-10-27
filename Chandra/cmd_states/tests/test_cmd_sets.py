@@ -2,10 +2,13 @@
 
 from Chandra.cmd_states import cmd_set
 
+# COMMAND_HW       | TLMSID= AFIDP, HEX= 6480005, MSID= AFLCRSET
 
 def test_cmd_sets1():
     cmds = cmd_set('scs107')
     exp = ({'dur': 1.025},
+           {'cmd': 'COMMAND_SW', 'dur': 1.025, 'tlmsid': 'OORMPDS'},
+           {'cmd': 'COMMAND_HW', 'dur': 1.025, 'tlmsid': 'AFIDP', 'msid': 'AFLCRSET'},
            {'cmd': 'SIMTRANS', 'dur': 65.66, 'params': {'POS': -99616}},
            {'cmd': 'ACISPKT', 'dur': 1.025, 'tlmsid': 'AA00000000'},
            {'cmd': 'ACISPKT', 'dur': 10.25, 'tlmsid': 'AA00000000'},
@@ -17,6 +20,8 @@ def test_cmd_sets2():
     cmds = cmd_set('nsm')
     exp = ({'cmd': 'COMMAND_SW', 'tlmsid': 'AONSMSAF'},
            {'dur': 1.025},
+           {'cmd': 'COMMAND_SW', 'dur': 1.025, 'tlmsid': 'OORMPDS'},
+           {'cmd': 'COMMAND_HW', 'dur': 1.025, 'tlmsid': 'AFIDP', 'msid': 'AFLCRSET'},
            {'cmd': 'SIMTRANS', 'dur': 65.66, 'params': {'POS': -99616}},
            {'cmd': 'ACISPKT', 'dur': 1.025, 'tlmsid': 'AA00000000'},
            {'cmd': 'ACISPKT', 'dur': 10.25, 'tlmsid': 'AA00000000'},
