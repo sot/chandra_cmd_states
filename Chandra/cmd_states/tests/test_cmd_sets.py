@@ -27,7 +27,7 @@ def test_cmd_sets2():
 
 
 def test_cmd_sets3():
-    cmds = cmd_set('manvr', 0, 1, 0, 0)
+    cmds = cmd_set('manvr', 0, 0, 0, 1)
     exp = ({'cmd': 'COMMAND_SW',
             'dur': 0.25625,
             'msid': 'AONMMODE',
@@ -35,7 +35,7 @@ def test_cmd_sets3():
            {'cmd': 'COMMAND_SW', 'dur': 4.1, 'msid': 'AONM2NPE', 'tlmsid': 'AONM2NPE'},
            {'cmd': 'MP_TARGQUAT',
             'dur': 5.894,
-            'params': {'Q1': 0.0, 'Q2': 1.0, 'Q3': 0.0, 'Q4': 0.0},
+            'params': {'Q1': 0.0, 'Q2': 0.0, 'Q3': 0.0, 'Q4': 1.0},
             'tlmsid': 'AOUPTARQ'},
            {'cmd': 'COMMAND_SW', 'msid': 'AOMANUVR', 'tlmsid': 'AOMANUVR'})
     assert cmds == exp
