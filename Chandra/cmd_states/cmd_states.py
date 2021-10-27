@@ -779,6 +779,13 @@ def cmd_set(name, *args):
 
     def scs107():
         return (dict(dur=1.025),
+                dict(cmd='COMMAND_SW',
+                     dur=1.025,
+                     tlmsid='OORMPDS'),
+                dict(cmd='COMMAND_HW',
+                     dur=1.025,
+                     tlmsid='AFIDP',
+                     msid='AFLCRSET'),
                 dict(cmd='SIMTRANS',
                      params=dict(POS=-99616),
                      dur=65.66),
