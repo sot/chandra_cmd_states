@@ -9,7 +9,7 @@ def test_cmd_sets1():
            {'cmd': 'SIMTRANS', 'dur': 65.66, 'params': {'POS': -99616}},
            {'cmd': 'ACISPKT', 'dur': 1.025, 'tlmsid': 'AA00000000'},
            {'cmd': 'ACISPKT', 'dur': 10.25, 'tlmsid': 'AA00000000'},
-           {'cmd': 'ACISPKT', 'tlmsid': 'WSPOW00000'})
+           {'cmd': 'ACISPKT', 'tlmsid': 'WSPOW0002A'})
     assert cmds == exp
 
 
@@ -20,7 +20,7 @@ def test_cmd_sets2():
            {'cmd': 'SIMTRANS', 'dur': 65.66, 'params': {'POS': -99616}},
            {'cmd': 'ACISPKT', 'dur': 1.025, 'tlmsid': 'AA00000000'},
            {'cmd': 'ACISPKT', 'dur': 10.25, 'tlmsid': 'AA00000000'},
-           {'cmd': 'ACISPKT', 'tlmsid': 'WSPOW00000'},
+           {'cmd': 'ACISPKT', 'tlmsid': 'WSPOW0002A'},
            {'dur': 1.025},
            {'cmd': 'COMMAND_SW', 'tlmsid': 'AODSDITH'})
     assert cmds == exp
