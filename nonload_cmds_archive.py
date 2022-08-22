@@ -1254,3 +1254,13 @@ cmd_states.insert_cmds_db(cmds, None, db)
 # date=2022:232:19:30:02.000 cmd_set=manvr args=0.70443765 0.06647616 -0.10211985 0.69922818
 cmds = generate_cmds('2022:232:19:30:02.000', cmd_set('manvr', 0.70443765, 0.06647616, -0.10211985, 0.69922818))
 cmd_states.insert_cmds_db(cmds, None, db)
+
+# Insert commands to stop ACIS CTI
+cmds = []
+cmds += generate_cmds('2022:233:18:09:04.100', cmd_set('acis', 'AA00000000'))
+cmds += generate_cmds('2022:233:18:09:05.100', cmd_set('acis', 'WSPOW00000'))
+cmds += generate_cmds('2022:233:18:09:06.100', cmd_set('acis', 'WSVIDALLDN'))
+cmd_states.insert_cmds_db(cmds, None, db)
+
+# Interrupt loads
+cmd_states.interrupt_loads('2022:233:17:37:00.000', db, observing_only=False)
