@@ -20,19 +20,19 @@ I then used fetch_states against the flight cmd_states.h5 and the testing cmd_st
 create dat files limited to the columns that really should not be changing due to this
 update.
 
-    from Chandra.cmd_states.get_cmd_states import fetch_states
+    from chandra_cmd_states.get_cmd_states import fetch_states
     from astropy.table import Table
-    
+
     official = fetch_states(start='2010:005', stop='2010:360', vals=['obsid', 'power_cmd',
       'si_mode', 'pcad_mode', 'vid_board', 'clocking', 'fep_count', 'ccd_count', 'simpos',
       'simfa_pos', 'hetg', 'letg'], server='/proj/sot/ska/data/cmd_states/cmd_states.h5')
     Table(official).write('official_minus_point.dat', format='ascii')
-    
+
     test = fetch_states(start='2010:005', stop='2010:360', vals=['obsid', 'power_cmd',
       'si_mode', 'pcad_mode', 'vid_board', 'clocking', 'fep_count', 'ccd_count', 'simpos',
       'simfa_pos', 'hetg', 'letg'], server='t/all_2010/cmd_states.h5')
     Table(test).write('test_minus_point.dat', format='ascii')
-    
+
     meld official_minus_point.dat test_minus_point.dat
 
 There are fewer than a dozen timing diffs of less than 0.04 seconds in the NMAN / NPNT

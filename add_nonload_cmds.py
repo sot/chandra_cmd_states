@@ -6,5 +6,5 @@ commands for archive purposes.
 """
 
 if __name__ == '__main__':
-    import Chandra.cmd_states.add_nonload_cmds as add_nonload_cmds
+    import chandra_cmd_states.add_nonload_cmds as add_nonload_cmds
     add_nonload_cmds.main()

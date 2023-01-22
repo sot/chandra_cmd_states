@@ -6,5 +6,5 @@ ASCII table.
 """
 
 if __name__ == '__main__':
-    from Chandra.cmd_states import get_cmd_states
+    from chandra_cmd_states import get_cmd_states
     get_cmd_states.main()

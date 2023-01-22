@@ -41,8 +41,8 @@ import logging
 import time
 
 
-import Chandra.cmd_states as cmd_states
-from Chandra.cmd_states.cmd_states import _tl_to_bs_cmds
+import chandra_cmd_states as cmd_states
+from chandra_cmd_states.cmd_states import _tl_to_bs_cmds
 import Ska.DBI
 from Chandra.Time import DateTime
 import Ska.ParseCM

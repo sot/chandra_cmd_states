@@ -1,6 +1,6 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 
-from Chandra.cmd_states import cmd_set
+from chandra_cmd_states import cmd_set
 
 # COMMAND_HW       | TLMSID= AFIDP, HEX= 6480005, MSID= AFLCRSET
 

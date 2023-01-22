@@ -10,7 +10,7 @@ state and a predictive state at any time.
 .. Warning:: Use of the commanded states database described here is deprecated
    in favor of the `Kadi commands and states
    package <http://cxc.cfa.harvard.edu/mta/ASPECT/tool_doc/kadi/commands_states.html>`_.
-   The replacement for the :func:`~Chandra.cmd_states.fetch_states` function is described
+   The replacement for the :func:`~chandra_cmd_states.fetch_states` function is described
    in the `Chandra states and continuity
    <http://cxc.cfa.harvard.edu/mta/ASPECT/tool_doc/kadi/commands_states.html#states>`_
    section which makes use of the `get_states
@@ -49,9 +49,9 @@ available via the :ref:`get_cmd_states` tool.  For example::
   2012:121:16:04:07.192 2012:123:11:23:20.985 452189113.376 452345067.169 13847 75624
 
 To access the commanded states database from within a Python script use the
-:func:`~Chandra.cmd_states.fetch_states` function.  For instance::
+:func:`~chandra_cmd_states.fetch_states` function.  For instance::
 
-  >>> from Chandra.cmd_states import fetch_states
+  >>> from chandra_cmd_states import fetch_states
   >>> states = fetch_states('2011:100', '2011:101')
   >>> states[['datestart', 'datestop', 'obsid', 'simpos']]
   array([('2011:100:11:53:12.378', '2011:101:00:23:01.434', 13255, 75624),
@@ -145,13 +145,13 @@ Tools
    make_cmd_tables
    update_cmd_states
 
-Chandra.cmd_states functions
+chandra_cmd_states functions
 -----------------------------
 
-The following key functions within the ``Chandra.cmd_states`` module are
+The following key functions within the ``chandra_cmd_states`` module are
 available for users.
 
-.. automodule:: Chandra.cmd_states
+.. automodule:: chandra_cmd_states
 
 get_cmds
 ^^^^^^^^^
@@ -176,7 +176,7 @@ reduce_states
 API docs
 --------------
 
-The full API docs for ``Chandra.cmd_states`` are available here:
+The full API docs for ``chandra_cmd_states`` are available here:
 
 .. toctree::
    :maxdepth: 2
