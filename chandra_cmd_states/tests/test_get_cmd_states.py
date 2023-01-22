@@ -1,22 +1,14 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 import os
 import sys
-from pathlib import Path
 from io import StringIO
 
 import pytest
 import numpy as np
 from astropy.io import ascii
 
-import chandra_cmd_states
 from chandra_cmd_states.get_cmd_states import main, fetch_states
 from chandra_cmd_states.cmd_states import decode_power, get_state0, get_cmds, get_states
-
-# Check that this test file is in the same package as the imported chandra_cmd_states.
-# Due to subtleties with pytest test collection and native namespace pacakges,
-# running `pytest Ska/Numpy` in the git repo will end up getting the installed
-# chandra_cmd_states not the local one.  Use `python setup.py test` instead.
-assert Path(__file__).parent.parent == Path(chandra_cmd_states.__file__).parent
 
 HAS_SOTMP_FILES = os.path.exists(f'{os.environ["SKA"]}/data/mpcrit1/mplogs/2017')
 
