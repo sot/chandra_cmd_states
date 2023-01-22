@@ -12,7 +12,7 @@ package_dir = {name: name}
 duplicate_package_info(packages, name, namespace)
 duplicate_package_info(package_dir, name, namespace)
 
-setup(name='Chandra.cmd_states',
+setup(name=name,
       author='Tom Aldcroft',
       description=('(DEPRECATED) Functions for creating, manipulating and updating '
                    'the Chandra commanded states database'),
