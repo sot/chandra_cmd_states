@@ -4,16 +4,16 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chandra.cmd_states API &#8212; cmd_states 3.15.3.dev11+g9733ed8 documentation</title>
-    <link rel="stylesheet" href="_static/bootstrap-astropy.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>chandra_cmd_states API &#8212; cmd_states 4.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
     <script type="text/javascript" src="_static/copybutton.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -54,11 +54,11 @@
 	
       </li>
       <li>
-	<a href="index.html">cmd_states 3.15.3.dev11+g9733ed8 documentation</a>
+	<a href="index.html">cmd_states 4.0.0 documentation</a>
 	 &#187;
       </li>
       
-      <li>Chandra.cmd_states API</li> 
+      <li>chandra_cmd_states API</li> 
     </ul>
 </div>
   
@@ -68,10 +68,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="chandra-cmd-states-api">
-<h1>Chandra.cmd_states API<a class="headerlink" href="#chandra-cmd-states-api" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-Chandra.cmd_states.add_nonload_cmds">
-<span id="add-nonload-cmds"></span><h2>add_nonload_cmds<a class="headerlink" href="#module-Chandra.cmd_states.add_nonload_cmds" title="Permalink to this headline">¶</a></h2>
+  <section id="chandra-cmd-states-api">
+<h1>chandra_cmd_states API<a class="headerlink" href="#chandra-cmd-states-api" title="Permalink to this headline">¶</a></h1>
+<section id="module-chandra_cmd_states.add_nonload_cmds">
+<span id="add-nonload-cmds"></span><h2>add_nonload_cmds<a class="headerlink" href="#module-chandra_cmd_states.add_nonload_cmds" title="Permalink to this headline">¶</a></h2>
 <p>Add non-load commands to the database and generate code to recreate those
 commands for archive purposes.  See also cmd_states.cmd_set().</p>
 <p>Usage: add_nonload_cmds.py [options] [cmd_set_arg1 …]:</p>
@@ -104,14 +104,14 @@ commands for archive purposes.  See also cmd_states.cmd_set().</p>
 <span class="n">add_nonload_cmds</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">date</span> <span class="s1">&#39;2012:072:20:52:00.000&#39;</span> <span class="o">--</span><span class="n">cmd</span><span class="o">-</span><span class="nb">set</span> <span class="n">aciscti</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="module-Chandra.cmd_states.cmd_states">
-<span id="cmd-states"></span><h2>cmd_states<a class="headerlink" href="#module-Chandra.cmd_states.cmd_states" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-chandra_cmd_states.cmd_states">
+<span id="cmd-states"></span><h2>cmd_states<a class="headerlink" href="#module-chandra_cmd_states.cmd_states" title="Permalink to this headline">¶</a></h2>
 <p>This module provides the core functions for creating, manipulating and updating
 the Chandra commanded states database.</p>
 <dl class="py function">
-<dt id="Chandra.cmd_states.cmd_states.cmd_set">
-<code class="sig-prename descclassname">Chandra.cmd_states.cmd_states.</code><code class="sig-name descname">cmd_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.cmd_states.cmd_set" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.cmd_states.cmd_set">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">cmd_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.cmd_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a predefined cmd_set <code class="docutils literal notranslate"><span class="pre">name</span></code> generated with *args.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -127,22 +127,20 @@ the Chandra commanded states database.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.cmd_states.decode_power">
-<code class="sig-prename descclassname">Chandra.cmd_states.cmd_states.</code><code class="sig-name descname">decode_power</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mnem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.cmd_states.decode_power" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.cmd_states.decode_power">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">decode_power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mnem</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.decode_power" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decode number of chips and feps from a ACIS power command
 Return a dictionary with the number of chips and their identifiers</p>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">decode_power</span><span class="p">(</span><span class="s2">&quot;WSPOW08F3E&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">decode_power</span><span class="p">(</span><span class="s2">&quot;WSPOW08F3E&quot;</span><span class="p">)</span>
+<span class="go">{&#39;ccd_count&#39;: 5,</span>
+<span class="go"> &#39;ccds&#39;: &#39;I0 I1 I2 I3 S3 &#39;,</span>
+<span class="go"> &#39;clocking&#39;: 0,</span>
+<span class="go"> &#39;fep_count&#39;: 5,</span>
+<span class="go"> &#39;feps&#39;: &#39;1 2 3 4 5 &#39;,</span>
+<span class="go"> &#39;vid_board&#39;: 1}</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>{‘ccd_count’: 5,</dt><dd><p>‘ccds’: ‘I0 I1 I2 I3 S3 ‘,
-‘clocking’: 0,
-‘fep_count’: 5,
-‘feps’: ‘1 2 3 4 5 ‘,
-‘vid_board’: 1}</p>
-</dd>
-</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>mnem</strong> – power command string</p>
@@ -151,8 +149,8 @@ Return a dictionary with the number of chips and their identifiers</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.cmd_states.generate_cmds">
-<code class="sig-prename descclassname">Chandra.cmd_states.cmd_states.</code><code class="sig-name descname">generate_cmds</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time</span></em>, <em class="sig-param"><span class="n">cmd_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.cmd_states.generate_cmds" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.cmd_states.generate_cmds">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">generate_cmds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmd_set</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.generate_cmds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a set of commands based on the supplied <code class="docutils literal notranslate"><span class="pre">cmd_set</span></code> starting
 from the specified <code class="docutils literal notranslate"><span class="pre">time</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">cmd_set</span></code> is a list of command definitions like the output of
@@ -174,8 +172,8 @@ values.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.cmd_states.get_cmds">
-<code class="sig-prename descclassname">Chandra.cmd_states.cmd_states.</code><code class="sig-name descname">get_cmds</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">datestart</span><span class="o">=</span><span class="default_value">'1998:001:00:00:00.000'</span></em>, <em class="sig-param"><span class="n">datestop</span><span class="o">=</span><span class="default_value">'2099:001:00:00:00.000'</span></em>, <em class="sig-param"><span class="n">db</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">update_db</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">timeline_loads</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mp_dir</span><span class="o">=</span><span class="default_value">'/Users/javierg/SAO/ska/data/mpcrit1/mplogs'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.cmd_states.get_cmds" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.cmd_states.get_cmds">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">get_cmds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datestart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1998:001:00:00:00.000'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datestop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2099:001:00:00:00.000'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeline_loads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/proj/sot/ska/data/mpcrit1/mplogs'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.get_cmds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all commands with <code class="docutils literal notranslate"><span class="pre">datestart</span></code> &lt; date &lt;= <code class="docutils literal notranslate"><span class="pre">datestop</span></code> using DBI
 object <code class="docutils literal notranslate"><span class="pre">db</span></code>.  This includes both commands already in the database and new
 commands.  If <code class="docutils literal notranslate"><span class="pre">update_db</span></code> is True then update the database cmds table
@@ -209,8 +207,8 @@ products.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.cmd_states.get_state0">
-<code class="sig-prename descclassname">Chandra.cmd_states.cmd_states.</code><code class="sig-name descname">get_state0</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">db</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date_margin</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">datepar</span><span class="o">=</span><span class="default_value">'datestop'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.cmd_states.get_state0" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.cmd_states.get_state0">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">get_state0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datepar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'datestop'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.get_state0" title="Permalink to this definition">¶</a></dt>
 <dd><p>From the cmd_states table get the last state with <code class="docutils literal notranslate"><span class="pre">datepar</span></code> before
 <code class="docutils literal notranslate"><span class="pre">date</span></code>.</p>
 <blockquote>
@@ -242,8 +240,8 @@ supplied.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.cmd_states.get_states">
-<code class="sig-prename descclassname">Chandra.cmd_states.cmd_states.</code><code class="sig-name descname">get_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state0</span></em>, <em class="sig-param"><span class="n">cmds</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.cmd_states.get_states" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.cmd_states.get_states">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">get_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.get_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get states resulting from the spacecraft commands <code class="docutils literal notranslate"><span class="pre">cmds</span></code> starting
 from an initial <code class="docutils literal notranslate"><span class="pre">state0</span></code>.</p>
 <p>State keys in the <code class="docutils literal notranslate"><span class="pre">exclude</span></code> list or set will be excluded from causing a
@@ -380,8 +378,8 @@ schema:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.cmd_states.insert_cmds_db">
-<code class="sig-prename descclassname">Chandra.cmd_states.cmd_states.</code><code class="sig-name descname">insert_cmds_db</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmds</span></em>, <em class="sig-param"><span class="n">timeline_id</span></em>, <em class="sig-param"><span class="n">db</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.cmd_states.insert_cmds_db" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.cmd_states.insert_cmds_db">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">insert_cmds_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeline_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.insert_cmds_db" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert the <code class="docutils literal notranslate"><span class="pre">cmds</span></code> into the <code class="docutils literal notranslate"><span class="pre">db</span></code> table ‘cmds’ with <code class="docutils literal notranslate"><span class="pre">timeline_id</span></code>.
 Command parameters are also inserted into ‘cmd_intpars’ and ‘cmd_fltpars’
 tables.  <code class="docutils literal notranslate"><span class="pre">timeline_id</span></code> can be None to indicate non-load commands (from
@@ -538,8 +536,8 @@ ground or autonomous).</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.cmd_states.interpolate_states">
-<code class="sig-prename descclassname">Chandra.cmd_states.cmd_states.</code><code class="sig-name descname">interpolate_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">states</span></em>, <em class="sig-param"><span class="n">times</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.cmd_states.interpolate_states" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.cmd_states.interpolate_states">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">interpolate_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.interpolate_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolate <code class="docutils literal notranslate"><span class="pre">states</span></code> np.recarray at given times.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -555,8 +553,8 @@ ground or autonomous).</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.cmd_states.interrupt_loads">
-<code class="sig-prename descclassname">Chandra.cmd_states.cmd_states.</code><code class="sig-name descname">interrupt_loads</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">datestop</span></em>, <em class="sig-param"><span class="n">db</span></em>, <em class="sig-param"><span class="n">observing_only</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">current_only</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.cmd_states.interrupt_loads" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.cmd_states.interrupt_loads">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">interrupt_loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datestop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observing_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.interrupt_loads" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interrupt the timelines  with
 db.datestop &gt; <code class="docutils literal notranslate"><span class="pre">datestop</span></code> by updating the table datestop accordingly.
 Use DBI handle <code class="docutils literal notranslate"><span class="pre">db</span></code> to access tables.  If <code class="docutils literal notranslate"><span class="pre">current_only</span></code> is set
@@ -577,8 +575,8 @@ then only update the load that actually contains <code class="docutils literal n
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.cmd_states.reduce_states">
-<code class="sig-prename descclassname">Chandra.cmd_states.cmd_states.</code><code class="sig-name descname">reduce_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">states</span></em>, <em class="sig-param"><span class="n">cols</span></em>, <em class="sig-param"><span class="n">allow_identical</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.cmd_states.reduce_states" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.cmd_states.reduce_states">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">reduce_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_identical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.reduce_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reduce the input <code class="docutils literal notranslate"><span class="pre">states</span></code> so that only transitions in the <code class="docutils literal notranslate"><span class="pre">cols</span></code>
 columns are noticed.</p>
 <dl class="field-list simple">
@@ -595,17 +593,17 @@ columns are noticed.</p>
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-Chandra.cmd_states.get_cmd_states">
-<span id="get-cmd-states"></span><h2>get_cmd_states<a class="headerlink" href="#module-Chandra.cmd_states.get_cmd_states" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-chandra_cmd_states.get_cmd_states">
+<span id="get-cmd-states"></span><h2>get_cmd_states<a class="headerlink" href="#module-chandra_cmd_states.get_cmd_states" title="Permalink to this headline">¶</a></h2>
 <p>Get the Chandra commanded states over a range of time.</p>
 <dl class="py function">
-<dt id="Chandra.cmd_states.get_cmd_states.fetch_states">
-<code class="sig-prename descclassname">Chandra.cmd_states.get_cmd_states.</code><code class="sig-name descname">fetch_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vals</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">allow_identical</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dbi</span><span class="o">=</span><span class="default_value">'hdf5'</span></em>, <em class="sig-param"><span class="n">server</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">user</span><span class="o">=</span><span class="default_value">'aca_read'</span></em>, <em class="sig-param"><span class="n">database</span><span class="o">=</span><span class="default_value">'aca'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.get_cmd_states.fetch_states" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.get_cmd_states.fetch_states">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.get_cmd_states.</span></span><span class="sig-name descname"><span class="pre">fetch_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_identical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hdf5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'aca_read'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'aca'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.get_cmd_states.fetch_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get Chandra commanded states over a range of time as a structured array.</p>
 <p>Examples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get commanded states using the default HDF5 table</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">Chandra.cmd_states</span> <span class="kn">import</span> <span class="n">fetch_states</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">chandra_cmd_states</span> <span class="kn">import</span> <span class="n">fetch_states</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">states</span> <span class="o">=</span> <span class="n">fetch_states</span><span class="p">(</span><span class="s1">&#39;2011:100:12:00:00&#39;</span><span class="p">,</span> <span class="s1">&#39;2011:101:12:00:00&#39;</span><span class="p">,</span> <span class="n">vals</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;obsid&#39;</span><span class="p">,</span> <span class="s1">&#39;simpos&#39;</span><span class="p">])</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">states</span><span class="p">[[</span><span class="s1">&#39;datestart&#39;</span><span class="p">,</span> <span class="s1">&#39;datestop&#39;</span><span class="p">,</span> <span class="s1">&#39;obsid&#39;</span><span class="p">,</span> <span class="s1">&#39;simpos&#39;</span><span class="p">]]</span>
 <span class="n">array</span><span class="p">([(</span><span class="s1">&#39;2011:100:11:53:12.378&#39;</span><span class="p">,</span> <span class="s1">&#39;2011:101:00:23:01.434&#39;</span><span class="p">,</span> <span class="mi">13255</span><span class="p">,</span> <span class="mi">75624</span><span class="p">),</span>
@@ -636,54 +634,54 @@ columns are noticed.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.get_cmd_states.get_h5_states">
-<code class="sig-prename descclassname">Chandra.cmd_states.get_cmd_states.</code><code class="sig-name descname">get_h5_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start</span></em>, <em class="sig-param"><span class="n">stop</span></em>, <em class="sig-param"><span class="n">server</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.get_cmd_states.get_h5_states" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.get_cmd_states.get_h5_states">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.get_cmd_states.</span></span><span class="sig-name descname"><span class="pre">get_h5_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.get_cmd_states.get_h5_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get states from HDF5 <code class="docutils literal notranslate"><span class="pre">server</span></code> file between <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">stop</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.get_cmd_states.get_sql_states">
-<code class="sig-prename descclassname">Chandra.cmd_states.get_cmd_states.</code><code class="sig-name descname">get_sql_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start</span></em>, <em class="sig-param"><span class="n">stop</span></em>, <em class="sig-param"><span class="n">dbi</span></em>, <em class="sig-param"><span class="n">server</span></em>, <em class="sig-param"><span class="n">user</span></em>, <em class="sig-param"><span class="n">database</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.get_cmd_states.get_sql_states" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.get_cmd_states.get_sql_states">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.get_cmd_states.</span></span><span class="sig-name descname"><span class="pre">get_sql_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.get_cmd_states.get_sql_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get states from SQL server between <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">stop</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.get_cmd_states.main">
-<code class="sig-prename descclassname">Chandra.cmd_states.get_cmd_states.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">main_args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.get_cmd_states.main" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.get_cmd_states.main">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.get_cmd_states.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.get_cmd_states.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Command line interface to fetch_states.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-Chandra.cmd_states.interrupt_loads">
-<span id="interrupt-loads"></span><h2>interrupt_loads<a class="headerlink" href="#module-Chandra.cmd_states.interrupt_loads" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-chandra_cmd_states.interrupt_loads">
+<span id="interrupt-loads"></span><h2>interrupt_loads<a class="headerlink" href="#module-chandra_cmd_states.interrupt_loads" title="Permalink to this headline">¶</a></h2>
 <p>Update timelines table to reflect an mission load interrupt.</p>
-</div>
-<div class="section" id="module-Chandra.cmd_states.update_cmd_states">
-<span id="update-cmd-states"></span><h2>update_cmd_states<a class="headerlink" href="#module-Chandra.cmd_states.update_cmd_states" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-chandra_cmd_states.update_cmd_states">
+<span id="update-cmd-states"></span><h2>update_cmd_states<a class="headerlink" href="#module-chandra_cmd_states.update_cmd_states" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="Chandra.cmd_states.update_cmd_states.check_consistency">
-<code class="sig-prename descclassname">Chandra.cmd_states.update_cmd_states.</code><code class="sig-name descname">check_consistency</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">db</span></em>, <em class="sig-param"><span class="n">h5</span></em>, <em class="sig-param"><span class="n">n_check</span><span class="o">=</span><span class="default_value">3000</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.update_cmd_states.check_consistency" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.update_cmd_states.check_consistency">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.update_cmd_states.</span></span><span class="sig-name descname"><span class="pre">check_consistency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.update_cmd_states.check_consistency" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that the cmd_states table in <code class="docutils literal notranslate"><span class="pre">db</span></code> has the same length and
 final datestart.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.update_cmd_states.delete_cmd_states">
-<code class="sig-prename descclassname">Chandra.cmd_states.update_cmd_states.</code><code class="sig-name descname">delete_cmd_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">datestart</span></em>, <em class="sig-param"><span class="n">db</span></em>, <em class="sig-param"><span class="n">h5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.update_cmd_states.delete_cmd_states" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.update_cmd_states.delete_cmd_states">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.update_cmd_states.</span></span><span class="sig-name descname"><span class="pre">delete_cmd_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datestart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.update_cmd_states.delete_cmd_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete cmd_states table entries that have datestart greater than or
 equal to the supplied <code class="docutils literal notranslate"><span class="pre">datestart</span></code> arg.  Do this for the SQL database
 handle <code class="docutils literal notranslate"><span class="pre">db</span></code> and the HDF5 object handle <code class="docutils literal notranslate"><span class="pre">h5</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.update_cmd_states.get_options">
-<code class="sig-prename descclassname">Chandra.cmd_states.update_cmd_states.</code><code class="sig-name descname">get_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.update_cmd_states.get_options" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.update_cmd_states.get_options">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.update_cmd_states.</span></span><span class="sig-name descname"><span class="pre">get_options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.update_cmd_states.get_options" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get options for command line interface to update_cmd_states.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.update_cmd_states.get_states_i_diff">
-<code class="sig-prename descclassname">Chandra.cmd_states.update_cmd_states.</code><code class="sig-name descname">get_states_i_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">db_states</span></em>, <em class="sig-param"><span class="n">states</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.update_cmd_states.get_states_i_diff" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.update_cmd_states.get_states_i_diff">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.update_cmd_states.</span></span><span class="sig-name descname"><span class="pre">get_states_i_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">states</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.update_cmd_states.get_states_i_diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the index position where db_states and states differ.</p>
 <p>If the states are identical then None is returned.</p>
 <dl class="field-list simple">
@@ -700,21 +698,21 @@ handle <code class="docutils literal notranslate"><span class="pre">db</span></c
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.update_cmd_states.insert_cmd_states">
-<code class="sig-prename descclassname">Chandra.cmd_states.update_cmd_states.</code><code class="sig-name descname">insert_cmd_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">states</span></em>, <em class="sig-param"><span class="n">i_diff</span></em>, <em class="sig-param"><span class="n">db</span></em>, <em class="sig-param"><span class="n">h5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.update_cmd_states.insert_cmd_states" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.update_cmd_states.insert_cmd_states">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.update_cmd_states.</span></span><span class="sig-name descname"><span class="pre">insert_cmd_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_diff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.update_cmd_states.insert_cmd_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert new <code class="docutils literal notranslate"><span class="pre">states[idiff:]</span></code> into <code class="docutils literal notranslate"><span class="pre">db</span></code> and <code class="docutils literal notranslate"><span class="pre">h5d</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.update_cmd_states.log_mismatch">
-<code class="sig-prename descclassname">Chandra.cmd_states.update_cmd_states.</code><code class="sig-name descname">log_mismatch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mismatches</span></em>, <em class="sig-param"><span class="n">db_states</span></em>, <em class="sig-param"><span class="n">states</span></em>, <em class="sig-param"><span class="n">i_diff</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.update_cmd_states.log_mismatch" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.update_cmd_states.log_mismatch">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.update_cmd_states.</span></span><span class="sig-name descname"><span class="pre">log_mismatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mismatches</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db_states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_diff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.update_cmd_states.log_mismatch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log the states and state differences leading to a diff between the
 database cmd_states and the proposed states from commanding / products</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.update_cmd_states.main">
-<code class="sig-prename descclassname">Chandra.cmd_states.update_cmd_states.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.update_cmd_states.main" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.update_cmd_states.main">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.update_cmd_states.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.update_cmd_states.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Command line interface to update the cmd_states table to reflect current
 load segments / timelines in database.</p>
 <p>Usage: update_cmd_states.py [options]:</p>
@@ -734,15 +732,15 @@ load segments / timelines in database.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.update_cmd_states.make_hdf5_cmd_states">
-<code class="sig-prename descclassname">Chandra.cmd_states.update_cmd_states.</code><code class="sig-name descname">make_hdf5_cmd_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">db</span></em>, <em class="sig-param"><span class="n">h5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.update_cmd_states.make_hdf5_cmd_states" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.update_cmd_states.make_hdf5_cmd_states">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.update_cmd_states.</span></span><span class="sig-name descname"><span class="pre">make_hdf5_cmd_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.update_cmd_states.make_hdf5_cmd_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a new HDF5 command states table in <code class="docutils literal notranslate"><span class="pre">h5</span></code> from the existing
 database version.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="Chandra.cmd_states.update_cmd_states.update_states_db">
-<code class="sig-prename descclassname">Chandra.cmd_states.update_cmd_states.</code><code class="sig-name descname">update_states_db</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">states</span></em>, <em class="sig-param"><span class="n">db</span></em>, <em class="sig-param"><span class="n">h5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Chandra.cmd_states.update_cmd_states.update_states_db" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="chandra_cmd_states.update_cmd_states.update_states_db">
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.update_cmd_states.</span></span><span class="sig-name descname"><span class="pre">update_states_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.update_cmd_states.update_states_db" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make the <code class="docutils literal notranslate"><span class="pre">db</span></code> database cmd_states table consistent with the supplied
 <code class="docutils literal notranslate"><span class="pre">states</span></code>.  Match <code class="docutils literal notranslate"><span class="pre">states</span></code> to corresponding values in cmd_states
 tables, then delete from table at the point of a mismatch (if any).</p>
@@ -760,8 +758,8 @@ tables, then delete from table at the point of a mismatch (if any).</p>
 </dl>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
             <div class="clearer"></div>
@@ -771,12 +769,12 @@ tables, then delete from table at the point of a mismatch (if any).</p>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
 <ul>
-<li><a class="reference internal" href="#">Chandra.cmd_states API</a><ul>
-<li><a class="reference internal" href="#module-Chandra.cmd_states.add_nonload_cmds">add_nonload_cmds</a></li>
-<li><a class="reference internal" href="#module-Chandra.cmd_states.cmd_states">cmd_states</a></li>
-<li><a class="reference internal" href="#module-Chandra.cmd_states.get_cmd_states">get_cmd_states</a></li>
-<li><a class="reference internal" href="#module-Chandra.cmd_states.interrupt_loads">interrupt_loads</a></li>
-<li><a class="reference internal" href="#module-Chandra.cmd_states.update_cmd_states">update_cmd_states</a></li>
+<li><a class="reference internal" href="#">chandra_cmd_states API</a><ul>
+<li><a class="reference internal" href="#module-chandra_cmd_states.add_nonload_cmds">add_nonload_cmds</a></li>
+<li><a class="reference internal" href="#module-chandra_cmd_states.cmd_states">cmd_states</a></li>
+<li><a class="reference internal" href="#module-chandra_cmd_states.get_cmd_states">get_cmd_states</a></li>
+<li><a class="reference internal" href="#module-chandra_cmd_states.interrupt_loads">interrupt_loads</a></li>
+<li><a class="reference internal" href="#module-chandra_cmd_states.update_cmd_states">update_cmd_states</a></li>
 </ul>
 </li>
 </ul>
@@ -799,7 +797,7 @@ tables, then delete from table at the point of a mismatch (if any).</p>
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2009, Tom Aldcroft.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.1.2. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 4.2.0. &nbsp;
   </p>
 </footer>
   </body>

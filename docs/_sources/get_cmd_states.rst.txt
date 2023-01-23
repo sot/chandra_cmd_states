@@ -6,7 +6,7 @@
 Get the Chandra commanded states over a range of time as a space-delimited
 ASCII table.
 
-This tool is a wrapper around the ``Chandra.cmd_states.get_cmd_states()``
+This tool is a wrapper around the ``chandra_cmd_states.get_cmd_states()``
 function.  This function should be used within any Python code that requires
 use of commanded states.
 
