@@ -2,8 +2,8 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 
 import Ska.DBI
-import Chandra.cmd_states as cmd_states
-from Chandra.cmd_states import generate_cmds, cmd_set, interrupt_loads
+import chandra_cmd_states as cmd_states
+from chandra_cmd_states import generate_cmds, cmd_set, interrupt_loads
 
 def get_options():
     from optparse import OptionParser
@@ -34,7 +34,7 @@ for table in ('cmd_intpars', 'cmd_fltpars', 'cmds'):
 cmds = []
 
 # Normal sun mode day 2008:225
-cmds += generate_cmds('2008:225:10:00:00', cmd_set('nsm')) 
+cmds += generate_cmds('2008:225:10:00:00', cmd_set('nsm'))
 cmds += generate_cmds('2008:227:20:00:00', cmd_set('manvr', 0.734142,-0.111682,0.558589,0.369515 ))
 cmds += generate_cmds('2008:227:21:25:00', cmd_set('manvr', 0.784368,-0.0804672,0.535211,0.303053))
 cmds += generate_cmds('2008:227:22:15:00', cmd_set('manvr', 0.946291,-0.219412,0.0853751,0.221591))
@@ -59,7 +59,7 @@ cap_cmds = (dict(dur=1.025),
             dict(cmd='ACISPKT',
                  tlmsid='WSVIDALLDN',
                  ),
-            )  
+            )
 cmds += generate_cmds('2009:240:10:40:00.000', cap_cmds )
 
 
@@ -67,19 +67,19 @@ cmds += generate_cmds('2009:240:10:40:00.000', cap_cmds )
 cmds += generate_cmds('2010:025:09:11:00.000', ( dict(cmd='ACISPKT', tlmsid='WSPOW00306'),
                                                  dict(cmd='ACISPKT', tlmsid='AA00000000')
                                                  ))
-cmds += generate_cmds('2010:025:09:11:01.025', ( dict(cmd='ACISPKT', tlmsid='WSVIDALLDN'), 
+cmds += generate_cmds('2010:025:09:11:01.025', ( dict(cmd='ACISPKT', tlmsid='WSVIDALLDN'),
                                                  ))
 
 cmds += generate_cmds('2010:025:14:00:00.000', ( dict(cmd='ACISPKT', tlmsid='WSPOW0EC3E'),
                                                  dict(cmd='ACISPKT', tlmsid='AA00000000')
                                                  ))
-cmds += generate_cmds('2010:025:14:00:01.025', ( dict(cmd='ACISPKT', tlmsid='XTZ0000005'), 
+cmds += generate_cmds('2010:025:14:00:01.025', ( dict(cmd='ACISPKT', tlmsid='XTZ0000005'),
                                                  ))
 
 cmds += generate_cmds('2010:026:00:30:00.000', ( dict(cmd='ACISPKT', tlmsid='WSPOW01f1f'),
                                                  ))
 
-cmds += generate_cmds('2010:026:01:36:41.000', ( dict(cmd='ACISPKT', tlmsid='WSPOW00707'), 
+cmds += generate_cmds('2010:026:01:36:41.000', ( dict(cmd='ACISPKT', tlmsid='WSPOW00707'),
                                                  ))
 
 # Day 97 CAP made a strange state at 80W that looks like a fep=3,vid_board=on,clocking=off
@@ -162,7 +162,7 @@ for date in dates.split('\n'):
 
 cmd_states.insert_cmds_db(cmds, None, db)
 
-# 2010:150 NSM commands 
+# 2010:150 NSM commands
 # date=2010:150:04:00:00.000 cmd_set=nsm args=
 cmds = generate_cmds('2010:150:04:00:00.000', cmd_set('nsm'))
 cmd_states.insert_cmds_db(cmds, None, db)

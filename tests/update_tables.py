@@ -5,7 +5,7 @@ import logging
 from Chandra.Time import DateTime
 from Ska.Matplotlib import plot_cxctime, pointpair
 import Ska.ParseCM
-import Chandra.cmd_states as cmd_states
+import chandra_cmd_states as cmd_states
 import Ska.DBI
 from matplotlib import pyplot
 from Ska.TelemArchive.fetch import fetch

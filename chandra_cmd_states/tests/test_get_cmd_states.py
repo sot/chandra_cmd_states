@@ -1,29 +1,21 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 import os
 import sys
-from pathlib import Path
 from io import StringIO
 
 import pytest
 import numpy as np
 from astropy.io import ascii
 
-import Chandra.cmd_states
-from Chandra.cmd_states.get_cmd_states import main, fetch_states
-from Chandra.cmd_states.cmd_states import decode_power, get_state0, get_cmds, get_states
-
-# Check that this test file is in the same package as the imported Chandra.cmd_states.
-# Due to subtleties with pytest test collection and native namespace pacakges,
-# running `pytest Ska/Numpy` in the git repo will end up getting the installed
-# Chandra.cmd_states not the local one.  Use `python setup.py test` instead.
-assert Path(__file__).parent.parent == Path(Chandra.cmd_states.__file__).parent
+from chandra_cmd_states.get_cmd_states import main, fetch_states
+from chandra_cmd_states.cmd_states import decode_power, get_state0, get_cmds, get_states
 
 HAS_SOTMP_FILES = os.path.exists(f'{os.environ["SKA"]}/data/mpcrit1/mplogs/2017')
 
 
 # This is taken from the output of
 #  get_cmd_states --start=2010:100 --stop=2010:101 --vals=obsid,simpos,pcad_mode,clocking,power_cmd
-# for Chandra.cmd_states version 0.07 in skare 0.13 on July 18, 2012.
+# for chandra_cmd_states version 0.07 in skare 0.13 on July 18, 2012.
 LINES = [
     "datestart             datestop              tstart        tstop         obsid power_cmd  pcad_mode clocking simpos",
     "2010:100:11:39:57.675 2010:100:14:04:43.358 387286863.859 387295549.542 56340 XTZ0000005 NPNT      1        -99616",

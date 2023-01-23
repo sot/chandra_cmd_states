@@ -17,7 +17,7 @@ fetch --start 2002:010 --stop 2009:001:00:00:00 --dt 600 --outfile tlm2002_2008.
 
 # import Ska.Table
 import Ska.DBI
-import Chandra.cmd_states as cmd_states
+import chandra_cmd_states as cmd_states
 
 def get_options():
     from optparse import OptionParser
@@ -29,7 +29,7 @@ def get_options():
     parser.add_option("--server",
                       default='db_base.db3',
                       help="DBI server (<filename>|sybase)")
-    
+
     (opt, args) = parser.parse_args()
     return (opt, args)
 
@@ -45,7 +45,7 @@ def main():
 
     db = Ska.DBI.DBI(dbi=opt.dbi, server=opt.server)
 
-    datestart = '2002:010:00:00:00' 
+    datestart = '2002:010:00:00:00'
     datestop = '2009:001:00:00:00'
 
     if 'states' not in globals():
@@ -81,4 +81,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
+

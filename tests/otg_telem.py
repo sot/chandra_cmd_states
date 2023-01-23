@@ -10,7 +10,7 @@ fetch --start 2003:001 --stop 2003:365 --dt 300 --outfile tlm2003.dat \
 """
 import logging
 import Ska.DBI
-import Chandra.cmd_states as cmd_states
+import chandra_cmd_states as cmd_states
 from Ska.Matplotlib import plot_cxctime, pointpair
 from Chandra.Time import DateTime
 from scipy.signal import medfilt

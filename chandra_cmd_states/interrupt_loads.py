@@ -7,7 +7,7 @@ import sys
 import logging
 
 import Ska.DBI
-import Chandra.cmd_states as cmd_states
+import chandra_cmd_states as cmd_states
 
 
 def get_options():
