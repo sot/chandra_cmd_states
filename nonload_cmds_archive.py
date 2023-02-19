@@ -1347,3 +1347,7 @@ cmd_states.interrupt_loads('2022:310:14:35:53.000', db, observing_only=True, cur
 cmds = generate_cmds('2023:044:17:41:07.000', cmd_set('nsm'))
 cmd_states.insert_cmds_db(cmds, None, db)
 cmd_states.interrupt_loads('2023:044:17:41:07.000', db, observing_only=None, current_only=True)
+
+# Pitch to cold attitude
+cmds = generate_cmds('2023:049:03:41:38.000', cmd_set('manvr', -0.22986132, -0.53011098, 0.71744651, 0.38912290))
+cmd_states.insert_cmds_db(cmds, None, db)
