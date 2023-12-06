@@ -1,24 +1,16 @@
 Chandra commanded states database
 ==================================
 
+.. Warning:: the commanded states database and package described here is
+    **discontinued and no longer supported**. Instead use the
+   `Kadi commands and states
+   package <http://cxc.cfa.harvard.edu/mta/ASPECT/tool_doc/kadi/commands_states.html>`_.
+
 This suite of tools provides the interface for creation and maintenance of the
 Chandra commanded states database. This database provides the commanded state
 of Chandra from 2002 through to the end of all approved command loads that are
 ingested to the OFLS database.  The database thus contains both the definitive
 state and a predictive state at any time.
-
-.. Warning:: Use of the commanded states database described here is deprecated
-   in favor of the `Kadi commands and states
-   package <http://cxc.cfa.harvard.edu/mta/ASPECT/tool_doc/kadi/commands_states.html>`_.
-   The replacement for the :func:`~chandra_cmd_states.fetch_states` function is described
-   in the `Chandra states and continuity
-   <http://cxc.cfa.harvard.edu/mta/ASPECT/tool_doc/kadi/commands_states.html#states>`_
-   section which makes use of the `get_states
-   <http://cxc.cfa.harvard.edu/mta/ASPECT/tool_doc/kadi/api.html#kadi.commands.states.get_states>`_
-   function.
-
-   The commanded states database is still being maintained, but no new development
-   is expected.
 
 A commanded state is an interval of time over which certain parameters of
 interest (obsid, SIM-Z position, commanded attitude, ACIS power configuration,
