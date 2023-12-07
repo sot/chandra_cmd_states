@@ -1,19 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>interrupt_loads &#8212; cmd_states 4.0.0 documentation</title>
+    <title>interrupt_loads &#8212; cmd_states 4.0.1.dev9+gefd4c94 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
     <script type="text/javascript" src="_static/copybutton.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -60,7 +59,7 @@
 	 |
       </li>
       <li>
-	<a href="index.html">cmd_states 4.0.0 documentation</a>
+	<a href="index.html">cmd_states 4.0.1.dev9+gefd4c94 documentation</a>
 	 &#187;
       </li>
       
@@ -75,14 +74,14 @@
           <div class="body" role="main">
             
   <section id="interrupt-loads">
-<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">interrupt_loads</span></code><a class="headerlink" href="#interrupt-loads" title="Permalink to this headline">¶</a></h1>
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">interrupt_loads</span></code><a class="headerlink" href="#interrupt-loads" title="Permalink to this heading">¶</a></h1>
 <p>Update timelines table to reflect an mission load interrupt.</p>
 <p>Normally all timeline entries with datestop after the supplied <code class="docutils literal notranslate"><span class="pre">datestop</span></code> are
 updated to set the table datestop to <code class="docutils literal notranslate"><span class="pre">datestop</span></code>.  If <code class="docutils literal notranslate"><span class="pre">--current-only</span></code> is
 supplied then only the load segment actually containing <code class="docutils literal notranslate"><span class="pre">datestop</span></code> will be
 truncated.  This is to clean up archival load segment values that are wrong.</p>
 <section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Usage</span><span class="p">:</span> <span class="n">interrupt_loads</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span>
 
 <span class="n">Options</span><span class="p">:</span>
@@ -97,7 +96,7 @@ truncated.  This is to clean up archival load segment values that are wrong.</p>
 </div>
 </section>
 <section id="example">
-<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">interrupt_loads</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">datestop</span> <span class="mi">2009</span><span class="p">:</span><span class="mi">065</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">56</span>
 </pre></div>
 </div>
@@ -120,12 +119,16 @@ truncated.  This is to clean up archival load segment values that are wrong.</p>
 </ul>
 
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="fix_pitch_simz.html"
-                        title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fix_pitch_simz</span></code></a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="make_cmd_tables.html"
-                        title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">make_cmd_tables</span></code></a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="fix_pitch_simz.html"
+                          title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fix_pitch_simz</span></code></a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="make_cmd_tables.html"
+                          title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">make_cmd_tables</span></code></a></p>
+  </div>
 <form action="search.html" method="get">
   <input type="text" name="q" placeholder="Search" />
   <input type="hidden" name="check_keywords" value="yes" />
@@ -140,7 +143,7 @@ truncated.  This is to clean up archival load segment values that are wrong.</p>
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2009, Tom Aldcroft.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 4.2.0. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 6.1.3. &nbsp;
   </p>
 </footer>
   </body>

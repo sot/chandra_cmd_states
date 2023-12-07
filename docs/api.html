@@ -1,19 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>chandra_cmd_states API &#8212; cmd_states 4.0.0 documentation</title>
+    <title>chandra_cmd_states API &#8212; cmd_states 4.0.1.dev9+gefd4c94 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
     <script type="text/javascript" src="_static/copybutton.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -54,7 +53,7 @@
 	
       </li>
       <li>
-	<a href="index.html">cmd_states 4.0.0 documentation</a>
+	<a href="index.html">cmd_states 4.0.1.dev9+gefd4c94 documentation</a>
 	 &#187;
       </li>
       
@@ -69,9 +68,9 @@
           <div class="body" role="main">
             
   <section id="chandra-cmd-states-api">
-<h1>chandra_cmd_states API<a class="headerlink" href="#chandra-cmd-states-api" title="Permalink to this headline">¶</a></h1>
+<h1>chandra_cmd_states API<a class="headerlink" href="#chandra-cmd-states-api" title="Permalink to this heading">¶</a></h1>
 <section id="module-chandra_cmd_states.add_nonload_cmds">
-<span id="add-nonload-cmds"></span><h2>add_nonload_cmds<a class="headerlink" href="#module-chandra_cmd_states.add_nonload_cmds" title="Permalink to this headline">¶</a></h2>
+<span id="add-nonload-cmds"></span><h2>add_nonload_cmds<a class="headerlink" href="#module-chandra_cmd_states.add_nonload_cmds" title="Permalink to this heading">¶</a></h2>
 <p>Add non-load commands to the database and generate code to recreate those
 commands for archive purposes.  See also cmd_states.cmd_set().</p>
 <p>Usage: add_nonload_cmds.py [options] [cmd_set_arg1 …]:</p>
@@ -106,7 +105,7 @@ commands for archive purposes.  See also cmd_states.cmd_set().</p>
 </div>
 </section>
 <section id="module-chandra_cmd_states.cmd_states">
-<span id="cmd-states"></span><h2>cmd_states<a class="headerlink" href="#module-chandra_cmd_states.cmd_states" title="Permalink to this headline">¶</a></h2>
+<span id="cmd-states"></span><h2>cmd_states<a class="headerlink" href="#module-chandra_cmd_states.cmd_states" title="Permalink to this heading">¶</a></h2>
 <p>This module provides the core functions for creating, manipulating and updating
 the Chandra commanded states database.</p>
 <dl class="py function">
@@ -114,13 +113,13 @@ the Chandra commanded states database.</p>
 <span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">cmd_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.cmd_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a predefined cmd_set <code class="docutils literal notranslate"><span class="pre">name</span></code> generated with *args.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> – cmd set name (manvr|scs107|nsm)</p></li>
 <li><p><strong>*args</strong> – optional args</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>cmd set</p>
 </dd>
 </dl>
@@ -142,7 +141,7 @@ Return a dictionary with the number of chips and their identifiers</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>mnem</strong> – power command string</p>
 </dd>
 </dl>
@@ -159,13 +158,13 @@ absolute time values.  This key specifies the duration of that command in
 seconds.  Normally this routine is used with the predefined <code class="docutils literal notranslate"><span class="pre">CMD_SET</span></code>
 values.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cmd_set</strong> – list of command definitions</p></li>
 <li><p><strong>time</strong> – starting time for command set</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of command dicts ala read_backstop()</p>
 </dd>
 </dl>
@@ -173,7 +172,7 @@ values.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="chandra_cmd_states.cmd_states.get_cmds">
-<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">get_cmds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datestart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1998:001:00:00:00.000'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datestop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2099:001:00:00:00.000'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeline_loads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/proj/sot/ska/data/mpcrit1/mplogs'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.get_cmds" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">get_cmds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datestart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1998:001:00:00:00.000'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datestop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2099:001:00:00:00.000'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeline_loads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/Users/aldcroft/ska/data/mpcrit1/mplogs'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.get_cmds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all commands with <code class="docutils literal notranslate"><span class="pre">datestart</span></code> &lt; date &lt;= <code class="docutils literal notranslate"><span class="pre">datestop</span></code> using DBI
 object <code class="docutils literal notranslate"><span class="pre">db</span></code>.  This includes both commands already in the database and new
 commands.  If <code class="docutils literal notranslate"><span class="pre">update_db</span></code> is True then update the database cmds table
@@ -189,7 +188,7 @@ were (will be) run on-board using commands already in the database
 supplemented by backstop commands found in the SOTMP repository of load
 products.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>datestart</strong> – start date (Chandra.Time ‘date’ str) (default=1998:001)</p></li>
 <li><p><strong>datestop</strong> – stop date (default=2099:001)</p></li>
@@ -197,10 +196,10 @@ products.</p>
 <li><p><strong>update_db</strong> – update the ‘cmds’ table</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">cmds</span></code></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list of dicts</p>
 </dd>
 </dl>
@@ -222,7 +221,7 @@ that pcad_mode == ‘NPNT’) will be used.  In this case a <code class="docutil
 supplied.</p>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>db</strong> – Ska.DBI.DBI object.  Created automatically if not supplied.</p></li>
 <li><p><strong>date</strong> – date cutoff for state0 (Chandra.Time compatible value) or None</p></li>
@@ -230,10 +229,10 @@ supplied.</p>
 <li><p><strong>datepar</strong> – table parameter for select (datestop|datestart)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">state0</span></code></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
@@ -251,11 +250,6 @@ returned states.</p>
 <p>A state is a dict with key values corresponding to the following database
 schema:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 48%" />
-<col style="width: 36%" />
-<col style="width: 16%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
 <th class="head"><p>Type</p></th>
@@ -364,14 +358,14 @@ schema:</p>
 <p>The input commands must be a list of dicts including keys <code class="docutils literal notranslate"><span class="pre">date,</span> <span class="pre">vcdu,</span>
 <span class="pre">cmd,</span> <span class="pre">params,</span> <span class="pre">time</span></code>.  See also Ska.ParseCM.read_backstop().</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>state0</strong> – initial state.</p></li>
 <li><p><strong>cmds</strong> – list of commands</p></li>
 <li><p><strong>ignore</strong> – list or set of state keys to ignore</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>recarray of states starting with state0 (which might be modified)</p>
 </dd>
 </dl>
@@ -386,10 +380,6 @@ tables.  <code class="docutils literal notranslate"><span class="pre">timeline_i
 ground or autonomous).</p>
 <p>Each command must be dict with at least the following keys:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 60%" />
-<col style="width: 40%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p>date</p></td>
 <td><p>char</p></td>
@@ -404,10 +394,6 @@ ground or autonomous).</p>
 </table>
 <p>Optional keys are:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 60%" />
-<col style="width: 40%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p>params</p></td>
 <td><p>dict</p></td>
@@ -435,11 +421,6 @@ ground or autonomous).</p>
 <p>The input <code class="docutils literal notranslate"><span class="pre">cmds</span></code> are used to populate three tables:</p>
 <p><strong>cmds</strong></p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 52%" />
-<col style="width: 26%" />
-<col style="width: 23%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>name</p></th>
 <th class="head"><p>type</p></th>
@@ -491,11 +472,6 @@ ground or autonomous).</p>
 </table>
 <p><strong>cmd_intpars</strong> and <strong>cmd_fltpars</strong></p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 48%" />
-<col style="width: 30%" />
-<col style="width: 21%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>name</p></th>
 <th class="head"><p>type</p></th>
@@ -522,14 +498,14 @@ ground or autonomous).</p>
 </tbody>
 </table>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cmds</strong> – list of command dicts, e.g. from Ska.ParseCM.read_backstop()</p></li>
 <li><p><strong>db</strong> – Ska.DBI.DBI object</p></li>
 <li><p><strong>timeline_id</strong> – id of timeline load segment that contains commands</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -540,13 +516,13 @@ ground or autonomous).</p>
 <span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.cmd_states.</span></span><span class="sig-name descname"><span class="pre">interpolate_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.cmd_states.interpolate_states" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolate <code class="docutils literal notranslate"><span class="pre">states</span></code> np.recarray at given times.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>states</strong> – states (np.recarray)</p></li>
 <li><p><strong>times</strong> – times (np.array or list)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">states</span></code> view at <code class="docutils literal notranslate"><span class="pre">times</span></code></p>
 </dd>
 </dl>
@@ -560,7 +536,7 @@ db.datestop &gt; <code class="docutils literal notranslate"><span class="pre">da
 Use DBI handle <code class="docutils literal notranslate"><span class="pre">db</span></code> to access tables.  If <code class="docutils literal notranslate"><span class="pre">current_only</span></code> is set
 then only update the load that actually contains <code class="docutils literal notranslate"><span class="pre">datestop</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>datestop</strong> – load stop date</p></li>
 <li><p><strong>db</strong> – Ska.DBI.DBI object</p></li>
@@ -568,7 +544,7 @@ then only update the load that actually contains <code class="docutils literal n
 <li><p><strong>current_only</strong> – only stop the load containing datestop</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -580,14 +556,14 @@ then only update the load that actually contains <code class="docutils literal n
 <dd><p>Reduce the input <code class="docutils literal notranslate"><span class="pre">states</span></code> so that only transitions in the <code class="docutils literal notranslate"><span class="pre">cols</span></code>
 columns are noticed.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>states</strong> – numpy recarray of states</p></li>
 <li><p><strong>cols</strong> – notice transitions in this list of columns</p></li>
 <li><p><strong>allow_identical</strong> – allow null transitions between apparently identical states</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>numpy recarray of reduced states</p>
 </dd>
 </dl>
@@ -595,7 +571,7 @@ columns are noticed.</p>
 
 </section>
 <section id="module-chandra_cmd_states.get_cmd_states">
-<span id="get-cmd-states"></span><h2>get_cmd_states<a class="headerlink" href="#module-chandra_cmd_states.get_cmd_states" title="Permalink to this headline">¶</a></h2>
+<span id="get-cmd-states"></span><h2>get_cmd_states<a class="headerlink" href="#module-chandra_cmd_states.get_cmd_states" title="Permalink to this heading">¶</a></h2>
 <p>Get the Chandra commanded states over a range of time.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="chandra_cmd_states.get_cmd_states.fetch_states">
@@ -618,7 +594,7 @@ columns are noticed.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> – start date (default=Now-10 days)</p></li>
 <li><p><strong>stop</strong> – stop date (default=None)</p></li>
@@ -653,11 +629,11 @@ columns are noticed.</p>
 
 </section>
 <section id="module-chandra_cmd_states.interrupt_loads">
-<span id="interrupt-loads"></span><h2>interrupt_loads<a class="headerlink" href="#module-chandra_cmd_states.interrupt_loads" title="Permalink to this headline">¶</a></h2>
+<span id="interrupt-loads"></span><h2>interrupt_loads<a class="headerlink" href="#module-chandra_cmd_states.interrupt_loads" title="Permalink to this heading">¶</a></h2>
 <p>Update timelines table to reflect an mission load interrupt.</p>
 </section>
 <section id="module-chandra_cmd_states.update_cmd_states">
-<span id="update-cmd-states"></span><h2>update_cmd_states<a class="headerlink" href="#module-chandra_cmd_states.update_cmd_states" title="Permalink to this headline">¶</a></h2>
+<span id="update-cmd-states"></span><h2>update_cmd_states<a class="headerlink" href="#module-chandra_cmd_states.update_cmd_states" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="chandra_cmd_states.update_cmd_states.check_consistency">
 <span class="sig-prename descclassname"><span class="pre">chandra_cmd_states.update_cmd_states.</span></span><span class="sig-name descname"><span class="pre">check_consistency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#chandra_cmd_states.update_cmd_states.check_consistency" title="Permalink to this definition">¶</a></dt>
@@ -685,13 +661,13 @@ handle <code class="docutils literal notranslate"><span class="pre">db</span></c
 <dd><p>Get the index position where db_states and states differ.</p>
 <p>If the states are identical then None is returned.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>db_states</strong> – states in database</p></li>
 <li><p><strong>states</strong> – new reference states</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>i_diff</p>
 </dd>
 </dl>
@@ -745,14 +721,14 @@ database version.</p>
 <code class="docutils literal notranslate"><span class="pre">states</span></code>.  Match <code class="docutils literal notranslate"><span class="pre">states</span></code> to corresponding values in cmd_states
 tables, then delete from table at the point of a mismatch (if any).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>states</strong> – input states (numpy recarray)</p></li>
 <li><p><strong>db</strong> – Ska.DBI.DBI object</p></li>
 <li><p><strong>h5</strong> – HDF5 object holding commanded states table (as h5.root.data)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -771,18 +747,49 @@ tables, then delete from table at the point of a mismatch (if any).</p>
 <ul>
 <li><a class="reference internal" href="#">chandra_cmd_states API</a><ul>
 <li><a class="reference internal" href="#module-chandra_cmd_states.add_nonload_cmds">add_nonload_cmds</a></li>
-<li><a class="reference internal" href="#module-chandra_cmd_states.cmd_states">cmd_states</a></li>
-<li><a class="reference internal" href="#module-chandra_cmd_states.get_cmd_states">get_cmd_states</a></li>
+<li><a class="reference internal" href="#module-chandra_cmd_states.cmd_states">cmd_states</a><ul>
+<li><a class="reference internal" href="#chandra_cmd_states.cmd_states.cmd_set"><code class="docutils literal notranslate"><span class="pre">cmd_set()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.cmd_states.decode_power"><code class="docutils literal notranslate"><span class="pre">decode_power()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.cmd_states.generate_cmds"><code class="docutils literal notranslate"><span class="pre">generate_cmds()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.cmd_states.get_cmds"><code class="docutils literal notranslate"><span class="pre">get_cmds()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.cmd_states.get_state0"><code class="docutils literal notranslate"><span class="pre">get_state0()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.cmd_states.get_states"><code class="docutils literal notranslate"><span class="pre">get_states()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.cmd_states.insert_cmds_db"><code class="docutils literal notranslate"><span class="pre">insert_cmds_db()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.cmd_states.interpolate_states"><code class="docutils literal notranslate"><span class="pre">interpolate_states()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.cmd_states.interrupt_loads"><code class="docutils literal notranslate"><span class="pre">interrupt_loads()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.cmd_states.reduce_states"><code class="docutils literal notranslate"><span class="pre">reduce_states()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-chandra_cmd_states.get_cmd_states">get_cmd_states</a><ul>
+<li><a class="reference internal" href="#chandra_cmd_states.get_cmd_states.fetch_states"><code class="docutils literal notranslate"><span class="pre">fetch_states()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.get_cmd_states.get_h5_states"><code class="docutils literal notranslate"><span class="pre">get_h5_states()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.get_cmd_states.get_sql_states"><code class="docutils literal notranslate"><span class="pre">get_sql_states()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.get_cmd_states.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-chandra_cmd_states.interrupt_loads">interrupt_loads</a></li>
-<li><a class="reference internal" href="#module-chandra_cmd_states.update_cmd_states">update_cmd_states</a></li>
+<li><a class="reference internal" href="#module-chandra_cmd_states.update_cmd_states">update_cmd_states</a><ul>
+<li><a class="reference internal" href="#chandra_cmd_states.update_cmd_states.check_consistency"><code class="docutils literal notranslate"><span class="pre">check_consistency()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.update_cmd_states.delete_cmd_states"><code class="docutils literal notranslate"><span class="pre">delete_cmd_states()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.update_cmd_states.get_options"><code class="docutils literal notranslate"><span class="pre">get_options()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.update_cmd_states.get_states_i_diff"><code class="docutils literal notranslate"><span class="pre">get_states_i_diff()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.update_cmd_states.insert_cmd_states"><code class="docutils literal notranslate"><span class="pre">insert_cmd_states()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.update_cmd_states.log_mismatch"><code class="docutils literal notranslate"><span class="pre">log_mismatch()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.update_cmd_states.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.update_cmd_states.make_hdf5_cmd_states"><code class="docutils literal notranslate"><span class="pre">make_hdf5_cmd_states()</span></code></a></li>
+<li><a class="reference internal" href="#chandra_cmd_states.update_cmd_states.update_states_db"><code class="docutils literal notranslate"><span class="pre">update_states_db()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="update_cmd_states.html"
-                        title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">update_cmd_states</span></code></a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="update_cmd_states.html"
+                          title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">update_cmd_states</span></code></a></p>
+  </div>
 <form action="search.html" method="get">
   <input type="text" name="q" placeholder="Search" />
   <input type="hidden" name="check_keywords" value="yes" />
@@ -797,7 +804,7 @@ tables, then delete from table at the point of a mismatch (if any).</p>
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2009, Tom Aldcroft.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 4.2.0. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 6.1.3. &nbsp;
   </p>
 </footer>
   </body>
